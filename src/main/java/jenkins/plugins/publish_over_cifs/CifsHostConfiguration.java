@@ -1,0 +1,228 @@
+/*
+ * The MIT License
+ *
+ * Copyright (C) 2010-2011 by Anthony Robinson
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+package jenkins.plugins.publish_over_cifs;
+
+import hudson.Util;
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
+import jenkins.plugins.publish_over.BPBuildInfo;
+import jenkins.plugins.publish_over.BPHostConfiguration;
+import jenkins.plugins.publish_over.BapPublisherException;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.kohsuke.stapler.DataBoundConstructor;
+
+import java.net.MalformedURLException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+
+public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Object> {
+
+    private static final long serialVersionUID = 1L;
+
+    public static final String SMB_URL_PREFIX = "smb://";
+    private static final String FS = "/";
+    private static final String PASSWORD_PLACEHOLDER = "****";
+    public static final int DEFAULT_PORT = SmbFile.DEFAULT_PORT;
+    public static final int DEFAULT_TIMEOUT = SmbFile.DEFAULT_RESPONSE_TIMEOUT;
+    public static final int SO_TIMEOUT_AFTER = SmbFile.DEFAULT_SO_TIMEOUT - SmbFile.DEFAULT_RESPONSE_TIMEOUT;
+    private static final int URL_BUILDER_INITIAL_SIZE = 60;
+
+    private static final String RESOLVE_WITH_WINS = "LMHOSTS,WINS,DNS,BCAST";
+    private static final String RESOLVE_WITHOUT_WINS = "LMHOSTS,DNS,BCAST";
+    public static final String CONFIG_PROPERTY_TIMEOUT = "jcifs.smb.client.responseTimeout";
+    public static final String CONFIG_PROPERTY_SO_TIMEOUT = "jcifs.smb.client.soTimeout";
+    public static final String CONFIG_PROPERTY_WINS = "jcifs.netbios.wins";
+    public static final String CONFIG_PROPERTY_RESOLVE_ORDER = "jcifs.resolveOrder";
+
+    public static int getDefaultPort() { return DEFAULT_PORT; }
+    public static int getDefaultTimeout() { return DEFAULT_TIMEOUT; }
+
+    private int timeout;
+
+    @DataBoundConstructor
+    public CifsHostConfiguration(final String name, final String hostname, final String username, final String password,
+                                 final String remoteRootDir, final int port, final int timeout) {
+        super(name, hostname, username, password, remoteRootDir, port);
+        this.timeout = timeout;
+    }
+
+    protected final String getPassword() {
+        return super.getPassword();
+    }
+
+    public int getTimeout() { return timeout; }
+    public void setTimeout(final int timeout) { this.timeout = timeout; }
+
+    @Override
+    public CifsClient createClient(final BPBuildInfo buildInfo) {
+        assertRequiredOptions();
+        configureJcifs(buildInfo);
+        final String url = buildUrl(false);
+        testConfig(url);
+        return new CifsClient(buildInfo, url);
+    }
+
+    private void configureJcifs(final BPBuildInfo buildInfo) {
+        // freaking statics/sys props - what could possibly go wrong? aaargh!
+        // will it even have any effect if the config changes after we have used jCIFS and have not rebooted? 
+        final String winsServer = (String) buildInfo.get(CifsPublisher.CTX_KEY_WINS_SERVER);
+        final int soTimeout = timeout + SO_TIMEOUT_AFTER;
+        if (winsServer == null) {
+            buildInfo.printIfVerbose(Messages.console_config_noWins());
+            System.clearProperty(CONFIG_PROPERTY_WINS);
+            System.setProperty(CONFIG_PROPERTY_RESOLVE_ORDER, RESOLVE_WITHOUT_WINS);
+        } else {
+            buildInfo.printIfVerbose(Messages.console_config_wins(winsServer));
+            System.setProperty(CONFIG_PROPERTY_WINS, winsServer);
+            System.setProperty(CONFIG_PROPERTY_RESOLVE_ORDER, RESOLVE_WITH_WINS);
+        }
+        if (buildInfo.isVerbose()) {
+            buildInfo.println(Messages.console_config_timout(timeout));
+            buildInfo.println(Messages.console_config_soTimeout(soTimeout));
+        }
+        System.setProperty(CONFIG_PROPERTY_TIMEOUT, Integer.toString(timeout));
+        System.setProperty(CONFIG_PROPERTY_SO_TIMEOUT, Integer.toString(soTimeout));
+    }
+
+    private String buildUrl(final boolean hidePassword) {
+        final StringBuilder urlSB = new StringBuilder(URL_BUILDER_INITIAL_SIZE);
+        urlSB.append(SMB_URL_PREFIX);
+        addCredentials(urlSB, hidePassword);
+        addServer(urlSB);
+        addSharename(urlSB);
+        return urlSB.toString();
+    }
+
+    private void assertRequiredOptions() {
+        if (Util.fixEmptyAndTrim(getHostname()) == null) throw new BapPublisherException(Messages.exception_hostnameRequired());
+        if (Util.fixEmptyAndTrim(getRemoteRootDir()) == null) throw new BapPublisherException(Messages.exception_shareRequired());
+    }
+
+    private void addSharename(StringBuilder urlSB) {
+        final String share = getRemoteRootDir().replaceAll("\\\\", "/");
+        if (!share.startsWith(FS)) urlSB.append(FS);
+        urlSB.append(share);
+        if (!share.endsWith(FS)) urlSB.append(FS);
+    }
+
+    private void addServer(StringBuilder urlSB) {
+        urlSB.append(getHostname());
+        if (getPort() != DEFAULT_PORT)
+            urlSB.append(":").append(getPort());
+    }
+
+    private void addCredentials(final StringBuilder urlSB, final boolean hidePassword) {
+        if (Util.fixEmptyAndTrim(getUsername()) != null) {
+            final String username = getUsername().trim();
+            if (username.contains("\\\\")) {
+                final String[] parts = username.split("\\\\\\\\", 2); // yep 8
+                urlSB.append(encode(parts[0])).append(";").append(encode(parts[1].trim()));
+            } else {
+                urlSB.append(encode(username));
+            }
+            if (Util.fixEmptyAndTrim(getPassword()) != null) {
+                urlSB.append(":");
+                urlSB.append(hidePassword ? PASSWORD_PLACEHOLDER : encode(getPassword().trim()));
+            }
+            urlSB.append('@');
+        }
+    }
+
+    private void testConfig(final String url) {
+        SmbFile file;
+        try {
+            file = createSmbFile(url);
+        } catch (final MalformedURLException mue) {
+            throw new BapPublisherException(Messages.exception_maformedUrlException(buildUrl(true)));
+        }
+        try {
+            if (!file.exists()) throw new BapPublisherException(Messages.exception_shareNotExist(buildUrl(true)));
+            if (!file.canRead()) throw new BapPublisherException(Messages.exception_cannotReadShare(buildUrl(true)));
+        } catch (final SmbException smbe) {
+            throw new BapPublisherException(Messages.exception_jCifsException_testConfig(buildUrl(true), smbe.getLocalizedMessage()), smbe);
+        }
+    }
+
+    protected SmbFile createSmbFile(final String url) throws MalformedURLException {
+        return new SmbFile(url);
+    }
+
+    private static String encode(final String raw) {
+        if (raw == null) return null;
+        final StringBuilder encoded = new StringBuilder(raw.length() * 4);
+        final CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
+        final CharBuffer buffer = CharBuffer.allocate(1);
+        for (final char c : raw.toCharArray()) {
+            if((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') ||
+			   (c >= 'A' && c <= 'Z')) {
+                encoded.append(c);
+            } else {
+                buffer.put(0, c);
+                buffer.rewind();
+                try {
+                    final ByteBuffer bytes = encoder.encode(buffer);
+                    while (bytes.hasRemaining()) {
+                        byte b = bytes.get();
+                        encoded.append('%');
+                        encoded.append(toDigit((b >> 4) & 0xF));
+                        encoded.append(toDigit(b & 0xF));
+                    }
+                } catch (final CharacterCodingException cce) { /* from utf 16 -> 8 - all good */ }
+            }
+        }
+        return encoded.toString();
+    }
+
+    private static char toDigit(final int n) {
+        return (char) (n < 10 ? '0' + n : 'A' + n - 10);
+    }
+
+    public boolean equals(final Object that) {
+        if (this == that) return true;
+        if (that == null || getClass() != that.getClass()) return false;
+        final CifsHostConfiguration thatHostConfiguration = (CifsHostConfiguration) that;
+
+        return createEqualsBuilder(thatHostConfiguration)
+            .append(timeout, thatHostConfiguration.timeout)
+            .isEquals();
+    }
+
+    public int hashCode() {
+        return createHashCodeBuilder()
+            .append(timeout)
+            .toHashCode();
+    }
+
+    public String toString() {
+        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE))
+            .append("timeout", timeout)
+            .toString();
+    }
+
+}
