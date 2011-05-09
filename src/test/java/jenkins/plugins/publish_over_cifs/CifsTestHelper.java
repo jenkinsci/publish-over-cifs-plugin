@@ -54,6 +54,7 @@ public class CifsTestHelper {
     }
 
     public static void setOnMaster(final BPBuildInfo buildInfo) {
+        if (!(buildInfo instanceof FakeBuildInfo)) throw new IllegalArgumentException();
         ((FakeBuildInfo) buildInfo).isOnMaster = true;
     }
 
@@ -67,6 +68,6 @@ public class CifsTestHelper {
         public boolean onMaster() {
             return isOnMaster;
         }
-    }   
+    }
 
 }

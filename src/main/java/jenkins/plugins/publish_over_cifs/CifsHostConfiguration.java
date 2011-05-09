@@ -59,6 +59,9 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     public static final String CONFIG_PROPERTY_SO_TIMEOUT = "jcifs.smb.client.soTimeout";
     public static final String CONFIG_PROPERTY_WINS = "jcifs.netbios.wins";
     public static final String CONFIG_PROPERTY_RESOLVE_ORDER = "jcifs.resolveOrder";
+    private static final int LOW_NIBBLE_BIT_MASK = 0xF;
+    private static final int HEX_LETTERS_START_AT = 10;
+    private static final int HI_TO_LOW_NIBBLE_BIT_SHIFT = 4;
 
     public static int getDefaultPort() { return DEFAULT_PORT; }
     public static int getDefaultTimeout() { return DEFAULT_TIMEOUT; }
@@ -154,7 +157,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         }
     }
 
-    @SuppressWarnings({"PMD.PreserveStackTrace", "PMD.JUnit4TestShouldUseTestAnnotation"}) // FFS
+    @SuppressWarnings({ "PMD.PreserveStackTrace", "PMD.JUnit4TestShouldUseTestAnnotation" }) // FFS
     private void testConfig(final String url) {
         SmbFile file;
         try {
@@ -176,7 +179,8 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
 
     private static String encode(final String raw) {
         if (raw == null) return null;
-        final StringBuilder encoded = new StringBuilder(raw.length() * 4);
+        int conservativeInitMultiplier = 4;
+        final StringBuilder encoded = new StringBuilder(raw.length() *  conservativeInitMultiplier);
         final CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
         final CharBuffer buffer = CharBuffer.allocate(1);
         for (final char c : raw.toCharArray()) {
@@ -190,8 +194,8 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
                     while (bytes.hasRemaining()) {
                         final byte oneByte = bytes.get();
                         encoded.append('%');
-                        encoded.append(toDigit((oneByte >> 4) & 0xF));
-                        encoded.append(toDigit(oneByte & 0xF));
+                        encoded.append(toDigit((oneByte >> HI_TO_LOW_NIBBLE_BIT_SHIFT) & LOW_NIBBLE_BIT_MASK));
+                        encoded.append(toDigit(oneByte & LOW_NIBBLE_BIT_MASK));
                     }
                 } catch (final CharacterCodingException cce) { /* from utf 16 -> 8 - all good */ }
             }
@@ -200,7 +204,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     }
 
     private static char toDigit(final int nibble) {
-        return (char) (nibble < 10 ? '0' + nibble : 'A' + nibble - 10);
+        return (char) (nibble < HEX_LETTERS_START_AT ? '0' + nibble : 'A' + nibble - HEX_LETTERS_START_AT);
     }
 
     public boolean equals(final Object that) {

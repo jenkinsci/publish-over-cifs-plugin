@@ -30,8 +30,6 @@ import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPDefaultClient;
 import jenkins.plugins.publish_over.BapPublisherException;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -116,6 +114,7 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
     public void disconnectQuietly() {
     }
 
+    @SuppressWarnings("PMD.PreserveStackTrace") // security
     private SmbFile createFile(final String url) {
         try {
             return createSmbFile(url);

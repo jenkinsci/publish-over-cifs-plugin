@@ -30,4 +30,8 @@
         <Class name="~.*Test\$.*"/>
         <Bug code="Se"/>
     </Match>
+    <Match>
+        <Class name="~.*Test\$.*"/>
+        <Bug pattern="EQ_DOESNT_OVERRIDE_EQUALS"/>
+    </Match>
 </FindBugsFilter>
