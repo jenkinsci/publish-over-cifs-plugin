@@ -41,10 +41,12 @@ import java.io.File;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.*;
 
-// @TODO WINS, timeouts - gen static config
-@SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods" })
+@SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods", "PMD.AvoidUsingHardCodedIP" })
 public class CifsHostConfigurationTest {
 
+    private static final String CFG_NAME = "xxx";
+    private static final String TEST_SERVER = "myServer";
+    private static final String TEST_SHARE = "myShare";
     private static String origWinsServer;
     private static String origTimeout;
     private static String origSoTimeout;
@@ -79,25 +81,25 @@ public class CifsHostConfigurationTest {
 //    smb://[[[domain;]username[:password]@]server[:port]/[[share/[dir/]file]]][?[param=value[param2=value2[...]]]
 
     @Test public void createSimplestUrl() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "myServer", null, null, "myShare/", mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, TEST_SERVER, null, null, "myShare/", mockSmbFile);
         final String expectedUrl = "smb://myServer/myShare/";
         assertUrl(expectedUrl, config);
     }
 
     @Test public void shareAlwaysEndsWithSeparator() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "myServer", null, null, "myShare", mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, TEST_SERVER, null, null, TEST_SHARE, mockSmbFile);
         final String expectedUrl = "smb://myServer/myShare/";
         assertUrl(expectedUrl, config);
     }
 
     @Test public void shareCanBeAbsolute() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "myServer", null, null, "/myShare", mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, TEST_SERVER, null, null, "/myShare", mockSmbFile);
         final String expectedUrl = "smb://myServer/myShare/";
         assertUrl(expectedUrl, config);
     }
 
     @Test public void hostnameIsRequired() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "", null, null, "/myShare", mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, "", null, null, "/myShare", mockSmbFile);
         try {
             config.createClient(buildInfo).getContext();
             fail();
@@ -107,7 +109,7 @@ public class CifsHostConfigurationTest {
     }
 
     @Test public void sharenameIsRequired() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "hello", null, null, "", mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, "hello", null, null, "", mockSmbFile);
         try {
             config.createClient(buildInfo).getContext();
             fail();
@@ -117,49 +119,49 @@ public class CifsHostConfigurationTest {
     }
 
     @Test public void canHazUsername() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "myServer", "myUser", null, "/myShare", mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, TEST_SERVER, "myUser", null, "/myShare", mockSmbFile);
         final String expectedUrl = "smb://myUser@myServer/myShare/";
         assertUrl(expectedUrl, config);
     }
 
     @Test public void canHazUsernameWithFunkyChars() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "myServer", "my@User", null, "/myShare", mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, TEST_SERVER, "my@User", null, "/myShare", mockSmbFile);
         final String expectedUrl = "smb://my%40User@myServer/myShare/";
         assertUrl(expectedUrl, config);
     }
 
     @Test public void canHazPassword() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "myServer", "myUser", "pass", "/myShare", mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, TEST_SERVER, "myUser", "pass", "/myShare", mockSmbFile);
         final String expectedUrl = "smb://myUser:pass@myServer/myShare/";
         assertUrl(expectedUrl, config);
     }
 
     @Test public void noPasswordIfNoUsername() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "myServer", "", "pass", "/myShare", mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, TEST_SERVER, "", "pass", "/myShare", mockSmbFile);
         final String expectedUrl = "smb://myServer/myShare/";
         assertUrl(expectedUrl, config);
     }
 
     @Test public void canHazPasswordWithFunkies() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "myServer", "myUser", "pa%s s", "/myShare", mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, TEST_SERVER, "myUser", "pa%s s", "/myShare", mockSmbFile);
         final String expectedUrl = "smb://myUser:pa%25s%20s@myServer/myShare/";
         assertUrl(expectedUrl, config);
     }
 
     @Test public void canHazUsernameWithDomain() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "myServer", "myDomain\\\\myUser", null, "/myShare", mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, TEST_SERVER, "myDomain\\\\myUser", null, "/myShare", mockSmbFile);
         final String expectedUrl = "smb://myDomain;myUser@myServer/myShare/";
         assertUrl(expectedUrl, config);
     }
 
     @Test public void canHazPort() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "myServer", null, null, "/myShare", 123, 100000, mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, TEST_SERVER, null, null, "/myShare", 123, 100000, mockSmbFile);
         final String expectedUrl = "smb://myServer:123/myShare/";
         assertUrl(expectedUrl, config);
     }
-    
+
     @Test public void fixupWindowsSeparatorsInShare() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "myServer", null, null, "myShare\\and\\subDirs", mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, TEST_SERVER, null, null, "myShare\\and\\subDirs", mockSmbFile);
         final String expectedUrl = "smb://myServer/myShare/and/subDirs/";
         assertUrl(expectedUrl, config);
     }
@@ -184,7 +186,7 @@ public class CifsHostConfigurationTest {
         expect(mockSmbFile.exists()).andReturn(true);
         expect(mockSmbFile.canRead()).andReturn(true);
         mockControl.replay();
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "myServer", null, null, "myShare", 99, timeout, mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, TEST_SERVER, null, null, TEST_SHARE, 99, timeout, mockSmbFile);
         config.createClient(buildInfo);
         assertEquals(wins, System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_WINS));
         assertEquals(Integer.toString(timeout), System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_TIMEOUT));
@@ -200,13 +202,13 @@ public class CifsHostConfigurationTest {
         expect(mockSmbFile.exists()).andReturn(true);
         expect(mockSmbFile.canRead()).andReturn(true);
         mockControl.replay();
-        final CifsHostConfiguration config = new ConfigWithMockFile("xxx", "myServer", null, null, "myShare", 99, timeout, mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, TEST_SERVER, null, null, TEST_SHARE, 99, timeout, mockSmbFile);
         config.createClient(buildInfo);
         assertNull(System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_WINS));
         assertFalse(System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_RESOLVE_ORDER).contains("WINS"));
     }
 
-    private class ConfigWithMockFile extends CifsHostConfiguration {
+    private static class ConfigWithMockFile extends CifsHostConfiguration {
         private static final long serialVersionUID = 1L;
         private final transient SmbFile smbFile;
         private String url;
@@ -233,6 +235,10 @@ public class CifsHostConfigurationTest {
         public SmbFile createSmbFile(final String url) {
             this.url = url;
             return smbFile;
+        }
+        @Override
+        public boolean equals(final Object o) {
+            return false; // shut up find bugs - never compared
         }
     }
 

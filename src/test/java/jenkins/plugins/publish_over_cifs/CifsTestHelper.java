@@ -54,17 +54,18 @@ public class CifsTestHelper {
     }
 
     public static void setOnMaster(final BPBuildInfo buildInfo) {
-        ((FakeBuildInfo) buildInfo).onMaster = true;
+        ((FakeBuildInfo) buildInfo).isOnMaster = true;
     }
 
     public static class FakeBuildInfo extends BPBuildInfo {
-        private boolean onMaster;
+        private static final long serialVersionUID = 1L;
+        private boolean isOnMaster;
         public FakeBuildInfo() {
             super(TaskListener.NULL, "", new FilePath(new File("")), createEmptyBuildEnv(), null);
         }
         @Override
         public boolean onMaster() {
-            return onMaster;
+            return isOnMaster;
         }
     }   
 

@@ -79,7 +79,7 @@ public class CifsHelper {
 
     public String hideUserInfo(final String url) {
         if (url.contains("@"))
-            return CifsHostConfiguration.SMB_URL_PREFIX + "******" + url.substring(url.indexOf("@"));
+            return CifsHostConfiguration.SMB_URL_PREFIX + "******" + url.substring(url.indexOf('@'));
         else
             return url;
     }

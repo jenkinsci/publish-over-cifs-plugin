@@ -26,7 +26,10 @@ package jenkins.plugins.publish_over_cifs;
 
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.*;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.Hudson;
+import hudson.model.Node;
 import hudson.util.FormValidation;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPPlugin;
@@ -60,13 +63,11 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
     }
 
     private void storeProperties(final BPBuildInfo buildInfo, final Hudson hudson, final String nodeName, final String contextKey) {
-        if (Util.fixEmptyAndTrim(nodeName) != null) {
-            final Node node = hudson.getNode(nodeName);
-            if (node != null) {
-                final CifsNodeProperties currNodeProps = node.getNodeProperties().get(CifsNodeProperties.class);
-                if (currNodeProps != null) buildInfo.put(contextKey, map(currNodeProps));
-            }
-        }
+        if (Util.fixEmptyAndTrim(nodeName) == null) return;
+        final Node node = hudson.getNode(nodeName);
+        if (node == null) return;
+        final CifsNodeProperties currNodeProps = node.getNodeProperties().get(CifsNodeProperties.class);
+        if (currNodeProps != null) buildInfo.put(contextKey, map(currNodeProps));
     }
 
     private CifsCleanNodeProperties map(final CifsNodeProperties nodeProperties) {

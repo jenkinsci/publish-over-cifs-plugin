@@ -90,7 +90,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
 
     private void configureJcifs(final BPBuildInfo buildInfo) {
         // freaking statics/sys props - what could possibly go wrong? aaargh!
-        // will it even have any effect if the config changes after we have used jCIFS and have not rebooted? 
+        // will it even have any effect if the config changes after we have used jCIFS and have not rebooted?
         final String winsServer = (String) buildInfo.get(CifsPublisher.CTX_KEY_WINS_SERVER);
         final int soTimeout = timeout + SO_TIMEOUT_AFTER;
         if (winsServer == null) {
@@ -124,14 +124,14 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         if (Util.fixEmptyAndTrim(getRemoteRootDir()) == null) throw new BapPublisherException(Messages.exception_shareRequired());
     }
 
-    private void addSharename(StringBuilder urlSB) {
+    private void addSharename(final StringBuilder urlSB) {
         final String share = getRemoteRootDir().replaceAll("\\\\", "/");
         if (!share.startsWith(FS)) urlSB.append(FS);
         urlSB.append(share);
         if (!share.endsWith(FS)) urlSB.append(FS);
     }
 
-    private void addServer(StringBuilder urlSB) {
+    private void addServer(final StringBuilder urlSB) {
         urlSB.append(getHostname());
         if (getPort() != DEFAULT_PORT)
             urlSB.append(":").append(getPort());
@@ -154,6 +154,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         }
     }
 
+    @SuppressWarnings({"PMD.PreserveStackTrace", "PMD.JUnit4TestShouldUseTestAnnotation"}) // FFS
     private void testConfig(final String url) {
         SmbFile file;
         try {
@@ -179,8 +180,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         final CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
         final CharBuffer buffer = CharBuffer.allocate(1);
         for (final char c : raw.toCharArray()) {
-            if((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') ||
-			   (c >= 'A' && c <= 'Z')) {
+            if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
                 encoded.append(c);
             } else {
                 buffer.put(0, c);
@@ -188,10 +188,10 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
                 try {
                     final ByteBuffer bytes = encoder.encode(buffer);
                     while (bytes.hasRemaining()) {
-                        byte b = bytes.get();
+                        final byte oneByte = bytes.get();
                         encoded.append('%');
-                        encoded.append(toDigit((b >> 4) & 0xF));
-                        encoded.append(toDigit(b & 0xF));
+                        encoded.append(toDigit((oneByte >> 4) & 0xF));
+                        encoded.append(toDigit(oneByte & 0xF));
                     }
                 } catch (final CharacterCodingException cce) { /* from utf 16 -> 8 - all good */ }
             }
@@ -199,8 +199,8 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         return encoded.toString();
     }
 
-    private static char toDigit(final int n) {
-        return (char) (n < 10 ? '0' + n : 'A' + n - 10);
+    private static char toDigit(final int nibble) {
+        return (char) (nibble < 10 ? '0' + nibble : 'A' + nibble - 10);
     }
 
     public boolean equals(final Object that) {

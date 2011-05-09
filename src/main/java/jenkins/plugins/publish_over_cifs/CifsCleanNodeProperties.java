@@ -27,11 +27,16 @@ package jenkins.plugins.publish_over_cifs;
 import java.io.Serializable;
 
 public class CifsCleanNodeProperties implements Serializable {
-    final String winsServer;
+
+    private static final long serialVersionUID = 1L;
+    private final String winsServer;
+
     public CifsCleanNodeProperties(final String winsServer) {
         this.winsServer = winsServer;
     }
+
     public String getWinsServer() {
         return winsServer;
     }
+
 }

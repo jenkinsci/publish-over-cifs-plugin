@@ -48,6 +48,7 @@ public class CifsPublisher extends BapPublisher<CifsTransfer> {
     }
 
     @Override
+    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     public void perform(final BPHostConfiguration hostConfig, final BPBuildInfo buildInfo) throws Exception {
         final CifsCleanNodeProperties defaults = (CifsCleanNodeProperties) buildInfo.get(CTX_KEY_NODE_PROPERTIES_DEFAULT);
         if (buildInfo.onMaster()) {

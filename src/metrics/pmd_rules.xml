@@ -43,6 +43,11 @@
     <!-- additional checks -->
     <rule ref="rulesets/clone.xml"/>
     <rule ref="rulesets/codesize.xml"/>
+    <rule ref="ruleset/codesize.xml/TooManyMethods">
+        <properties>
+            <property name="maxmethods" value="20"/> <!-- boiler Hash/Eq/toStr bring in 9 -->
+        </properties>
+    </rule>
     <rule ref="rulesets/controversial.xml/UnusedModifier"/>
     <rule ref="rulesets/controversial.xml/DontImportSun"/>
     <rule ref="rulesets/controversial.xml/SuspiciousOctalEscape"/>

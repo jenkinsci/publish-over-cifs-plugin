@@ -37,6 +37,7 @@ import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+@SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.AvoidUsingHardCodedIP" })
 public class CifsPublisherTest {
 
     private final BPBuildInfo buildInfo = CifsTestHelper.createEmpty();

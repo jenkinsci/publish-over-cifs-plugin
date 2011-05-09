@@ -40,10 +40,8 @@ import java.net.MalformedURLException;
 
 public class CifsClient extends BPDefaultClient<CifsTransfer> {
 
-    private static final Log LOG = LogFactory.getLog(CifsClient.class);
-
-    private CifsHelper helper = new CifsHelper();
-    private BPBuildInfo buildInfo;
+    private final CifsHelper helper = new CifsHelper();
+    private final BPBuildInfo buildInfo;
     private final String baseUrl;
     private String context;
 
@@ -52,9 +50,6 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
         this.baseUrl = baseUrl;
         context = baseUrl;
     }
-
-//    public BPBuildInfo getBuildInfo() { return buildInfo; }
-//    public void setBuildInfo(final BPBuildInfo buildInfo) { this.buildInfo = buildInfo; }
 
     protected String getContext() { return context; }
 
