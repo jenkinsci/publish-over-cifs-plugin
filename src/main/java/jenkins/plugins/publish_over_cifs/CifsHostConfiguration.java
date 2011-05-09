@@ -41,17 +41,20 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
+@SuppressWarnings("PMD.CyclomaticComplexity") // yeah that encode method aint great, but we want it to be reasonably quick
 public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Object> {
 
     private static final long serialVersionUID = 1L;
 
     public static final String SMB_URL_PREFIX = "smb://";
+    @SuppressWarnings("PMD.ShortVariable")
     private static final String FS = "/";
     private static final String PASSWORD_PLACEHOLDER = "****";
     public static final int DEFAULT_PORT = SmbFile.DEFAULT_PORT;
     public static final int DEFAULT_TIMEOUT = SmbFile.DEFAULT_RESPONSE_TIMEOUT;
     public static final int SO_TIMEOUT_AFTER = SmbFile.DEFAULT_SO_TIMEOUT - SmbFile.DEFAULT_RESPONSE_TIMEOUT;
     private static final int URL_BUILDER_INITIAL_SIZE = 60;
+    private static final int ESCAPED_BUILDER_SIZE_MULTIPLIER = 3;
 
     private static final String RESOLVE_WITH_WINS = "LMHOSTS,WINS,DNS,BCAST";
     private static final String RESOLVE_WITHOUT_WINS = "LMHOSTS,DNS,BCAST";
@@ -177,10 +180,10 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         return new SmbFile(url);
     }
 
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     private static String encode(final String raw) {
         if (raw == null) return null;
-        int conservativeInitMultiplier = 4;
-        final StringBuilder encoded = new StringBuilder(raw.length() *  conservativeInitMultiplier);
+        final StringBuilder encoded = new StringBuilder(raw.length() * ESCAPED_BUILDER_SIZE_MULTIPLIER);
         final CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
         final CharBuffer buffer = CharBuffer.allocate(1);
         for (final char c : raw.toCharArray()) {

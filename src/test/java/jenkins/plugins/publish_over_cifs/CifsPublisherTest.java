@@ -32,7 +32,9 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static jenkins.plugins.publish_over_cifs.CifsPublisher.*;
+import static jenkins.plugins.publish_over_cifs.CifsPublisher.CTX_KEY_NODE_PROPERTIES_CURRENT;
+import static jenkins.plugins.publish_over_cifs.CifsPublisher.CTX_KEY_NODE_PROPERTIES_DEFAULT;
+import static jenkins.plugins.publish_over_cifs.CifsPublisher.CTX_KEY_WINS_SERVER;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
