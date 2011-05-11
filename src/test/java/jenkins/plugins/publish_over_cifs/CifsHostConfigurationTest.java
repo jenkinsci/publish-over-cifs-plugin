@@ -154,7 +154,7 @@ public class CifsHostConfigurationTest {
     }
 
     @Test public void canHazUsernameWithDomain() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, "myDomain\\\\myUser", null, SHARE, mockSmbFile);
+        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, "myDomain\\myUser", null, SHARE, mockSmbFile);
         final String expectedUrl = "smb://myDomain;myUser@myServer/myShare/";
         assertUrl(expectedUrl, config);
     }

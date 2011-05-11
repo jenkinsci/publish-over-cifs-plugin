@@ -146,8 +146,8 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     private void addCredentials(final StringBuilder urlSB, final boolean hidePassword) {
         if (Util.fixEmptyAndTrim(getUsername()) != null) {
             final String username = getUsername().trim();
-            if (username.contains("\\\\")) {
-                final String[] parts = username.split("\\\\\\\\", 2); // yep 8
+            if (username.contains("\\")) {
+                final String[] parts = username.split("\\\\", 2);
                 urlSB.append(encode(parts[0])).append(";").append(encode(parts[1].trim()));
             } else {
                 urlSB.append(encode(username));
