@@ -200,7 +200,9 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
                         encoded.append(toDigit((oneByte >> HI_TO_LOW_NIBBLE_BIT_SHIFT) & LOW_NIBBLE_BIT_MASK));
                         encoded.append(toDigit(oneByte & LOW_NIBBLE_BIT_MASK));
                     }
-                } catch (final CharacterCodingException cce) { /* from utf 16 -> 8 - all good */ }
+                } catch (final CharacterCodingException cce) {
+                    throw new BapPublisherException(Messages.exception_encode_cce(cce.getLocalizedMessage()), cce);
+                }
             }
         }
         return encoded.toString();
