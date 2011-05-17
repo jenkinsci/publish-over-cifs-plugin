@@ -140,9 +140,12 @@
                 <f:entry title="${%alwaysTxfrFromMaster.title}" help="${helpUrl}alwaysTxfrFromMaster.html">
                     <f:checkbox name="alwaysPublishFromMaster" checked="${instance.instanceConfig.alwaysPublishFromMaster}" />
                 </f:entry>
-                <f:entry title="${%masterNodeName.title}" help="${helpUrl}masterNodeName.html">
-                    <f:textbox name="masterNodeName" value="${instance.instanceConfig.masterNodeName}"/>
-                </f:entry>
+                <j:if test="${descriptor.publisherDescriptor.canSetMasterNodeName()}">
+                    <f:entry title="${%masterNodeName.title}" help="${helpUrl}masterNodeName.html">
+                        <f:textbox name="masterNodeName" value="${instance.instanceConfig.masterNodeName}"
+                                   default="${descriptor.publisherDescriptor.defaultMasterNodeName}"/>
+                    </f:entry>
+                </j:if>
             </f:advanced>
 
     </f:entry>
