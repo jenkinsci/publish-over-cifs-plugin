@@ -53,15 +53,15 @@
     
     <developers>
         <developer>
-            <id>bap</id>
-            <name>Bap</name>
-            <email>bap-jenkins@BapIT.co.uk</email>
-        </developer>
-        <developer>
             <id>slide_o_mix</id>
             <name>slide</name>
             <timezone>-7</timezone>
             <email>slide.o.mix@gmail.com</email>
+        </developer>
+        <developer>
+            <id>bap</id>
+            <name>Bap</name>
+            <email>bap-jenkins@BapIT.co.uk</email>
         </developer>
     </developers>
 
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>publish-over</artifactId>
-            <version>0.8</version>
+            <version>0.9-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.samba.jcifs</groupId>
