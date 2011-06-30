@@ -152,7 +152,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
             buildInfo.put(CifsPublisher.CTX_KEY_WINS_SERVER, defaults.getWinsServer().trim());
         return buildInfo;
     }
-    
+
     public Object readResolve() {
         // nuke the legacy config
         msg = null;

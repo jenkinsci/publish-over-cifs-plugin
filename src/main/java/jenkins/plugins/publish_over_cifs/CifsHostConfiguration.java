@@ -228,7 +228,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         return super.addToToString(builder)
             .append("timeout", timeout);
     }
-    
+
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
