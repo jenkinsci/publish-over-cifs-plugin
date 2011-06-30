@@ -43,6 +43,10 @@
                         </select>
                     </f:entry>
 
+                    <f:entry title="${%verbose.title}" help="${helpUrl}verbose.html">
+                        <f:checkbox name="verbose" checked="${publisher.verbose}" />
+                    </f:entry>
+                    
                     <j:if test="${inPromotionSection}">
                         <j:choose>
                             <j:when test="${it.getClass().canonicalName == 'hudson.matrix.MatrixProject'}">
@@ -127,9 +131,6 @@
             </f:repeatable>
 
             <f:advanced>
-                <f:entry title="${%verbose.title}" help="${helpUrl}verbose.html">
-                    <f:checkbox name="verbose" checked="${instance.instanceConfig.verbose}" />
-                </f:entry>
                 <f:entry title="${%continueOnError.title}" help="${helpUrl}continueOnError.html">
                     <f:checkbox name="continueOnError" checked="${instance.instanceConfig.continueOnError}" />
                 </f:entry>

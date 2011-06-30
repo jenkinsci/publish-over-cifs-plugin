@@ -44,9 +44,9 @@ public class CifsPublisher extends BapPublisher<CifsTransfer> {
     public static final String CTX_KEY_WINS_SERVER = "cifs.winsServer";
 
     @DataBoundConstructor
-    public CifsPublisher(final String configName, final ArrayList<CifsTransfer> transfers, final boolean useWorkspaceInPromotion,
-                                                                                                    final boolean usePromotionTimestamp) {
-        super(configName, transfers, useWorkspaceInPromotion, usePromotionTimestamp);
+    public CifsPublisher(final String configName, final boolean verbose, final ArrayList<CifsTransfer> transfers,
+                         final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp) {
+        super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp);
     }
 
     @Override

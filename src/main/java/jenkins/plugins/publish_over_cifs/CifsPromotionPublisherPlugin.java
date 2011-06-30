@@ -52,10 +52,8 @@ public class CifsPromotionPublisherPlugin extends Notifier {
 
     @DataBoundConstructor
     public CifsPromotionPublisherPlugin(final ArrayList<CifsPublisher> publishers, final boolean continueOnError,
-                                          final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName,
-                                          final boolean verbose) {
-        this.delegate = new CifsPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName,
-                                                                                                                                verbose);
+                                          final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
+        this.delegate = new CifsPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
     public BPInstanceConfig getInstanceConfig() {
