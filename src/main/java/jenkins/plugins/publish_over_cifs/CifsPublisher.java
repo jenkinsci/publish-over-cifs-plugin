@@ -27,6 +27,8 @@ package jenkins.plugins.publish_over_cifs;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPHostConfiguration;
 import jenkins.plugins.publish_over.BapPublisher;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -73,11 +75,11 @@ public class CifsPublisher extends BapPublisher<CifsTransfer> {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
 
-        return createEqualsBuilder((CifsPublisher) that).isEquals();
+        return addToEquals(new EqualsBuilder(), (CifsPublisher) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {

@@ -34,6 +34,8 @@ import hudson.util.FormValidation;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPPluginDescriptor;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -80,11 +82,11 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
 
-        return createEqualsBuilder((CifsPublisherPlugin) that).isEquals();
+        return addToEquals(new EqualsBuilder(), (CifsPublisherPlugin) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {

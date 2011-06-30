@@ -61,16 +61,8 @@ public class CifsBuilderPlugin extends Builder {
         return delegate.perform(build, launcher, listener);
     }
 
-    protected HashCodeBuilder createHashCodeBuilder() {
-        return addToHashCode(new HashCodeBuilder());
-    }
-
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return builder.append(delegate);
-    }
-
-    protected EqualsBuilder createEqualsBuilder(final CifsBuilderPlugin that) {
-        return addToEquals(new EqualsBuilder(), that);
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final CifsBuilderPlugin that) {
@@ -85,11 +77,11 @@ public class CifsBuilderPlugin extends Builder {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
 
-        return createEqualsBuilder((CifsBuilderPlugin) that).isEquals();
+        return addToEquals(new EqualsBuilder(), (CifsBuilderPlugin) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {

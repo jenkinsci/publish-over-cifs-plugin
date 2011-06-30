@@ -25,6 +25,8 @@
 package jenkins.plugins.publish_over_cifs;
 
 import jenkins.plugins.publish_over.BPTransfer;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -42,20 +44,16 @@ public class CifsTransfer extends BPTransfer {
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        final CifsTransfer thatTransfer = (CifsTransfer) that;
 
-        return createEqualsBuilder(thatTransfer)
-            .isEquals();
+        return addToEquals(new EqualsBuilder(), (CifsTransfer) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder()
-            .toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE))
-            .toString();
+        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
 }

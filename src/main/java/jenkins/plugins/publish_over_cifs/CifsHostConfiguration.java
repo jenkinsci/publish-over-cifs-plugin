@@ -30,6 +30,8 @@ import jcifs.smb.SmbFile;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPHostConfiguration;
 import jenkins.plugins.publish_over.BapPublisherException;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -212,26 +214,34 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         return (char) (nibble < HEX_LETTERS_START_AT ? '0' + nibble : 'A' + nibble - HEX_LETTERS_START_AT);
     }
 
+    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+        return super.addToHashCode(builder)
+            .append(timeout);
+    }
+
+    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final CifsHostConfiguration that) {
+        return super.addToEquals(builder, that)
+            .append(timeout, that.timeout);
+    }
+
+    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+        return super.addToToString(builder)
+            .append("timeout", timeout);
+    }
+    
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        final CifsHostConfiguration thatHostConfiguration = (CifsHostConfiguration) that;
 
-        return createEqualsBuilder(thatHostConfiguration)
-            .append(timeout, thatHostConfiguration.timeout)
-            .isEquals();
+        return addToEquals(new EqualsBuilder(), (CifsHostConfiguration) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder()
-            .append(timeout)
-            .toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE))
-            .append("timeout", timeout)
-            .toString();
+        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
 }
