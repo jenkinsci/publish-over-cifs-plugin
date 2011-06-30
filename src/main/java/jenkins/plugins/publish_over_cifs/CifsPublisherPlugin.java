@@ -27,20 +27,17 @@ package jenkins.plugins.publish_over_cifs;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
 import hudson.model.Hudson;
 import hudson.model.Node;
-import hudson.util.FormValidation;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPPluginDescriptor;
+import jenkins.plugins.publish_over_cifs.descriptor.CifsPublisherPluginDescriptor;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
 
 import java.util.ArrayList;
 
@@ -93,47 +90,17 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
+    public Descriptor getDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(Descriptor.class);
+    }
+
     public CifsHostConfiguration getConfiguration(final String name) {
-        return Hudson.getInstance().getDescriptorByType(Descriptor.class).getConfiguration(name);
+        return getDescriptor().getConfiguration(name);
     }
 
     @Extension
-    public static class Descriptor extends BPPluginDescriptor<CifsHostConfiguration, Object> {
-        public Descriptor() {
-            super(new DescriptorMessages(), CifsPublisherPlugin.class, CifsHostConfiguration.class, null);
-        }
-        public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
-            return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
-        }
-        public FormValidation doCheckSourceFiles(@QueryParameter final String value) {
-            return FormValidation.validateRequired(value);
-        }
-        public CifsPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return this;
-        }
-        public FormValidation doCheckRemoteRootDir(@QueryParameter final String value) {
-            return FormValidation.validateRequired(value);
-        }
-        @Override
-        protected BPBuildInfo createDummyBuildInfo(final StaplerRequest request) {
-            final BPBuildInfo buildInfo = super.createDummyBuildInfo(request);
-            final CifsNodeProperties defaults = request.bindParameters(CifsNodeProperties.class, CifsNodeProperties.FORM_PREFIX);
-            if (defaults != null && Util.fixEmptyAndTrim(defaults.getWinsServer()) != null)
-                buildInfo.put(CifsPublisher.CTX_KEY_WINS_SERVER, defaults.getWinsServer().trim());
-            return buildInfo;
-        }
-    }
+    public static class Descriptor extends CifsPublisherPluginDescriptor { }
 
-    public static class DescriptorMessages implements BPPluginDescriptor.BPDescriptorMessages {
-        public String displayName() {
-            return Messages.descriptor_displayName();
-        }
-        public String connectionOK() {
-            return Messages.descriptor_testConnection_ok();
-        }
-        public String connectionErr() {
-            return Messages.descriptor_testConnection_error();
-        }
-    }
+    public static class DescriptorMessages implements BPPluginDescriptor.BPDescriptorMessages { }
 
 }
