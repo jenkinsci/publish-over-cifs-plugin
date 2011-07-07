@@ -24,7 +24,7 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:st="jelly:stapler" xmlns:poj="/pojelly">
 
     <j:set var="helpUrl" value="${rootURL}/plugin/publish-over-cifs/help/config/"/>
     <j:set var="inPromotionSection" value='${descriptor.getClass().canonicalName.contains("CifsPromotionPublisherPlugin")}'/>
@@ -43,32 +43,37 @@
                         </select>
                     </f:entry>
 
-                    <f:entry title="${%verbose.title}" help="${helpUrl}verbose.html">
-                        <f:checkbox name="verbose" checked="${publisher.verbose}" />
-                    </f:entry>
-                    
                     <j:if test="${inPromotionSection}">
                         <j:choose>
                             <j:when test="${it.getClass().canonicalName == 'hudson.matrix.MatrixProject'}">
-                                <f:entry title="${%useWorkspaceInPromotion.title}" help="${helpUrl}useWorkspaceInPromotionForMatrix.html">
-                                    <input type="checkbox" checked="true" disabled="true"/>
-                                </f:entry>
-                                <f:invisiblEntry>
-                                    <f:checkbox name="useWorkspaceInPromotion" checked="true"/>
-                                </f:invisiblEntry>
+                                <poj:disabled-checkbox name="useWorkspaceInPromotion" title="${%useWorkspaceInPromotion.title}" checked="true" help="${helpUrl}useWorkspaceInPromotionForMatrix.html"/>
                             </j:when>
                             <j:otherwise>
-                                <f:entry title="${%useWorkspaceInPromotion.title}" help="${helpUrl}useWorkspaceInPromotion.html">
-                                    <f:checkbox name="useWorkspaceInPromotion" checked="${publisher.useWorkspaceInPromotion}" />
+                                <f:entry help="${helpUrl}useWorkspaceInPromotion.html">
+                                    <poj:checkbox name="useWorkspaceInPromotion" checked="${publisher.useWorkspaceInPromotion}" title="${%useWorkspaceInPromotion.title}"/>
                                 </f:entry>
                             </j:otherwise>
                         </j:choose>
-                        <f:entry title="${%usePromotionTimestamp.title}" help="${helpUrl}usePromotionTimestamp.html">
-                            <f:checkbox name="usePromotionTimestamp" checked="${publisher.usePromotionTimestamp}" />
+                        <f:entry help="${helpUrl}usePromotionTimestamp.html">
+                            <poj:checkbox name="usePromotionTimestamp" checked="${publisher.usePromotionTimestamp}" title="${%usePromotionTimestamp.title}"/>
                         </f:entry>
                         <j:set var="promoHelpSuffix" value="ForPromotion"/>
                     </j:if>
 
+                    <f:advanced>
+                        <f:entry help="${helpUrl}verbose.html">
+                            <poj:checkbox name="verbose" checked="${publisher.verbose}" title="${%verbose.title}"/>
+                        </f:entry>
+                        <f:optionalBlock title="${%retry.title}" name="retry" checked="${publisher.retry != null}"  help="${helpUrl}retry.html">
+                            <f:entry title="${%retries.title}" help="${helpUrl}retries.html">
+                                <f:textbox name="retries" value="${publisher.retry.retries}" default="${descriptor.publisherDescriptor.defaultRetries}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('retries')}"/>
+                            </f:entry>
+                            <f:entry title="${%retryDelay.title}" help="${helpUrl}retryDelay.html">
+                                <f:textbox name="retryDelay" value="${publisher.retry.retryDelay}" default="${descriptor.publisherDescriptor.defaultRetryDelay}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('retryDelay')}"/>
+                            </f:entry>
+                        </f:optionalBlock>
+                    </f:advanced>
+                                        
                     <f:entry title="${%transfers.section}" help="${helpUrl}transfers.html">
                         <f:repeatable items="${publisher.transfers}" var="transfer" name="transfers" minimum="1" header="${%transfers.dragAndDropLabel}" add="${%addTransfers.value}">
                             <table width="100%" padding="0">
@@ -131,14 +136,14 @@
             </f:repeatable>
 
             <f:advanced>
-                <f:entry title="${%continueOnError.title}" help="${helpUrl}continueOnError.html">
-                    <f:checkbox name="continueOnError" checked="${instance.instanceConfig.continueOnError}" />
+                <f:entry help="${helpUrl}continueOnError.html">
+                    <poj:checkbox name="continueOnError" checked="${instance.instanceConfig.continueOnError}" title="${%continueOnError.title}"/>
                 </f:entry>
-                <f:entry title="${%failOnError.title}" help="${helpUrl}failOnError.html">
-                    <f:checkbox name="failOnError" checked="${instance.instanceConfig.failOnError}" />
+                <f:entry help="${helpUrl}failOnError.html">
+                    <poj:checkbox name="failOnError" checked="${instance.instanceConfig.failOnError}" title="${%failOnError.title}"/>
                 </f:entry>
-                <f:entry title="${%alwaysTxfrFromMaster.title}" help="${helpUrl}alwaysTxfrFromMaster.html">
-                    <f:checkbox name="alwaysPublishFromMaster" checked="${instance.instanceConfig.alwaysPublishFromMaster}" />
+                <f:entry help="${helpUrl}alwaysTxfrFromMaster.html">
+                    <poj:checkbox name="alwaysPublishFromMaster" checked="${instance.instanceConfig.alwaysPublishFromMaster}" title="${%alwaysTxfrFromMaster.title}"/>
                 </f:entry>
                 <j:if test="${descriptor.publisherDescriptor.canSetMasterNodeName()}">
                     <f:entry title="${%masterNodeName.title}" help="${helpUrl}masterNodeName.html">

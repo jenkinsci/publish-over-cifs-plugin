@@ -38,6 +38,8 @@ import jenkins.plugins.publish_over.BPInstanceConfig;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPTransfer;
 import jenkins.plugins.publish_over.BPValidators;
+import jenkins.plugins.publish_over.BapPublisher;
+import jenkins.plugins.publish_over.Retry;
 import jenkins.plugins.publish_over_cifs.CifsHostConfiguration;
 import jenkins.plugins.publish_over_cifs.CifsNodeProperties;
 import jenkins.plugins.publish_over_cifs.CifsPublisher;
@@ -112,6 +114,12 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     public FormValidation doCheckRemoteRootDir(@QueryParameter final String value) {
         return FormValidation.validateRequired(value);
     }
+    public FormValidation doCheckRetries(@QueryParameter final String value) {
+        return FormValidation.validateNonNegativeInteger(value);
+    }
+    public FormValidation doCheckRetryDelay(@QueryParameter final String value) {
+        return FormValidation.validatePositiveInteger(value);
+    }
     public boolean canUseExcludes() {
         return BPTransfer.canUseExcludes();
     }
@@ -121,6 +129,12 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     public boolean canSetMasterNodeName() {
         return Hudson.getVersion().isOlderThan(new VersionNumber(BPInstanceConfig.MASTER_GETS_NODE_NAME_IN_VERSION));
     }
+    public int getDefaultRetries() {
+        return Retry.DEFAULT_RETRIES;
+    }    
+    public long getDefaultRetryDelay() {
+        return Retry.DEFAULT_RETRY_DELAY;
+    }    
     public CifsPublisherPluginDescriptor getPublisherDescriptor() {
         return this;
     }

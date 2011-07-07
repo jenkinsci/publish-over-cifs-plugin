@@ -27,6 +27,7 @@ package jenkins.plugins.publish_over_cifs;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPHostConfiguration;
 import jenkins.plugins.publish_over.BapPublisher;
+import jenkins.plugins.publish_over.Retry;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -45,8 +46,8 @@ public class CifsPublisher extends BapPublisher<CifsTransfer> {
 
     @DataBoundConstructor
     public CifsPublisher(final String configName, final boolean verbose, final ArrayList<CifsTransfer> transfers,
-                         final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp) {
-        super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp);
+                         final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp, final CifsRetry retry) {
+        super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, retry);
     }
 
     @Override
@@ -69,6 +70,10 @@ public class CifsPublisher extends BapPublisher<CifsTransfer> {
             return true;
         }
         return false;
+    }
+
+    public CifsRetry getRetry() {
+        return (CifsRetry) super.getRetry();
     }
 
     public boolean equals(final Object that) {
