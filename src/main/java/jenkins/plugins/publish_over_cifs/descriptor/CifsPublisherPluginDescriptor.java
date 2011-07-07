@@ -130,10 +130,10 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     }
     public int getDefaultRetries() {
         return Retry.DEFAULT_RETRIES;
-    }    
+    }
     public long getDefaultRetryDelay() {
         return Retry.DEFAULT_RETRY_DELAY;
-    }    
+    }
     public CifsPublisherPluginDescriptor getPublisherDescriptor() {
         return this;
     }
