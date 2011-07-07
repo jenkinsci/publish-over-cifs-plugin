@@ -27,7 +27,6 @@ package jenkins.plugins.publish_over_cifs;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPHostConfiguration;
 import jenkins.plugins.publish_over.BapPublisher;
-import jenkins.plugins.publish_over.Retry;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;

@@ -38,7 +38,6 @@ import jenkins.plugins.publish_over.BPInstanceConfig;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPTransfer;
 import jenkins.plugins.publish_over.BPValidators;
-import jenkins.plugins.publish_over.BapPublisher;
 import jenkins.plugins.publish_over.Retry;
 import jenkins.plugins.publish_over_cifs.CifsHostConfiguration;
 import jenkins.plugins.publish_over_cifs.CifsNodeProperties;

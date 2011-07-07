@@ -24,19 +24,12 @@
 
 package jenkins.plugins.publish_over_cifs;
 
-import hudson.Extension;
-import hudson.model.Describable;
-import hudson.model.Descriptor;
-import hudson.model.Hudson;
-import hudson.util.FormValidation;
-import jenkins.plugins.publish_over.Messages;
 import jenkins.plugins.publish_over.Retry;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
 
 public class CifsRetry extends Retry {
 
