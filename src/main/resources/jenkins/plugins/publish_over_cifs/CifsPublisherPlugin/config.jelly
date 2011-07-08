@@ -72,6 +72,11 @@
                                 <f:textbox name="retryDelay" value="${publisher.retry.retryDelay}" default="${descriptor.publisherDescriptor.defaultRetryDelay}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('retryDelay')}"/>
                             </f:entry>
                         </f:optionalBlock>
+                        <f:optionalBlock title="${%publisherLabel.title}" name="label" checked="${publisher.label != null}"  help="${helpUrl}label.html">
+                            <f:entry title="${%label.title}" help="${helpUrl}label.html">
+                                <f:textbox name="label" value="${publisher.label.label}"/>
+                            </f:entry>
+                        </f:optionalBlock>
                     </f:advanced>
                                         
                     <f:entry title="${%transfers.section}" help="${helpUrl}transfers.html">
@@ -151,6 +156,11 @@
                                    default="${descriptor.publisherDescriptor.defaultMasterNodeName}"/>
                     </f:entry>
                 </j:if>
+                <f:optionalBlock title="${%paramPublish.title}" name="paramPublish" checked="${instance.instanceConfig.paramPublish != null}"  help="${descriptor.publisherDescriptor.getHelpFile('paramPublish')}">
+                    <f:entry title="${%parameterName.title}" help="${helpUrl}parameterName.html">
+                        <f:textbox name="parameterName" value="${instance.instanceConfig.paramPublish.parameterName}"/>
+                    </f:entry>
+                </f:optionalBlock>
             </f:advanced>
 
     </f:entry>

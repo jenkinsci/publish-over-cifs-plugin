@@ -45,8 +45,9 @@ public class CifsPublisher extends BapPublisher<CifsTransfer> {
 
     @DataBoundConstructor
     public CifsPublisher(final String configName, final boolean verbose, final ArrayList<CifsTransfer> transfers,
-                         final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp, final CifsRetry retry) {
-        super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, retry);
+                         final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp, final CifsRetry retry,
+                         final CifsPublisherLabel label) {
+        super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, retry, label);
     }
 
     @Override
