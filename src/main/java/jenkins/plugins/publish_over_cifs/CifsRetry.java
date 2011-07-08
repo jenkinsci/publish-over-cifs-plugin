@@ -33,6 +33,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class CifsRetry extends Retry {
 
+    private static final long serialVersionUID = 1L;
+
     @DataBoundConstructor
     public CifsRetry(final int retries, final long retryDelay) {
         super(retries, retryDelay);

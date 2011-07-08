@@ -33,6 +33,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class CifsPublisherLabel extends PublisherLabel {
 
+    private static final long serialVersionUID = 1L;
+
     @DataBoundConstructor
     public CifsPublisherLabel(final String label) {
         super(label);

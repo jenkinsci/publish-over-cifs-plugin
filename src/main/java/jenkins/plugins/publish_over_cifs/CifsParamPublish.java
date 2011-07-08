@@ -33,6 +33,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class CifsParamPublish extends ParamPublish {
 
+    private static final long serialVersionUID = 1L;
+
     @DataBoundConstructor
     public CifsParamPublish(final String parameterName) {
         super(parameterName);
