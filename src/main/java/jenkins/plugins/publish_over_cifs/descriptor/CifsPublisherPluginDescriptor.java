@@ -196,9 +196,9 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     public jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages getPublisherLabelFieldNames() {
         return new jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages();
     }
-    
+
     public jenkins.plugins.publish_over.view_defaults.Retry.Messages getRetryFieldNames() {
         return new jenkins.plugins.publish_over.view_defaults.Retry.Messages();
     }
-    
+
 }

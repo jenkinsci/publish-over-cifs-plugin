@@ -39,7 +39,7 @@
         <Bug pattern="ISC_INSTANTIATE_STATIC_CLASS"/>
     </Match>    
     <Match> <!-- the above rule will work when the views are decomposed ala ftp and ssh, this will match the 7(!) in the current plugin descriptor -->
-        <Method name="get.*FieldNames"/>
+        <Method name="~get.*FieldNames"/>
         <Bug pattern="ISC_INSTANTIATE_STATIC_CLASS"/>
     </Match>    
 </FindBugsFilter>
