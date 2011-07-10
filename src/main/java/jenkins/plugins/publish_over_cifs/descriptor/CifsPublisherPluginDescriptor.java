@@ -173,4 +173,32 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         return this;
     }
 
+    public jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages getHostConfigurationFieldNames() {
+        return new jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages();
+    }
+
+    public jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages getPublisherFieldNames() {
+        return new jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages();
+    }
+
+    public jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages getPluginFieldNames() {
+        return new jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages();
+    }
+
+    public jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages getTransferFieldNames() {
+        return new jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages();
+    }
+
+    public jenkins.plugins.publish_over.view_defaults.ParamPublish.Messages getParamPublishFieldNames() {
+        return new jenkins.plugins.publish_over.view_defaults.ParamPublish.Messages();
+    }
+
+    public jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages getPublisherLabelFieldNames() {
+        return new jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages();
+    }
+    
+    public jenkins.plugins.publish_over.view_defaults.Retry.Messages getRetryFieldNames() {
+        return new jenkins.plugins.publish_over.view_defaults.Retry.Messages();
+    }
+    
 }

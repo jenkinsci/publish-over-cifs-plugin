@@ -26,7 +26,7 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
 
-    <f:entry title="${%winsServer.title}" field="winsServer">
+    <f:entry title="${%winsServer}" field="winsServer">
         <f:textbox name="poc-np.winsServer"/>
     </f:entry>
 

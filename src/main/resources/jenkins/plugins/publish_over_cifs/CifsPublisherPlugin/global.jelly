@@ -26,39 +26,41 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
 
+  <j:set var="m" value="${descriptor.hostConfigurationFieldNames}"/>
+  
   <j:set var="helpUrl" value="${rootURL}/plugin/publish-over-cifs/help/global/"/>
   <j:invokeStatic className="jenkins.plugins.publish_over_cifs.CifsHostConfiguration" method="getDefaultPort" var="defaultPort"/>
   <j:invokeStatic className="jenkins.plugins.publish_over_cifs.CifsHostConfiguration" method="getDefaultTimeout" var="defaultTimeout"/>
 
   <f:section title="${%hostconfig.section.title}" description="${%hostconfig.section.description}">
-    <f:entry title="${%hostconfig.entry.title}">
+    <f:entry title="${%hostconfig.entry}">
       <f:repeatable var="instance" items="${descriptor.hostConfigurations}" header="${%hostconfig.dragAndDrop}">
         <table width="100%">
-          <f:entry title="${%name.title}" help="${helpUrl}name.html">
+          <f:entry title="${m.name()}" help="${helpUrl}name.html">
             <f:textbox name="_.name" value="${instance.name}" checkUrl="${descriptor.getCheckUrl('name')}"/>
           </f:entry>
-          <f:entry title="${%hostname.title}" help="${helpUrl}hostname.html">
+          <f:entry title="${m.hostname()}" help="${helpUrl}hostname.html">
             <f:textbox name="_.hostname" value="${instance.hostname}" checkUrl="${descriptor.getCheckUrl('hostname')}"/>
           </f:entry>
-          <f:entry title="${%username.title}" help="${helpUrl}username.html">
+          <f:entry title="${m.username()}" help="${helpUrl}username.html">
             <f:textbox name="_.username" value="${instance.username}" />
           </f:entry>
-          <f:entry title="${%password.title}" help="${helpUrl}password.html">
+          <f:entry title="${m.password()}" help="${helpUrl}password.html">
             <input class="setting-input" name="_.password" type="password" value="${instance.encryptedPassword}" />
           </f:entry>
-          <f:entry title="${%remotePath.title}" help="${helpUrl}remoteRootDir.html">
+          <f:entry title="${%remotePath}" help="${helpUrl}remoteRootDir.html">
             <f:textbox name="_.remoteRootDir" value="${instance.remoteRootDir}" checkUrl="${descriptor.getCheckUrl('remoteRootDir')}"/>
           </f:entry>
           <f:advanced>
-            <f:entry title="${%port.title}" help="${helpUrl}port.html">
+            <f:entry title="${m.port()}" help="${helpUrl}port.html">
               <f:textbox name="_.port" value="${instance.port}" default="${defaultPort}" checkUrl="${descriptor.getCheckUrl('port')}"/>
             </f:entry>
-            <f:entry title="${%timeout.title}" help="${helpUrl}timeout.html">
+            <f:entry title="${m.timeout()}" help="${helpUrl}timeout.html">
               <f:textbox name="_.timeout" value="${instance.timeout}" default="${defaultTimeout}" checkUrl="${descriptor.getCheckUrl('timeout')}"/>
             </f:entry>
           </f:advanced>
           <f:validateButton
-            title="${%test.title}" progress="${%test.progress}"
+            title="${m.test_title()}" progress="${m.test_progress()}"
             method="testConnection" with="name,hostname,username,password,remoteRootDir,port,timeout,poc-np.winsServer"/>
           <f:entry title="">
             <div align="right">
