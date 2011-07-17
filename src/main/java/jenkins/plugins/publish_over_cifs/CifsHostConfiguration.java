@@ -128,7 +128,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     }
 
     private void assertRequiredOptions() {
-        if (Util.fixEmptyAndTrim(getHostname()) == null) throw new BapPublisherException(Messages.exception_hostnameRequired());
+        if (getHostnameTrimmed() == null) throw new BapPublisherException(Messages.exception_hostnameRequired());
         if (Util.fixEmptyAndTrim(getRemoteRootDir()) == null) throw new BapPublisherException(Messages.exception_shareRequired());
     }
 
@@ -140,7 +140,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     }
 
     private void addServer(final StringBuilder urlSB) {
-        urlSB.append(getHostname());
+        urlSB.append(getHostnameTrimmed());
         if (getPort() != DEFAULT_PORT)
             urlSB.append(":").append(getPort());
     }
