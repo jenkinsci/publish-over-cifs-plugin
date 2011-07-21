@@ -34,14 +34,14 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class CifsOverridePublisherDefaults implements PublisherOptions, Describable<CifsOverridePublisherDefaults> {
 
-    final private String configName;
-    final private boolean useWorkspaceInPromotion;
-    final private boolean usePromotionTimestamp;
-    final private boolean verbose;
+    private final String configName;
+    private final boolean useWorkspaceInPromotion;
+    private final boolean usePromotionTimestamp;
+    private final boolean verbose;
 
     @DataBoundConstructor
-    public CifsOverridePublisherDefaults(final String configName, final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp,
-                                         final boolean verbose) {
+    public CifsOverridePublisherDefaults(final String configName, final boolean useWorkspaceInPromotion,
+                                         final boolean usePromotionTimestamp, final boolean verbose) {
         this.configName = configName;
         this.usePromotionTimestamp = usePromotionTimestamp;
         this.useWorkspaceInPromotion = useWorkspaceInPromotion;

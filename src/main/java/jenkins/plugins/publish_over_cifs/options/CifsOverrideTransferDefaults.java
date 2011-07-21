@@ -34,17 +34,17 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class CifsOverrideTransferDefaults implements TransferOptions, Describable<CifsOverrideTransferDefaults> {
 
-    final private String sourceFiles;
-    final private String removePrefix;
-    final private String remoteDirectory;
-    final private String excludes;
-    final private boolean remoteDirectorySDF;
-    final private boolean flatten;
-    final private boolean cleanRemote;
+    private final String sourceFiles;
+    private final String removePrefix;
+    private final String remoteDirectory;
+    private final String excludes;
+    private final boolean remoteDirectorySDF;
+    private final boolean flatten;
+    private final boolean cleanRemote;
 
     @DataBoundConstructor
     public CifsOverrideTransferDefaults(final String sourceFiles, final String excludes, final String removePrefix,
-                                        final String remoteDirectory, final boolean flatten, boolean remoteDirectorySDF,
+                                        final String remoteDirectory, final boolean flatten, final boolean remoteDirectorySDF,
                                         final boolean cleanRemote) {
         this.cleanRemote = cleanRemote;
         this.excludes = excludes;

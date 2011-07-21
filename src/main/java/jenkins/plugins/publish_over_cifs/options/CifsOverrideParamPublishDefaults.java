@@ -33,7 +33,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class CifsOverrideParamPublishDefaults implements ParamPublishOptions, Describable<CifsOverrideParamPublishDefaults> {
 
-    final private String parameterName;
+    private final String parameterName;
 
     @DataBoundConstructor
     public CifsOverrideParamPublishDefaults(final String parameterName) {

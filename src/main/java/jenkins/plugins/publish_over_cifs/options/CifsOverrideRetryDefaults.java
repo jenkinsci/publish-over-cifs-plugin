@@ -35,8 +35,8 @@ import org.kohsuke.stapler.QueryParameter;
 
 public class CifsOverrideRetryDefaults implements RetryOptions, Describable<CifsOverrideRetryDefaults> {
 
-    final private int retries;
-    final private long retryDelay;
+    private final int retries;
+    private final long retryDelay;
 
     @DataBoundConstructor
     public CifsOverrideRetryDefaults(final int retries, final long retryDelay) {

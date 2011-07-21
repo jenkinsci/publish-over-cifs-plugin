@@ -40,13 +40,9 @@ public abstract class CifsDefaults implements Describable<CifsDefaults>, Extensi
         return (CifsDefaultsDescriptor) Hudson.getInstance().getDescriptor(getClass());
     }
 
-    public static abstract class CifsDefaultsDescriptor extends Descriptor<CifsDefaults> {
+    public abstract static class CifsDefaultsDescriptor extends Descriptor<CifsDefaults> {
 
         protected CifsDefaultsDescriptor() { }
-
-        protected CifsDefaultsDescriptor(Class<? extends CifsDefaults> clazz) {
-            super(clazz);
-        }
 
     }
 

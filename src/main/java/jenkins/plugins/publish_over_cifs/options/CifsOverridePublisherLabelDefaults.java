@@ -33,7 +33,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class CifsOverridePublisherLabelDefaults implements PublisherLabelOptions, Describable<CifsOverridePublisherLabelDefaults> {
 
-    final private String label;
+    private final String label;
 
     @DataBoundConstructor
     public CifsOverridePublisherLabelDefaults(final String label) {

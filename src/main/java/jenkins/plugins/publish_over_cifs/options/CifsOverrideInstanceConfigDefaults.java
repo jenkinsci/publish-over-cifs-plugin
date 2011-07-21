@@ -33,9 +33,9 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class CifsOverrideInstanceConfigDefaults implements InstanceConfigOptions, Describable<CifsOverrideInstanceConfigDefaults> {
 
-    final private boolean continueOnError;
-    final private boolean failOnError;
-    final private boolean alwaysPublishFromMaster;
+    private final boolean continueOnError;
+    private final boolean failOnError;
+    private final boolean alwaysPublishFromMaster;
 
     @DataBoundConstructor
     public CifsOverrideInstanceConfigDefaults(final boolean alwaysPublishFromMaster, final boolean continueOnError,
