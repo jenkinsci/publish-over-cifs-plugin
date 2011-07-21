@@ -32,18 +32,19 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 import hudson.util.CopyOnWriteList;
 import hudson.util.FormValidation;
-import hudson.util.VersionNumber;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPInstanceConfig;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPTransfer;
 import jenkins.plugins.publish_over.BPValidators;
-import jenkins.plugins.publish_over.Retry;
+import jenkins.plugins.publish_over.JenkinsCapabilities;
 import jenkins.plugins.publish_over_cifs.CifsHostConfiguration;
 import jenkins.plugins.publish_over_cifs.CifsNodeProperties;
 import jenkins.plugins.publish_over_cifs.CifsPublisher;
 import jenkins.plugins.publish_over_cifs.CifsPublisherPlugin;
 import jenkins.plugins.publish_over_cifs.Messages;
+import jenkins.plugins.publish_over_cifs.options.CifsDefaults;
+import jenkins.plugins.publish_over_cifs.options.CifsPluginDefaults;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -59,10 +60,17 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     /** null - prevent complaints from xstream */
     private Class hostConfigClass;
     private final CopyOnWriteList<CifsHostConfiguration> hostConfigurations = new CopyOnWriteList<CifsHostConfiguration>();
+    private CifsDefaults defaults;
 
     public CifsPublisherPluginDescriptor() {
         super(CifsPublisherPlugin.class);
         load();
+        if (defaults == null)
+            defaults = new CifsPluginDefaults();
+    }
+
+    public CifsDefaults getDefaults() {
+        return defaults;
     }
 
     public String getDisplayName() {
@@ -88,6 +96,8 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
 
     public boolean configure(final StaplerRequest request, final JSONObject formData) {
         hostConfigurations.replaceBy(request.bindJSONToList(CifsHostConfiguration.class, formData.get("instance")));
+        if (isEnableOverrideDefaults())
+            defaults = request.bindJSON(CifsDefaults.class, formData.getJSONObject("defaults"));
         save();
         return true;
     }
@@ -126,17 +136,22 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         return BPInstanceConfig.DEFAULT_MASTER_NODE_NAME;
     }
     public boolean canSetMasterNodeName() {
-        return Hudson.getVersion().isOlderThan(new VersionNumber(BPInstanceConfig.MASTER_GETS_NODE_NAME_IN_VERSION));
+        return JenkinsCapabilities.missing(JenkinsCapabilities.MASTER_HAS_NODE_NAME);
     }
-    public int getDefaultRetries() {
-        return Retry.DEFAULT_RETRIES;
-    }
-    public long getDefaultRetryDelay() {
-        return Retry.DEFAULT_RETRY_DELAY;
+    public boolean isEnableOverrideDefaults() {
+        return JenkinsCapabilities.available(JenkinsCapabilities.SIMPLE_DESCRIPTOR_SELECTOR);
     }
     public CifsPublisherPluginDescriptor getPublisherDescriptor() {
         return this;
     }
+    public CifsPluginDefaults.CifsPluginDefaultsDescriptor getPluginDefaultsDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(CifsPluginDefaults.CifsPluginDefaultsDescriptor.class);
+    }
+
+    public jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages getCommonManageMessages() {
+        return new jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages();
+    }
+
 
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
         final CifsHostConfiguration hostConfig = request.bindParameters(CifsHostConfiguration.class, "");
@@ -170,6 +185,8 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         // nuke the legacy config
         msg = null;
         hostConfigClass = null;
+        if (defaults == null)
+            defaults = new CifsPluginDefaults();
         return this;
     }
 

@@ -70,6 +70,11 @@
         </table>
       </f:repeatable>
     </f:entry>
+    <j:if test="${descriptor.enableOverrideDefaults}">
+        <f:entry>
+          <f:dropdownDescriptorSelector title="${descriptor.commonManageMessages.defaults()}" field="defaults" default="${descriptor.pluginDefaultsDescriptor}"/>
+        </f:entry>
+    </j:if>
   </f:section>
 
 

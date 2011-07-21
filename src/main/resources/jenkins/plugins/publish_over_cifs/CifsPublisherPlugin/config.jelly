@@ -26,6 +26,8 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:st="jelly:stapler" xmlns:poj="/pojelly">
 
+    <j:set var="defaults" value="${descriptor.publisherDescriptor.defaults}"/>
+
     <j:set var="m_pub" value="${descriptor.publisherDescriptor.publisherFieldNames}"/>
     <j:set var="m_plugin" value="${descriptor.publisherDescriptor.pluginFieldNames}"/>
     <j:set var="m_trans" value="${descriptor.publisherDescriptor.transferFieldNames}"/>
@@ -45,7 +47,7 @@
                     <f:entry title="${m_pub.hostconfig()}" help="${helpUrl}configName.html">
                         <select class="setting-input" name="configName" description="${%hostconfig.description}">
                             <j:forEach var="s" items="${descriptor.publisherDescriptor.hostConfigurations}">
-                                <f:option selected="${s.name==publisher.configName}">${s.name}</f:option>
+                                <f:option selected="${s.name==publisher.configName or ( publisher==null and s.name==defaults.publisher.configName ) }">${s.name}</f:option>
                             </j:forEach>
                         </select>
                     </f:entry>
@@ -57,49 +59,49 @@
                             </j:when>
                             <j:otherwise>
                                 <f:entry help="${helpUrl}useWorkspaceInPromotion.html">
-                                    <poj:checkbox name="useWorkspaceInPromotion" checked="${publisher.useWorkspaceInPromotion}" title="${m_pub.useWorkspaceInPromotion()}"/>
+                                    <poj:checkbox name="useWorkspaceInPromotion" checked="${publisher.useWorkspaceInPromotion}" title="${m_pub.useWorkspaceInPromotion()}" default="${defaults.publisher.useWorkspaceInPromotion}"/>
                                 </f:entry>
                             </j:otherwise>
                         </j:choose>
                         <f:entry help="${helpUrl}usePromotionTimestamp.html">
-                            <poj:checkbox name="usePromotionTimestamp" checked="${publisher.usePromotionTimestamp}" title="${m_pub.usePromotionTimestamp()}"/>
+                            <poj:checkbox name="usePromotionTimestamp" checked="${publisher.usePromotionTimestamp}" title="${m_pub.usePromotionTimestamp()}" default="${defaults.publisher.usePromotionTimestamp}"/>
                         </f:entry>
                         <j:set var="promoHelpSuffix" value="ForPromotion"/>
                     </j:if>
 
                     <f:advanced>
                         <f:entry help="${helpUrl}verbose.html">
-                            <poj:checkbox name="verbose" checked="${publisher.verbose}" title="${m_pub.verbose()}"/>
+                            <poj:checkbox name="verbose" checked="${publisher.verbose}" title="${m_pub.verbose()}" default="${defaults.publisher.verbose}"/>
                         </f:entry>
                         <f:optionalBlock title="${m_pub.retry()}" name="retry" checked="${publisher.retry != null}"  help="${helpUrl}retry.html">
                             <f:entry title="${m_retry.retries()}" help="${helpUrl}retries.html">
-                                <f:textbox name="retries" value="${publisher.retry.retries}" default="${descriptor.publisherDescriptor.defaultRetries}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('retries')}"/>
+                                <f:textbox name="retries" value="${publisher.retry.retries}" default="${defaults.retry.retries}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('retries')}"/>
                             </f:entry>
                             <f:entry title="${m_retry.retryDelay()}" help="${helpUrl}retryDelay.html">
-                                <f:textbox name="retryDelay" value="${publisher.retry.retryDelay}" default="${descriptor.publisherDescriptor.defaultRetryDelay}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('retryDelay')}"/>
+                                <f:textbox name="retryDelay" value="${publisher.retry.retryDelay}" default="${defaults.retry.retryDelay}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('retryDelay')}"/>
                             </f:entry>
                         </f:optionalBlock>
                         <f:optionalBlock title="${m_pub.label()}" name="label" checked="${publisher.label != null}"  help="${helpUrl}label.html">
                             <f:entry title="${m_label.label()}" help="${helpUrl}label.html">
-                                <f:textbox name="label" value="${publisher.label.label}"/>
+                                <f:textbox name="label" value="${publisher.label.label}" default="${defaults.publisherLabel.label}"/>
                             </f:entry>
                         </f:optionalBlock>
                     </f:advanced>
-                                        
+
                     <f:entry title="${m_pub.transfers_section()}">
                         <f:repeatable items="${publisher.transfers}" var="transfer" name="transfers" minimum="1" header="${m_pub.transfers_dragAndDropLabel()}" add="${m_pub.addTransfer()}">
                             <table width="100%" padding="0">
 
                                 <f:entry title="${m_trans.sourceFiles()}" help="${helpUrl}sourceFiles${promoHelpSuffix}.html">
-                                    <f:textbox name="sourceFiles" value="${transfer.sourceFiles}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('sourceFiles')}"/>
+                                    <f:textbox name="sourceFiles" value="${transfer.sourceFiles}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('sourceFiles')}" default="${defaults.transfer.sourceFiles}"/>
                                 </f:entry>
 
                                 <f:entry title="${m_trans.removePrefix()}" help="${helpUrl}removePrefix.html">
-                                    <f:textbox name="removePrefix" value="${transfer.removePrefix}" />
+                                    <f:textbox name="removePrefix" value="${transfer.removePrefix}" default="${defaults.transfer.removePrefix}"/>
                                 </f:entry>
 
                                 <f:entry title="${m_trans.remoteDirectory()}" help="${helpUrl}remoteDirectory.html">
-                                    <f:textbox name="remoteDirectory" value="${transfer.remoteDirectory}" />
+                                    <f:textbox name="remoteDirectory" value="${transfer.remoteDirectory}" default="${defaults.transfer.remoteDirectory}"/>
                                 </f:entry>
 
                                 <f:description>
@@ -109,20 +111,20 @@
                                 <f:advanced>
                                     <j:if test="${descriptor.publisherDescriptor.canUseExcludes()}">
                                         <f:entry title="${m_trans.excludes()}" help="${helpUrl}excludes.html">
-                                            <f:textbox name="excludes" value="${transfer.excludes}"/>
+                                            <f:textbox name="excludes" value="${transfer.excludes}" default="${defaults.transfer.excludes}"/>
                                         </f:entry>
                                     </j:if>
 
                                     <f:entry title="${m_trans.flatten()}" help="${helpUrl}flatten.html">
-                                        <f:checkbox name="flatten" checked="${transfer.flatten}" />
+                                        <f:checkbox name="flatten" checked="${transfer.flatten}" default="${defaults.transfer.flatten}"/>
                                     </f:entry>
 
                                     <f:entry title="${m_trans.remoteDirectorySDF()}" help="${helpUrl}remoteDirectorySDF.html">
-                                        <f:checkbox name="remoteDirectorySDF" checked="${transfer.remoteDirectorySDF}" />
+                                        <f:checkbox name="remoteDirectorySDF" checked="${transfer.remoteDirectorySDF}" default="${defaults.transfer.remoteDirectorySDF}"/>
                                     </f:entry>
 
                                     <f:entry title="${m_trans.cleanRemote()}" help="${helpUrl}cleanRemote.html">
-                                        <f:checkbox name="cleanRemote" checked="${transfer.cleanRemote}"/>
+                                        <f:checkbox name="cleanRemote" checked="${transfer.cleanRemote}" default="${defaults.transfer.cleanRemote}"/>
                                     </f:entry>
 
                                 </f:advanced>
@@ -149,13 +151,13 @@
 
             <f:advanced>
                 <f:entry help="${helpUrl}continueOnError.html">
-                    <poj:checkbox name="continueOnError" checked="${instance.instanceConfig.continueOnError}" title="${%continueOnError}"/>
+                    <poj:checkbox name="continueOnError" checked="${instance.instanceConfig.continueOnError}" title="${%continueOnError}" default="${defaults.instanceConfig.continueOnError}"/>
                 </f:entry>
                 <f:entry help="${helpUrl}failOnError.html">
-                    <poj:checkbox name="failOnError" checked="${instance.instanceConfig.failOnError}" title="${m_plugin.failOnError()}"/>
+                    <poj:checkbox name="failOnError" checked="${instance.instanceConfig.failOnError}" title="${m_plugin.failOnError()}" default="${defaults.instanceConfig.failOnError}"/>
                 </f:entry>
                 <f:entry help="${helpUrl}alwaysTxfrFromMaster.html">
-                    <poj:checkbox name="alwaysPublishFromMaster" checked="${instance.instanceConfig.alwaysPublishFromMaster}" title="${%alwaysTxfrFromMaster}"/>
+                    <poj:checkbox name="alwaysPublishFromMaster" checked="${instance.instanceConfig.alwaysPublishFromMaster}" title="${%alwaysTxfrFromMaster}" default="${defaults.instanceConfig.alwaysPublishFromMaster}"/>
                 </f:entry>
                 <j:if test="${descriptor.publisherDescriptor.canSetMasterNodeName()}">
                     <f:entry title="${m_plugin.masterNodeName()}" help="${helpUrl}masterNodeName.html">
@@ -165,7 +167,7 @@
                 </j:if>
                 <f:optionalBlock title="${m_plugin.paramPublish()}" name="paramPublish" checked="${instance.instanceConfig.paramPublish != null}"  help="${descriptor.publisherDescriptor.getHelpFile('paramPublish')}">
                     <f:entry title="${m_param.parameterName()}" help="${helpUrl}parameterName.html">
-                        <f:textbox name="parameterName" value="${instance.instanceConfig.paramPublish.parameterName}"/>
+                        <f:textbox name="parameterName" value="${instance.instanceConfig.paramPublish.parameterName}" default="${defaults.paramPublish.parameterName}"/>
                     </f:entry>
                 </f:optionalBlock>
             </f:advanced>
