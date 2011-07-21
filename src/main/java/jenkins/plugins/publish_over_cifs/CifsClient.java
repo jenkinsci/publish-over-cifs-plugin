@@ -26,6 +26,7 @@ package jenkins.plugins.publish_over_cifs;
 
 import hudson.FilePath;
 import jcifs.smb.SmbFile;
+import jcifs.smb.NtlmPasswordAuthentication;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPDefaultClient;
 import jenkins.plugins.publish_over.BapPublisherException;
@@ -41,11 +42,14 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
     private final CifsHelper helper = new CifsHelper();
     private final BPBuildInfo buildInfo;
     private final String baseUrl;
+    private final NtlmPasswordAuthentication auth;
     private String context;
 
-    public CifsClient(final BPBuildInfo buildInfo, final String baseUrl) {
+    public CifsClient(final BPBuildInfo buildInfo, final String baseUrl,
+	NtlmPasswordAuthentication auth) {
         this.buildInfo = buildInfo;
         this.baseUrl = baseUrl;
+        this.auth = auth;
         context = baseUrl;
     }
 
@@ -124,7 +128,11 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
     }
 
     protected SmbFile createSmbFile(final String url) throws MalformedURLException {
-        return new SmbFile(url);
+	if(auth != null) {
+            return new SmbFile(url, auth);
+        } else {
+            return new SmbFile(url);
+        }
     }
 
 }

@@ -27,6 +27,7 @@ package jenkins.plugins.publish_over_cifs;
 import hudson.Util;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import jcifs.smb.NtlmPasswordAuthentication;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPHostConfiguration;
 import jenkins.plugins.publish_over.BapPublisherException;
@@ -92,8 +93,9 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         assertRequiredOptions();
         configureJcifs(buildInfo);
         final String url = buildUrl(false);
-        testConfig(url);
-        return new CifsClient(buildInfo, url);
+        final NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(getDomain(), getUsername(false), getPassword()); 
+        testConfig(url, auth);
+        return new CifsClient(buildInfo, url, auth);
     }
 
     private void configureJcifs(final BPBuildInfo buildInfo) {
@@ -121,7 +123,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     private String buildUrl(final boolean hidePassword) {
         final StringBuilder urlSB = new StringBuilder(URL_BUILDER_INITIAL_SIZE);
         urlSB.append(SMB_URL_PREFIX);
-        addCredentials(urlSB, hidePassword);
+        //addCredentials(urlSB, hidePassword);
         addServer(urlSB);
         addSharename(urlSB);
         return urlSB.toString();
@@ -162,11 +164,38 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         }
     }
 
+    private String getDomain() {
+        if (Util.fixEmptyAndTrim(getUsername()) != null) {
+            final String username = getUsername().trim();
+            if(username.contains("\\")) {
+                final String[] parts = username.split("\\\\", 2);
+                return parts[0];
+            }
+        }
+        return "";
+    }
+
+    private String getUsername(boolean withDomain) {
+        if(withDomain) {
+            return getUsername();
+        }
+        if (Util.fixEmptyAndTrim(getUsername()) != null) {
+            final String username = getUsername().trim();
+            if(username.contains("\\")) {
+                final String[] parts = username.split("\\\\", 2);
+                return parts[1];
+            } else {
+                return username;
+            }
+        }
+        return "";        
+    }
+
     @SuppressWarnings({ "PMD.PreserveStackTrace", "PMD.JUnit4TestShouldUseTestAnnotation" }) // FFS
-    private void testConfig(final String url) {
+    private void testConfig(final String url, final NtlmPasswordAuthentication auth) {
         SmbFile file;
         try {
-            file = createSmbFile(url);
+            file = createSmbFile(url, auth);
         } catch (final MalformedURLException mue) {
             throw new BapPublisherException(Messages.exception_maformedUrlException(buildUrl(true)));
         }
@@ -178,8 +207,12 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         }
     }
 
-    protected SmbFile createSmbFile(final String url) throws MalformedURLException {
-        return new SmbFile(url);
+    protected SmbFile createSmbFile(final String url, NtlmPasswordAuthentication auth) throws MalformedURLException {
+        if(auth != null) {
+            return new SmbFile(url, auth);
+        } else {
+            return new SmbFile(url);
+        }
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
