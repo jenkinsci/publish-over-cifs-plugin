@@ -27,6 +27,7 @@ package jenkins.plugins.publish_over_cifs;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import hudson.util.SecretHelper;
+import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbFile;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
@@ -123,42 +124,6 @@ public class CifsHostConfigurationTest {
         }
     }
 
-    @Test public void canHazUsername() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, "myUser", null, SHARE, mockSmbFile);
-        final String expectedUrl = "smb://myUser@myServer/myShare/";
-        assertUrl(expectedUrl, config);
-    }
-
-    @Test public void canHazUsernameWithFunkyChars() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, "my@User", null, SHARE, mockSmbFile);
-        final String expectedUrl = "smb://my%40User@myServer/myShare/";
-        assertUrl(expectedUrl, config);
-    }
-
-    @Test public void canHazPassword() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, "myUser", "pass", SHARE, mockSmbFile);
-        final String expectedUrl = "smb://myUser:pass@myServer/myShare/";
-        assertUrl(expectedUrl, config);
-    }
-
-    @Test public void noPasswordIfNoUsername() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, "", "pass", SHARE, mockSmbFile);
-        final String expectedUrl = SIMPLEST_URL;
-        assertUrl(expectedUrl, config);
-    }
-
-    @Test public void canHazPasswordWithFunkies() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, "myUser", "pa%s s", SHARE, mockSmbFile);
-        final String expectedUrl = "smb://myUser:pa%25s%20s@myServer/myShare/";
-        assertUrl(expectedUrl, config);
-    }
-
-    @Test public void canHazUsernameWithDomain() throws Exception {
-        final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, "myDomain\\myUser", null, SHARE, mockSmbFile);
-        final String expectedUrl = "smb://myDomain;myUser@myServer/myShare/";
-        assertUrl(expectedUrl, config);
-    }
-
     @Test public void canHazPort() throws Exception {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, null, null, "/myShare", 123, 100000, mockSmbFile);
         final String expectedUrl = "smb://myServer:123/myShare/";
@@ -237,7 +202,7 @@ public class CifsHostConfigurationTest {
             this.smbFile = smbFile;
         }
         @Override
-        public SmbFile createSmbFile(final String url) {
+        public SmbFile createSmbFile(final String url, NtlmPasswordAuthentication auth) {
             this.url = url;
             return smbFile;
         }

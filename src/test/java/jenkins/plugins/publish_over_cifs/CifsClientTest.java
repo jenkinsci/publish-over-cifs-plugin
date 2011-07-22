@@ -55,7 +55,7 @@ public class CifsClientTest {
     private final BPBuildInfo buildInfo = CifsTestHelper.createEmpty();
 
     @Test public void initialContextIsRootUrl() {
-        assertEquals(TEST_ROOT_URL, new CifsClient(buildInfo, TEST_ROOT_URL).getContext());
+        assertEquals(TEST_ROOT_URL, new CifsClient(buildInfo, TEST_ROOT_URL, null).getContext());
     }
 
     @Test public void changeDirectoryUpdatesContext() throws Exception {
@@ -152,7 +152,7 @@ public class CifsClientTest {
 
     @Test public void testBeginTransfersFailIfNoSourceFiles() throws Exception {
         try {
-            new CifsClient(buildInfo, TEST_ROOT_URL).beginTransfers(new CifsTransfer("", "", "", "", false, false, false));
+            new CifsClient(buildInfo, TEST_ROOT_URL, null).beginTransfers(new CifsTransfer("", "", "", "", false, false, false));
             fail();
         } catch (BapPublisherException bpe) {
             assertEquals(Messages.exception_noSourceFiles(), bpe.getMessage());
@@ -176,7 +176,7 @@ public class CifsClientTest {
     private class CifsClientWithMockFiles extends CifsClient {
         private final Iterator<String> expectedUrls;
         public CifsClientWithMockFiles(final String... expectedUrls) {
-            super(buildInfo, TEST_ROOT_URL);
+            super(buildInfo, TEST_ROOT_URL, null);
             this.expectedUrls = Arrays.asList(expectedUrls).iterator();
         }
         @Override
