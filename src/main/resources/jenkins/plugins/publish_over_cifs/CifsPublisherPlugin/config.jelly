@@ -115,6 +115,12 @@
                                         </f:entry>
                                     </j:if>
 
+                                    <j:if test="${descriptor.publisherDescriptor.canUseNoDefaultExcludes()}">
+                                        <f:entry title="${m_trans.noDefaultExcludes()}" help="${descriptor.publisherDescriptor.getHelpFile('noDefaultExcludes')}">
+                                            <f:checkbox name="noDefaultExcludes" value="${transfer.noDefaultExcludes}" default="${defaults.transfer.noDefaultExcludes}"/>
+                                        </f:entry>
+                                    </j:if>
+
                                     <f:entry title="${m_trans.flatten()}" help="${helpUrl}flatten.html">
                                         <f:checkbox name="flatten" checked="${transfer.flatten}" default="${defaults.transfer.flatten}"/>
                                     </f:entry>

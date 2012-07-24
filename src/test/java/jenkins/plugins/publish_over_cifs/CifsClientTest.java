@@ -152,7 +152,7 @@ public class CifsClientTest {
 
     @Test public void testBeginTransfersFailIfNoSourceFiles() throws Exception {
         try {
-            new CifsClient(buildInfo, TEST_ROOT_URL, null).beginTransfers(new CifsTransfer("", "", "", "", false, false, false));
+            new CifsClient(buildInfo, TEST_ROOT_URL, null).beginTransfers(new CifsTransfer("", "", "", "", false, false, false, false));
             fail();
         } catch (BapPublisherException bpe) {
             assertEquals(Messages.exception_noSourceFiles(), bpe.getMessage());

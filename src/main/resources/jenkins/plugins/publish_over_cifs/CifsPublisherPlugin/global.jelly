@@ -56,7 +56,7 @@
               <f:textbox name="_.port" value="${instance.port}" default="${defaultPort}" checkUrl="${descriptor.getCheckUrl('port')}"/>
             </f:entry>
             <f:entry title="${m.timeout()}" help="${helpUrl}timeout.html">
-              <f:textbox name="_.timeout" value="${instance.timeout}" default="${defaultTimeout}" checkUrl="${descriptor.getCheckUrl('timeout')}"/>
+              <f:textbox name="_.timeout" value="${instance.timeOut}" default="${defaultTimeout}" checkUrl="${descriptor.getCheckUrl('timeout')}"/>
             </f:entry>
           </f:advanced>
           <f:validateButton

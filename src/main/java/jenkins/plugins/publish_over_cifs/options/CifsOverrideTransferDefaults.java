@@ -41,11 +41,12 @@ public class CifsOverrideTransferDefaults implements TransferOptions, Describabl
     private final boolean remoteDirectorySDF;
     private final boolean flatten;
     private final boolean cleanRemote;
+    private final boolean noDefaultExcludes;
 
     @DataBoundConstructor
     public CifsOverrideTransferDefaults(final String sourceFiles, final String excludes, final String removePrefix,
                                         final String remoteDirectory, final boolean flatten, final boolean remoteDirectorySDF,
-                                        final boolean cleanRemote) {
+                                        final boolean cleanRemote, final boolean noDefaultExcludes) {
         this.cleanRemote = cleanRemote;
         this.excludes = excludes;
         this.flatten = flatten;
@@ -53,6 +54,7 @@ public class CifsOverrideTransferDefaults implements TransferOptions, Describabl
         this.remoteDirectorySDF = remoteDirectorySDF;
         this.removePrefix = removePrefix;
         this.sourceFiles = sourceFiles;
+        this.noDefaultExcludes = noDefaultExcludes;
     }
 
     public String getSourceFiles() {
@@ -83,6 +85,10 @@ public class CifsOverrideTransferDefaults implements TransferOptions, Describabl
         return cleanRemote;
     }
 
+    public boolean isNoDefaultExcludes() {
+        return noDefaultExcludes;
+    }
+
     public CifsOverrideTransferDefaultsDescriptor getDescriptor() {
         return Hudson.getInstance().getDescriptorByType(CifsOverrideTransferDefaultsDescriptor.class);
     }
@@ -97,6 +103,10 @@ public class CifsOverrideTransferDefaults implements TransferOptions, Describabl
 
         public boolean canUseExcludes() {
             return BPTransfer.canUseExcludes();
+        }
+
+        public boolean canUseNoDefaultExcludes() {
+            return BPTransfer.canUseNoDefaultExcludes();
         }
 
         public jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages getCommonFieldNames() {

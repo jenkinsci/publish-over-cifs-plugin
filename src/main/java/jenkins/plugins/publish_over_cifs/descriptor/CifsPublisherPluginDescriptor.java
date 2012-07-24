@@ -132,6 +132,9 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     public boolean canUseExcludes() {
         return BPTransfer.canUseExcludes();
     }
+    public boolean canUseNoDefaultExcludes() {
+        return BPTransfer.canUseNoDefaultExcludes();
+    }
     public String getDefaultMasterNodeName() {
         return BPInstanceConfig.DEFAULT_MASTER_NODE_NAME;
     }

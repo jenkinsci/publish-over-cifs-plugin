@@ -37,8 +37,8 @@ public class CifsTransfer extends BPTransfer {
 
     @DataBoundConstructor
     public CifsTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
-                        final boolean remoteDirectorySDF, final boolean flatten, final boolean cleanRemote) {
-        super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, cleanRemote);
+                        final boolean remoteDirectorySDF, final boolean flatten, final boolean cleanRemote, final boolean noDefaultExcludes) {
+        super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, cleanRemote, noDefaultExcludes);
     }
 
     public boolean equals(final Object that) {
