@@ -109,17 +109,22 @@
                                 </f:description>
 
                                 <f:advanced>
-                                    <j:if test="${descriptor.publisherDescriptor.canUseExcludes()}">
-                                        <f:entry title="${m_trans.excludes()}" help="${helpUrl}excludes.html">
-                                            <f:textbox name="excludes" value="${transfer.excludes}" default="${defaults.transfer.excludes}"/>
-                                        </f:entry>
-                                    </j:if>
+                                    <f:entry title="${m_trans.excludes()}" help="${helpUrl}excludes.html">
+                                        <f:textbox name="excludes" value="${transfer.excludes}" default="${defaults.transfer.excludes}"/>
+                                    </f:entry>
 
-                                    <j:if test="${descriptor.publisherDescriptor.canUseNoDefaultExcludes()}">
-                                        <f:entry title="${m_trans.noDefaultExcludes()}" help="${descriptor.publisherDescriptor.getHelpFile('noDefaultExcludes')}">
-                                            <f:checkbox name="noDefaultExcludes" value="${transfer.noDefaultExcludes}" default="${defaults.transfer.noDefaultExcludes}"/>
-                                        </f:entry>
-                                    </j:if>
+                                    <f:entry title="${m_trans.patternSeparator()}" help="${helpUrl}patternSeparator.html">
+                                        <f:textbox name="patternSeparator" value="${transfer.patternSeparator}" default="${defaults.transfer.patternSeparator}"/>
+                                    </f:entry>
+
+                                    <f:entry title="${m_trans.noDefaultExcludes()}" help="${descriptor.publisherDescriptor.getHelpFile('noDefaultExcludes')}">
+                                        <f:checkbox name="noDefaultExcludes" value="${transfer.noDefaultExcludes}" default="${defaults.transfer.noDefaultExcludes}"/>
+                                    </f:entry>
+
+                                    <f:entry title="${m_trans.makeEmptyDirs()}" help="${helpUrl}makeEmptyDirs.html">
+                                        <f:checkbox name="makeEmptyDirs" checked="${transfer.makeEmptyDirs}" default="${defaults.transfer.makeEmptyDirs}"/>
+                                    </f:entry>
+
 
                                     <f:entry title="${m_trans.flatten()}" help="${helpUrl}flatten.html">
                                         <f:checkbox name="flatten" checked="${transfer.flatten}" default="${defaults.transfer.flatten}"/>

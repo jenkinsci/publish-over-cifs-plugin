@@ -29,6 +29,7 @@ import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Hudson;
 import jenkins.plugins.publish_over.BPTransfer;
+import jenkins.plugins.publish_over.FileFinder;
 import jenkins.plugins.publish_over.options.TransferOptions;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -42,11 +43,14 @@ public class CifsOverrideTransferDefaults implements TransferOptions, Describabl
     private final boolean flatten;
     private final boolean cleanRemote;
     private final boolean noDefaultExcludes;
+    private final boolean makeEmptyDirs;
+    private final String patternSeparator;
 
     @DataBoundConstructor
     public CifsOverrideTransferDefaults(final String sourceFiles, final String excludes, final String removePrefix,
                                         final String remoteDirectory, final boolean flatten, final boolean remoteDirectorySDF,
-                                        final boolean cleanRemote, final boolean noDefaultExcludes) {
+                                        final boolean cleanRemote, final boolean noDefaultExcludes, final boolean makeEmptyDirs,
+                                        final String patternSeparator) {
         this.cleanRemote = cleanRemote;
         this.excludes = excludes;
         this.flatten = flatten;
@@ -55,6 +59,8 @@ public class CifsOverrideTransferDefaults implements TransferOptions, Describabl
         this.removePrefix = removePrefix;
         this.sourceFiles = sourceFiles;
         this.noDefaultExcludes = noDefaultExcludes;
+        this.makeEmptyDirs = makeEmptyDirs;
+        this.patternSeparator = patternSeparator;
     }
 
     public String getSourceFiles() {
@@ -89,6 +95,14 @@ public class CifsOverrideTransferDefaults implements TransferOptions, Describabl
         return noDefaultExcludes;
     }
 
+    public boolean isMakeEmptyDirs() {
+        return makeEmptyDirs;
+    }
+
+    public String getPatternSeparator() {
+        return patternSeparator;
+    }
+
     public CifsOverrideTransferDefaultsDescriptor getDescriptor() {
         return Hudson.getInstance().getDescriptorByType(CifsOverrideTransferDefaultsDescriptor.class);
     }
@@ -99,14 +113,6 @@ public class CifsOverrideTransferDefaults implements TransferOptions, Describabl
         @Override
         public String getDisplayName() {
             return "CifsOverrideTransferDefaultsDescriptor - not visible ...";
-        }
-
-        public boolean canUseExcludes() {
-            return BPTransfer.canUseExcludes();
-        }
-
-        public boolean canUseNoDefaultExcludes() {
-            return BPTransfer.canUseNoDefaultExcludes();
         }
 
         public jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages getCommonFieldNames() {

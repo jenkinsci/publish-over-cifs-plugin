@@ -129,12 +129,6 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     public FormValidation doCheckRetryDelay(@QueryParameter final String value) {
         return FormValidation.validatePositiveInteger(value);
     }
-    public boolean canUseExcludes() {
-        return BPTransfer.canUseExcludes();
-    }
-    public boolean canUseNoDefaultExcludes() {
-        return BPTransfer.canUseNoDefaultExcludes();
-    }
     public String getDefaultMasterNodeName() {
         return BPInstanceConfig.DEFAULT_MASTER_NODE_NAME;
     }
