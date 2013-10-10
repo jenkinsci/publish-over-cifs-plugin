@@ -277,4 +277,9 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
+    @Override
+    public Object readResolve() {
+        return super.readResolve();
+    }
+
 }

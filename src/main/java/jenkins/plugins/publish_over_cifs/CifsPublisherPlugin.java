@@ -99,7 +99,14 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
     }
 
     @Extension
-    public static class Descriptor extends CifsPublisherPluginDescriptor { }
+    public static class Descriptor extends CifsPublisherPluginDescriptor {
+
+        @Override
+        public Object readResolve() {
+            return super.readResolve();
+        }
+
+    }
 
     public static class DescriptorMessages implements BPPluginDescriptor.BPDescriptorMessages { }
 
