@@ -199,11 +199,6 @@
             <id>repo.jenkins-ci.org</id>
             <url>http://repo.jenkins-ci.org/public/</url>
         </repository>
- <repository>
-            <id>indeloof</id>
-            <url>file:///Users/nicolas/Temp/repo</url>
-        </repository>
-
     </repositories>
 
     <pluginRepositories>

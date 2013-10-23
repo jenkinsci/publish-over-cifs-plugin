@@ -99,7 +99,16 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
     }
 
     @Extension
-    public static class Descriptor extends CifsPublisherPluginDescriptor { }
+    public static class Descriptor extends CifsPublisherPluginDescriptor {
+
+        // While this looks redundant, it resolves some issues with XStream Reflection causing it
+        // not to persist settings after a reboot
+        @Override
+        public Object readResolve() {
+            return super.readResolve();
+        }
+
+    }
 
     public static class DescriptorMessages implements BPPluginDescriptor.BPDescriptorMessages { }
 
