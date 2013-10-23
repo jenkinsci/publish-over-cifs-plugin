@@ -277,6 +277,8 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
+    // While this looks redundant, it resolves some issues with XStream Reflection causing it
+    // not to persist settings after a reboot
     @Override
     public Object readResolve() {
         return super.readResolve();
