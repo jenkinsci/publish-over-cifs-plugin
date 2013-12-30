@@ -33,8 +33,7 @@ import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.File;
@@ -45,6 +44,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.jvnet.hudson.test.JenkinsRule;
 
 @SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods", "PMD.AvoidUsingHardCodedIP" })
 public class CifsHostConfigurationTest {
@@ -58,21 +59,28 @@ public class CifsHostConfigurationTest {
     private static String origSoTimeout;
     private static String origResolveOrder;
 
-    @BeforeClass public static void before() {
-        SecretHelper.setSecretKey();
-        origWinsServer = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_WINS);
-        origTimeout = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_TIMEOUT);
-        origSoTimeout = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_SO_TIMEOUT);
-        origResolveOrder = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_RESOLVE_ORDER);
-    }
+    @Rule 
+    public JenkinsRule jenkinsRule = new JenkinsRule() {
+        @Override 
+        protected void before() throws Throwable {
+            super.before();
+            SecretHelper.setSecretKey();
+            origWinsServer = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_WINS);
+            origTimeout = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_TIMEOUT);
+            origSoTimeout = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_SO_TIMEOUT);
+            origResolveOrder = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_RESOLVE_ORDER);
+        }
 
-    @AfterClass public static void after() {
-        SecretHelper.clearSecretKey();
-        restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_WINS, origWinsServer);
-        restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_TIMEOUT, origTimeout);
-        restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_SO_TIMEOUT, origSoTimeout);
-        restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_RESOLVE_ORDER, origResolveOrder);
-    }
+        @Override
+        protected void after() throws Exception {
+            super.after();
+            SecretHelper.clearSecretKey();
+            restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_WINS, origWinsServer);
+            restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_TIMEOUT, origTimeout);
+            restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_SO_TIMEOUT, origSoTimeout);
+            restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_RESOLVE_ORDER, origResolveOrder);
+        }
+    };
 
     private static void restoreSysProp(final String key, final String orig) {
         if (orig == null) System.clearProperty(key);
