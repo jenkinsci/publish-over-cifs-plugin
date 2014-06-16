@@ -35,7 +35,7 @@
     <j:set var="m_label" value="${descriptor.publisherDescriptor.publisherLabelFieldNames}"/>
     <j:set var="m_retry" value="${descriptor.publisherDescriptor.retryFieldNames}"/>
     
-    <j:set var="helpUrl" value="${rootURL}/plugin/publish-over-cifs/help/config/"/>
+    <j:set var="helpUrl" value="/plugin/publish-over-cifs/help/config/"/>
     <j:set var="inPromotionSection" value='${descriptor.getClass().canonicalName.contains("CifsPromotionPublisherPlugin")}'/>
 
     <f:entry title='${inPromotionSection ? "" : "%publishers.section"}'>
