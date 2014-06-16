@@ -28,7 +28,7 @@
 
   <j:set var="m" value="${descriptor.hostConfigurationFieldNames}"/>
   
-  <j:set var="helpUrl" value="${rootURL}/plugin/publish-over-cifs/help/global/"/>
+  <j:set var="helpUrl" value="/plugin/publish-over-cifs/help/global/"/>
   <j:invokeStatic className="jenkins.plugins.publish_over_cifs.CifsHostConfiguration" method="getDefaultPort" var="defaultPort"/>
   <j:invokeStatic className="jenkins.plugins.publish_over_cifs.CifsHostConfiguration" method="getDefaultTimeout" var="defaultTimeout"/>
 
@@ -55,7 +55,7 @@
             <f:entry title="${m.port()}" help="${helpUrl}port.html">
               <f:textbox name="_.port" value="${instance.port}" default="${defaultPort}" checkUrl="${descriptor.getCheckUrl('port')}"/>
             </f:entry>
-            <f:entry title="${m.timeout()}" help="${helpUrl}timeout.html">
+            <f:entry title="${m.timeout()}" help="${helpUrl}timeOut.html">
               <f:textbox name="_.timeout" value="${instance.timeOut}" default="${defaultTimeout}" checkUrl="${descriptor.getCheckUrl('timeout')}"/>
             </f:entry>
           </f:advanced>
