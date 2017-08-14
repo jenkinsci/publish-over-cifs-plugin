@@ -2,6 +2,7 @@
  * The MIT License
  *
  * Copyright (C) 2010-2011 by Anthony Robinson
+ * Copyright (C) 2017 Xovis AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +25,15 @@
 
 package jenkins.plugins.publish_over_cifs;
 
+import com.hierynomus.msdtyp.AccessMask;
+import com.hierynomus.mssmb2.SMB2CreateDisposition;
+import com.hierynomus.smbj.SMBClient;
+import com.hierynomus.smbj.auth.AuthenticationContext;
+import com.hierynomus.smbj.connection.Connection;
+import com.hierynomus.smbj.session.Session;
+import com.hierynomus.smbj.share.DiskShare;
+import com.hierynomus.smbj.share.File;
 import hudson.FilePath;
-import jcifs.smb.SmbFile;
-import jcifs.smb.NtlmPasswordAuthentication;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPDefaultClient;
 import jenkins.plugins.publish_over.BapPublisherException;
@@ -35,64 +42,105 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
+import java.util.EnumSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CifsClient extends BPDefaultClient<CifsTransfer> {
 
-    private final CifsHelper helper = new CifsHelper();
     private final BPBuildInfo buildInfo;
-    private final String baseUrl;
-    private final NtlmPasswordAuthentication auth;
+    private final String server;
+    private final String shareName;
+    private final String initialContext;
+    private final AuthenticationContext auth;
     private String context;
 
-    public CifsClient(final BPBuildInfo buildInfo, final String baseUrl,
-	NtlmPasswordAuthentication auth) {
+    public CifsClient(final BPBuildInfo buildInfo, final String server, final String remoteRootDir, AuthenticationContext auth) {
         this.buildInfo = buildInfo;
-        this.baseUrl = baseUrl;
+        this.server = server;
+        this.shareName = getShare(remoteRootDir);
         this.auth = auth;
-        context = baseUrl;
+        this.initialContext = context = getSubfolder(remoteRootDir);
     }
 
     protected String getContext() { return context; }
 
+    private static Pattern p = Pattern.compile("\\\\?([^\\\\]+)\\\\?(.*)");
+    private String getShare(String remoteRootDir) {
+        Matcher m = p.matcher(fix(remoteRootDir));
+        if (m.find()) {
+            return m.group(1);
+        }
+
+        return null;
+    }
+
+    private String getSubfolder(String remoteRootDir) {
+        Matcher m = p.matcher(fix(remoteRootDir));
+        if (m.find()) {
+            return m.group(2);
+        }
+
+        return "";
+    }
+
     @Override
     public boolean changeToInitialDirectory() {
-        context = baseUrl;
+        context = initialContext;
         return true;
     }
 
     public boolean changeDirectory(final String directory) {
         final String newLocation = createUrlForSubDir(directory);
-        final SmbFile dir = createFile(newLocation);
-        if (helper.exists(dir, newLocation) && helper.canRead(dir, newLocation)) {
-            context = newLocation;
-            return true;
-        } else {
+        try {
+            return execute(share -> {
+                if (share.folderExists(fix(newLocation)) && share.list(fix(newLocation)).size() >= 0) {
+                    context = newLocation;
+                    return true;
+                }
+
+                return false;
+            });
+        } catch (Exception e) {
             return false;
         }
     }
 
     private String createUrlForSubDir(final String directory) {
-        return directory.endsWith("/") ? context + directory : context + directory + '/';
+        return context + directory + (directory.endsWith("/") ? "" : '/');
     }
 
     public boolean makeDirectory(final String directory) {
         final String newDirectoryUrl = createUrlForSubDir(directory);
-        final SmbFile dir = createFile(newDirectoryUrl);
-        if (helper.exists(dir, newDirectoryUrl)) throw new BapPublisherException(
-                Messages.exception_mkdir_directoryExists(helper.hideUserInfo(newDirectoryUrl)));
-        if (buildInfo.isVerbose()) buildInfo.println(Messages.console_mkdir(helper.hideUserInfo(newDirectoryUrl)));
-        helper.mkdirs(dir, newDirectoryUrl);
-        return true;
+        try {
+            executeVoid(share -> {
+                if (share.folderExists(fix(newDirectoryUrl))) {
+                    throw new BapPublisherException(Messages.exception_mkdir_directoryExists(newDirectoryUrl));
+                }
+
+                if (buildInfo.isVerbose()) {
+                    buildInfo.println(Messages.console_mkdir(newDirectoryUrl));
+                }
+
+                share.mkdir(fix(newDirectoryUrl));
+            });
+
+            return true;
+        } catch (Exception e) {
+            throw new BapPublisherException(e);
+        }
     }
 
     public void deleteTree() throws IOException {
-        if (buildInfo.isVerbose()) buildInfo.println(Messages.console_clean(helper.hideUserInfo(context)));
-        final SmbFile[] files = helper.listFiles(createFile(context), context);
-        if (files == null) throw new BapPublisherException(Messages.exception_listFilesReturnedNull(helper.hideUserInfo(context)));
-        for (final SmbFile file : files) {
-            if (buildInfo.isVerbose()) buildInfo.println(Messages.console_delete(helper.hideUserInfo(file.getCanonicalPath())));
-            helper.delete(file);
+        if (buildInfo.isVerbose()){
+            buildInfo.println(Messages.console_clean(context));
+        }
+
+        try {
+            executeVoid(share -> share.rmdir(fix(context), true));
+        } catch (Exception smbe) {
+            throw new BapPublisherException(
+                    Messages.exception_jCifsException_delete(context, smbe.getLocalizedMessage()));
         }
     }
 
@@ -103,12 +151,24 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
 
     public void transferFile(final CifsTransfer transfer, final FilePath filePath, final InputStream content) throws IOException {
         final String newFileUrl = context + filePath.getName();
-        if (buildInfo.isVerbose()) buildInfo.println(Messages.console_copy(helper.hideUserInfo(newFileUrl)));
-        final OutputStream out = createFile(newFileUrl).getOutputStream();
+        if (buildInfo.isVerbose()) {
+            buildInfo.println(Messages.console_copy(newFileUrl));
+        }
+
         try {
-            IOUtils.copy(content, out);
-        } finally {
-            out.close();
+            executeVoid(share -> {
+                File f = share.openFile(fix(newFileUrl),
+                        EnumSet.of(AccessMask.GENERIC_WRITE, AccessMask.MAXIMUM_ALLOWED),
+                        SMB2CreateDisposition.FILE_OVERWRITE_IF);
+                try (OutputStream out = f.getOutputStream()) {
+                    IOUtils.copy(content, out);
+                }
+                finally {
+                    f.closeSilently();
+                }
+            });
+        } catch (Exception e) {
+            throw new BapPublisherException("Cannot transfer file " + newFileUrl, e);
         }
     }
 
@@ -118,21 +178,36 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
     public void disconnectQuietly() {
     }
 
-    @SuppressWarnings("PMD.PreserveStackTrace") // security
-    private SmbFile createFile(final String url) {
-        try {
-            return createSmbFile(url);
-        } catch (MalformedURLException mue) {
-            throw new BapPublisherException(Messages.exception_maformedUrlException(helper.hideUserInfo(url)));
-        }
+    private String fix(String dir) {
+        return dir.replace('/', '\\');
     }
 
-    protected SmbFile createSmbFile(final String url) throws MalformedURLException {
-	if(auth != null) {
-            return new SmbFile(url, auth);
-        } else {
-            return new SmbFile(url);
-        }
+    @FunctionalInterface
+    interface Function<T> {
+        T apply(DiskShare share) throws Exception;
     }
 
+    @FunctionalInterface
+    interface Consumer {
+        void apply(DiskShare share) throws Exception;
+    }
+
+    private void executeVoid(Consumer task) throws Exception {
+        execute(share -> {
+            task.apply(share);
+            return null;
+        });
+    }
+
+    protected <T> T execute(Function<T> task) throws Exception {
+        SMBClient client = new SMBClient();
+        try (Connection connection = client.connect(server)) {
+            Session session = connection.authenticate(auth);
+
+            // Connect to Share
+            try (DiskShare share = (DiskShare) session.connectShare(shareName)) {
+                return task.apply(share);
+            }
+        }
+    }
 }
