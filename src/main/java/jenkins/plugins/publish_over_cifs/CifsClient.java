@@ -60,7 +60,7 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
         this.server = server;
         this.shareName = getShare(remoteRootDir);
         this.auth = auth;
-        this.initialContext = context = getSubfolder(remoteRootDir);
+        this.initialContext = context = getSubfolder(remoteRootDir) + "/";
     }
 
     protected String getContext() { return context; }
