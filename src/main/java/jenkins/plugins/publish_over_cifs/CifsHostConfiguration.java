@@ -25,13 +25,13 @@
 
 package jenkins.plugins.publish_over_cifs;
 
-import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.smbj.SMBClient;
 import com.hierynomus.smbj.auth.AuthenticationContext;
 import com.hierynomus.smbj.connection.Connection;
 import com.hierynomus.smbj.session.Session;
 import com.hierynomus.smbj.share.DiskShare;
 import hudson.Util;
+import jenkins.bouncycastle.api.SecurityProviderInitializer;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPHostConfiguration;
 import jenkins.plugins.publish_over.BapPublisherException;
@@ -73,6 +73,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
 
     @Override
     public CifsClient createClient(final BPBuildInfo buildInfo) {
+        SecurityProviderInitializer.addSecurityProvider();
         assertRequiredOptions();
         final AuthenticationContext auth = new AuthenticationContext(getUsername(false), getPassword().toCharArray(), getDomain());
         testConfig(getRemoteRootDir(), auth);
