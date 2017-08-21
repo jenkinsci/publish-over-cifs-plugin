@@ -60,12 +60,13 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
         this.server = server;
         this.shareName = getShare(remoteRootDir);
         this.auth = auth;
-        this.initialContext = context = getSubfolder(remoteRootDir) + "/";
+        String subfolder = fix(getSubfolder(remoteRootDir));
+        this.initialContext = context = subfolder + (subfolder.endsWith("\\") || subfolder.length() == 0 ? "" : "\\");
     }
 
     protected String getContext() { return context; }
 
-    private static Pattern p = Pattern.compile("\\\\?([^\\\\]+)\\\\?(.*)");
+    private static Pattern p = Pattern.compile("[\\\\/]?([^\\\\/]+)[\\\\/]?(.*)");
     private String getShare(String remoteRootDir) {
         Matcher m = p.matcher(fix(remoteRootDir));
         if (m.find()) {
@@ -106,8 +107,9 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
         }
     }
 
-    private String createUrlForSubDir(final String directory) {
-        return context + directory + (directory.endsWith("/") ? "" : '/');
+    private String createUrlForSubDir(String directory) {
+        directory = fix(directory);
+        return context + directory + (directory.endsWith("\\") ? "" : '\\');
     }
 
     public boolean makeDirectory(final String directory) {
@@ -179,7 +181,12 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
     }
 
     private String fix(String dir) {
-        return dir.replace('/', '\\');
+        dir = dir.replace('/', '\\');
+        while (dir.startsWith("\\")) {
+            dir = dir.substring(1);
+        }
+
+        return dir;
     }
 
     @FunctionalInterface

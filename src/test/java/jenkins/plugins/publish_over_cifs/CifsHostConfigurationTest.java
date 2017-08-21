@@ -112,7 +112,7 @@ public class CifsHostConfigurationTest {
 
     @Test public void fixupUnixSeparatorsInShare() throws Exception {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, null, null, "myShare/and/subDirs", mockSmbFile);
-        assertUrl("and\\subDirs", config);
+        assertUrl("and\\subDirs\\", config);
     }
 
     private void assertUrl(final String expectedUrl, final CifsHostConfiguration hostConfig) throws Exception {

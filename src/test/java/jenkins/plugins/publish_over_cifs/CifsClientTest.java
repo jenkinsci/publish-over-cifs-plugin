@@ -55,7 +55,7 @@ public class CifsClientTest {
 
     private static final String TEST_SERVER = "server";
     private static final String TEST_ROOT_SHARE = "share";
-    private static final String NEW_DIR = "new/dir";
+    private static final String NEW_DIR = "new\\dir";
     private final transient IMocksControl mockControl = EasyMock.createStrictControl();
     private final transient DiskShare mockShare = mockControl.createMock(DiskShare.class);
     private final BPBuildInfo buildInfo = CifsTestHelper.createEmpty();
@@ -65,7 +65,7 @@ public class CifsClientTest {
     }
 
     @Test public void changeDirectoryUpdatesContext() throws Exception {
-        final String expectedUrl = NEW_DIR + "/";
+        final String expectedUrl = NEW_DIR + "\\";
         final CifsClient cifsClient = new CifsClientWithMockFiles(expectedUrl);
         expect(mockShare.folderExists(fix(expectedUrl))).andReturn(true);
         expect(mockShare.list(fix(expectedUrl))).andReturn(Collections.emptyList());
@@ -76,7 +76,7 @@ public class CifsClientTest {
     }
 
     @Test public void changeDirectoryDoesNotUpdateContextIfDirNotExist() throws Exception {
-        final String absUrl = NEW_DIR + "/";
+        final String absUrl = NEW_DIR + "\\";
         final CifsClient cifsClient = new CifsClientWithMockFiles(absUrl);
         expect(mockShare.folderExists(fix(absUrl))).andReturn(false);
         mockControl.replay();
@@ -131,7 +131,7 @@ public class CifsClientTest {
 
     @Test
     public void makeDirectoryThrowsExceptionIfDirectoryExists() throws Exception {
-        final String absUrl = NEW_DIR + "/";
+        final String absUrl = NEW_DIR + "\\";
         final CifsClient cifsClient = new CifsClientWithMockFiles(absUrl);
         expect(mockShare.folderExists(fix(absUrl))).andReturn(true);
         mockControl.replay();

@@ -143,7 +143,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         }
     }
 
-    private static Pattern p = Pattern.compile("\\\\?([^\\\\]+)\\\\?(.*)");
+    private static Pattern p = Pattern.compile("[\\\\/]?([^\\\\/]+)[\\\\/]?(.*)");
     private String getShare(String remoteRootDir) {
         Matcher m = p.matcher(fix(remoteRootDir));
         if (m.find()) {
