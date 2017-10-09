@@ -28,6 +28,7 @@ import hudson.Extension;
 import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.Node;
+import hudson.model.Run;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPPlugin;
@@ -40,6 +41,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Object> {
@@ -53,8 +55,32 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
                 paramPublish);
     }
 
+    public List<CifsPublisher> getPublishers() {
+        return this.getDelegate().getPublishers();
+    }
+
+    public boolean isContinueOnError() {
+        return this.getDelegate().isContinueOnError();
+    }
+
+    public boolean isFailOnError() {
+        return this.getDelegate().isFailOnError();
+    }
+
+    public boolean isAlwaysPublishFromMaster() {
+        return this.getDelegate().isAlwaysPublishFromMaster();
+    }
+
+    public String getMasterNodeName() {
+        return this.getDelegate().getMasterNodeName();
+    }
+
+    public CifsParamPublish getParamPublish() {
+        return (CifsParamPublish) this.getDelegate().getParamPublish();
+    }
+
     @Override
-    protected void fixup(final AbstractBuild<?, ?> build, final BPBuildInfo buildInfo) {
+    protected void fixup(final Run<?, ?> build, final BPBuildInfo buildInfo) {
         final Jenkins jenkins = Jenkins.getInstance();
         final CifsNodeProperties defaults = jenkins.getGlobalNodeProperties().get(CifsNodeProperties.class);
         if (defaults != null) buildInfo.put(CifsPublisher.CTX_KEY_NODE_PROPERTIES_DEFAULT, map(defaults));

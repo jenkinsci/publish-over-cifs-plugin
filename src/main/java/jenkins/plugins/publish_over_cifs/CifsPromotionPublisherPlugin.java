@@ -25,10 +25,9 @@
 package jenkins.plugins.publish_over_cifs;
 
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
+import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
@@ -36,17 +35,19 @@ import hudson.tasks.Publisher;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPInstanceConfig;
 import jenkins.plugins.publish_over.BPPlugin;
+import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 
 @SuppressWarnings("PMD.LooseCoupling") // serializable
-public class CifsPromotionPublisherPlugin extends Notifier {
+public class CifsPromotionPublisherPlugin extends Notifier implements SimpleBuildStep {
 
     private final CifsPublisherPlugin delegate;
 
@@ -63,9 +64,8 @@ public class CifsPromotionPublisherPlugin extends Notifier {
     }
 
     @Override
-    public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
-                    throws InterruptedException, IOException {
-        return delegate.perform(build, launcher, listener);
+    public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
+        delegate.perform(run, workspace, launcher, listener);
     }
 
     public BuildStepMonitor getRequiredMonitorService() {
