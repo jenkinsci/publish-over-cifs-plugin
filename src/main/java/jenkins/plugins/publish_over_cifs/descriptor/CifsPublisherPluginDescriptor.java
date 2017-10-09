@@ -26,22 +26,14 @@ package jenkins.plugins.publish_over_cifs.descriptor;
 
 import hudson.Util;
 import hudson.model.AbstractProject;
-import hudson.model.Hudson;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 import hudson.util.CopyOnWriteList;
 import hudson.util.FormValidation;
-import jenkins.plugins.publish_over.BPBuildInfo;
-import jenkins.plugins.publish_over.BPInstanceConfig;
-import jenkins.plugins.publish_over.BPPlugin;
-import jenkins.plugins.publish_over.BPTransfer;
-import jenkins.plugins.publish_over.BPValidators;
-import jenkins.plugins.publish_over.JenkinsCapabilities;
-import jenkins.plugins.publish_over_cifs.CifsHostConfiguration;
-import jenkins.plugins.publish_over_cifs.CifsNodeProperties;
-import jenkins.plugins.publish_over_cifs.CifsPublisher;
-import jenkins.plugins.publish_over_cifs.CifsPublisherPlugin;
+import jenkins.model.Jenkins;
+import jenkins.plugins.publish_over.*;
+import jenkins.plugins.publish_over_cifs.*;
 import jenkins.plugins.publish_over_cifs.Messages;
 import jenkins.plugins.publish_over_cifs.options.CifsDefaults;
 import jenkins.plugins.publish_over_cifs.options.CifsPluginDefaults;
@@ -142,7 +134,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         return this;
     }
     public CifsPluginDefaults.CifsPluginDefaultsDescriptor getPluginDefaultsDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(CifsPluginDefaults.CifsPluginDefaultsDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(CifsPluginDefaults.CifsPluginDefaultsDescriptor.class);
     }
 
     public jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages getCommonManageMessages() {
@@ -168,7 +160,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         final BPBuildInfo buildInfo = new BPBuildInfo(
             TaskListener.NULL,
             "",
-            Hudson.getInstance().getRootPath(),
+            Jenkins.getInstance().getRootPath(),
             null,
             null
         );

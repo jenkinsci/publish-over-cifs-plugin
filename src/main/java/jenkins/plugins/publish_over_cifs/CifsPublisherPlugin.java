@@ -27,8 +27,8 @@ package jenkins.plugins.publish_over_cifs;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.AbstractBuild;
-import hudson.model.Hudson;
 import hudson.model.Node;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPPluginDescriptor;
@@ -55,16 +55,16 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
 
     @Override
     protected void fixup(final AbstractBuild<?, ?> build, final BPBuildInfo buildInfo) {
-        final Hudson hudson = Hudson.getInstance();
-        final CifsNodeProperties defaults = hudson.getGlobalNodeProperties().get(CifsNodeProperties.class);
+        final Jenkins jenkins = Jenkins.getInstance();
+        final CifsNodeProperties defaults = jenkins.getGlobalNodeProperties().get(CifsNodeProperties.class);
         if (defaults != null) buildInfo.put(CifsPublisher.CTX_KEY_NODE_PROPERTIES_DEFAULT, map(defaults));
         final String currNodeName = buildInfo.getCurrentBuildEnv().getEnvVars().get(BPBuildInfo.ENV_NODE_NAME);
-        storeProperties(buildInfo, hudson, currNodeName, CifsPublisher.CTX_KEY_NODE_PROPERTIES_CURRENT);
+        storeProperties(buildInfo, jenkins, currNodeName, CifsPublisher.CTX_KEY_NODE_PROPERTIES_CURRENT);
     }
 
-    private void storeProperties(final BPBuildInfo buildInfo, final Hudson hudson, final String nodeName, final String contextKey) {
+    private void storeProperties(final BPBuildInfo buildInfo, final Jenkins jenkins, final String nodeName, final String contextKey) {
         if (Util.fixEmptyAndTrim(nodeName) == null) return;
-        final Node node = hudson.getNode(nodeName);
+        final Node node = jenkins.getNode(nodeName);
         if (node == null) return;
         final CifsNodeProperties currNodeProps = node.getNodeProperties().get(CifsNodeProperties.class);
         if (currNodeProps != null) buildInfo.put(contextKey, map(currNodeProps));
@@ -91,7 +91,7 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
     }
 
     public Descriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(Descriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(Descriptor.class);
     }
 
     public CifsHostConfiguration getConfiguration(final String name) {

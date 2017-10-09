@@ -29,9 +29,9 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
-import hudson.model.Hudson;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPInstanceConfig;
 import jenkins.plugins.publish_over.BPPlugin;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -104,7 +104,7 @@ public class CifsBuilderPlugin extends Builder {
             return getViewPage(CifsPublisherPlugin.class, "config.jelly");
         }
         public CifsPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Hudson.getInstance().getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
+            return Jenkins.getInstance().getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
         }
     }
 

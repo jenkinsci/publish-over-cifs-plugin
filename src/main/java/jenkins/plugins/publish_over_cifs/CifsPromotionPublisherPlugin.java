@@ -29,11 +29,11 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
-import hudson.model.Hudson;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPInstanceConfig;
 import jenkins.plugins.publish_over.BPPlugin;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -119,7 +119,7 @@ public class CifsPromotionPublisherPlugin extends Notifier {
             return getViewPage(CifsPublisherPlugin.class, "config.jelly");
         }
         public CifsPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Hudson.getInstance().getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
+            return Jenkins.getInstance().getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
         }
     }
 
