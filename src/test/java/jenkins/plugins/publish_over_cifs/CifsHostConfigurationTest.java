@@ -62,7 +62,7 @@ public class CifsHostConfigurationTest {
     @Rule 
     public JenkinsRule jenkinsRule = new JenkinsRule() {
         @Override 
-        protected void before() throws Throwable {
+        public void before() throws Throwable {
             super.before();
             SecretHelper.setSecretKey();
             origWinsServer = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_WINS);
@@ -72,7 +72,7 @@ public class CifsHostConfigurationTest {
         }
 
         @Override
-        protected void after() throws Exception {
+        public void after() throws Exception {
             super.after();
             SecretHelper.clearSecretKey();
             restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_WINS, origWinsServer);
