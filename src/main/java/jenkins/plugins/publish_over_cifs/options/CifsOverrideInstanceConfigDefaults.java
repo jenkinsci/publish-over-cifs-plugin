@@ -58,7 +58,12 @@ public class CifsOverrideInstanceConfigDefaults implements InstanceConfigOptions
     }
 
     public CifsOverrideInstanceConfigDefaultsDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(CifsOverrideInstanceConfigDefaultsDescriptor.class);
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            return jenkins.getDescriptorByType(CifsOverrideInstanceConfigDefaultsDescriptor.class);
+        } else {
+            return null;
+        }
     }
 
     @Extension

@@ -119,7 +119,12 @@ public class CifsPromotionPublisherPlugin extends Notifier implements SimpleBuil
             return getViewPage(CifsPublisherPlugin.class, "config.jelly");
         }
         public CifsPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Jenkins.getInstance().getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
+            Jenkins jenkins = Jenkins.getInstance();
+            if (jenkins != null) {
+                return jenkins.getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
+            } else {
+                return null;
+            }
         }
     }
 

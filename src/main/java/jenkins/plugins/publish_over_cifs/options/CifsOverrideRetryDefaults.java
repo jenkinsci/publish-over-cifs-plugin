@@ -53,7 +53,12 @@ public class CifsOverrideRetryDefaults implements RetryOptions, Describable<Cifs
     }
 
     public CifsOverrideRetryDefaultsDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(CifsOverrideRetryDefaultsDescriptor.class);
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            return jenkins.getDescriptorByType(CifsOverrideRetryDefaultsDescriptor.class);
+        } else {
+            return null;
+        }
     }
 
     @Extension

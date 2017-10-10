@@ -65,7 +65,12 @@ public class CifsOverridePublisherDefaults implements PublisherOptions, Describa
     }
 
     public CifsOverridePublisherDefaultsDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(CifsOverridePublisherDefaultsDescriptor.class);
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            return jenkins.getDescriptorByType(CifsOverridePublisherDefaultsDescriptor.class);
+        } else {
+            return null;
+        }
     }
 
     @Extension
@@ -77,7 +82,12 @@ public class CifsOverridePublisherDefaults implements PublisherOptions, Describa
         }
 
         public CifsPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
-            return Jenkins.getInstance().getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
+            Jenkins jenkins = Jenkins.getInstance();
+            if (jenkins != null) {
+                return jenkins.getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
+            } else {
+                return null;
+            }
         }
 
         public jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages getCommonFieldNames() {

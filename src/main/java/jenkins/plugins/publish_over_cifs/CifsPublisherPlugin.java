@@ -83,10 +83,12 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
     @Override
     protected void fixup(final Run<?, ?> build, final BPBuildInfo buildInfo) {
         final Jenkins jenkins = Jenkins.getInstance();
-        final CifsNodeProperties defaults = jenkins.getGlobalNodeProperties().get(CifsNodeProperties.class);
-        if (defaults != null) buildInfo.put(CifsPublisher.CTX_KEY_NODE_PROPERTIES_DEFAULT, map(defaults));
-        final String currNodeName = buildInfo.getCurrentBuildEnv().getEnvVars().get(BPBuildInfo.ENV_NODE_NAME);
-        storeProperties(buildInfo, jenkins, currNodeName, CifsPublisher.CTX_KEY_NODE_PROPERTIES_CURRENT);
+        if (jenkins != null) {
+            final CifsNodeProperties defaults = jenkins.getGlobalNodeProperties().get(CifsNodeProperties.class);
+            if (defaults != null) buildInfo.put(CifsPublisher.CTX_KEY_NODE_PROPERTIES_DEFAULT, map(defaults));
+            final String currNodeName = buildInfo.getCurrentBuildEnv().getEnvVars().get(BPBuildInfo.ENV_NODE_NAME);
+            storeProperties(buildInfo, jenkins, currNodeName, CifsPublisher.CTX_KEY_NODE_PROPERTIES_CURRENT);
+        }
     }
 
     private void storeProperties(final BPBuildInfo buildInfo, final Jenkins jenkins, final String nodeName, final String contextKey) {
@@ -118,7 +120,12 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
     }
 
     public Descriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(Descriptor.class);
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            return jenkins.getDescriptorByType(Descriptor.class);
+        } else {
+            return null;
+        }
     }
 
     public CifsHostConfiguration getConfiguration(final String name) {

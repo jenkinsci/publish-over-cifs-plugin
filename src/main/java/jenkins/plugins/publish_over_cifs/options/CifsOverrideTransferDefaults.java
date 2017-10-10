@@ -102,7 +102,12 @@ public class CifsOverrideTransferDefaults implements TransferOptions, Describabl
     }
 
     public CifsOverrideTransferDefaultsDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(CifsOverrideTransferDefaultsDescriptor.class);
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            return jenkins.getDescriptorByType(CifsOverrideTransferDefaultsDescriptor.class);
+        } else {
+            return null;
+        }
     }
 
     @Extension

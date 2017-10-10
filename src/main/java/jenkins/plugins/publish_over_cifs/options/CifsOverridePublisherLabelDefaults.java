@@ -45,7 +45,12 @@ public class CifsOverridePublisherLabelDefaults implements PublisherLabelOptions
     }
 
     public CifsOverridePublisherLabelDefaultsDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(CifsOverridePublisherLabelDefaultsDescriptor.class);
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            return jenkins.getDescriptorByType(CifsOverridePublisherLabelDefaultsDescriptor.class);
+        } else {
+            return null;
+        }
     }
 
     @Extension

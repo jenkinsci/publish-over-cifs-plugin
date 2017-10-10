@@ -45,7 +45,12 @@ public class CifsOverrideParamPublishDefaults implements ParamPublishOptions, De
     }
 
     public CifsOverrideParamPublishDefaultsDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(CifsOverrideParamPublishDefaultsDescriptor.class);
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            return jenkins.getDescriptorByType(CifsOverrideParamPublishDefaultsDescriptor.class);
+        } else {
+            return null;
+        }
     }
 
     @Extension
