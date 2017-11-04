@@ -26,7 +26,9 @@
 package jenkins.plugins.publish_over_cifs;
 
 import com.hierynomus.msdtyp.AccessMask;
+import com.hierynomus.msfscc.FileAttributes;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
+import com.hierynomus.mssmb2.SMB2ShareAccess;
 import com.hierynomus.smbj.SMBClient;
 import com.hierynomus.smbj.auth.AuthenticationContext;
 import com.hierynomus.smbj.connection.Connection;
@@ -160,8 +162,11 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
         try {
             executeVoid(share -> {
                 File f = share.openFile(fix(newFileUrl),
-                        EnumSet.of(AccessMask.GENERIC_WRITE, AccessMask.MAXIMUM_ALLOWED),
-                        SMB2CreateDisposition.FILE_OVERWRITE_IF);
+                        EnumSet.of(AccessMask.GENERIC_WRITE),
+                        null,
+                        SMB2ShareAccess.ALL,
+                        SMB2CreateDisposition.FILE_OVERWRITE_IF,
+                        null);
                 try (OutputStream out = f.getOutputStream()) {
                     IOUtils.copy(content, out);
                 }

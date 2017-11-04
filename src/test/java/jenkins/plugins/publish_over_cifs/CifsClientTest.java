@@ -27,9 +27,10 @@ package jenkins.plugins.publish_over_cifs;
 
 import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
+import com.hierynomus.mssmb2.SMB2ShareAccess;
+import com.hierynomus.protocol.transport.TransportException;
 import com.hierynomus.smbj.share.DiskShare;
 import com.hierynomus.smbj.share.File;
-import com.hierynomus.smbj.transport.TransportException;
 import hudson.FilePath;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
@@ -151,8 +152,11 @@ public class CifsClientTest {
         final CifsClient cifsClient = new CifsClientWithMockFiles(fileName);
         File mockFile = mockControl.createMock(File.class);
         expect(mockShare.openFile(fileName,
-                EnumSet.of(AccessMask.MAXIMUM_ALLOWED, AccessMask.GENERIC_WRITE),
-                SMB2CreateDisposition.FILE_OVERWRITE_IF)).andReturn(mockFile);
+                EnumSet.of(AccessMask.GENERIC_WRITE),
+                null,
+                SMB2ShareAccess.ALL,
+                SMB2CreateDisposition.FILE_OVERWRITE_IF,
+                null)).andReturn(mockFile);
         expect(mockFile.getOutputStream()).andReturn(baos);
         mockFile.closeSilently();
         mockControl.replay();
