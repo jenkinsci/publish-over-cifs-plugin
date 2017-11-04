@@ -26,7 +26,6 @@
 package jenkins.plugins.publish_over_cifs;
 
 import com.hierynomus.msdtyp.AccessMask;
-import com.hierynomus.msfscc.FileAttributes;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
 import com.hierynomus.mssmb2.SMB2ShareAccess;
 import com.hierynomus.smbj.SMBClient;
@@ -63,7 +62,7 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
         this.shareName = getShare(remoteRootDir);
         this.auth = auth;
         String subfolder = fix(getSubfolder(remoteRootDir));
-        this.initialContext = context = subfolder + (subfolder.endsWith("\\") || subfolder.length() == 0 ? "" : "\\");
+        this.initialContext = context = subfolder;
     }
 
     protected String getContext() { return context; }
@@ -110,15 +109,42 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
     }
 
     private String createUrlForSubDir(String directory) {
-        directory = fix(directory);
-        return context + directory + (directory.endsWith("\\") ? "" : '\\');
+        String dir = fix(context + (context.endsWith("\\") ? "" : "\\") + directory);
+        while (dir.endsWith("\\")) {
+            dir = dir.substring(0, dir.length() - 1);
+        }
+
+        return dir;
     }
 
     public boolean makeDirectory(final String directory) {
+        // if the directory to create is nested, create all intermediate directories
+        String[] dirs = fix(directory).split("\\\\");
+        String intermediatePath = dirs[0];
+        for (int i = 1; i < dirs.length; i++) {
+            final String fullIntermediatePath = createUrlForSubDir(intermediatePath);
+            try {
+                executeVoid(share -> {
+                    if (!share.folderExists(fullIntermediatePath)) {
+                        if (buildInfo.isVerbose()) {
+                            buildInfo.println(Messages.console_mkdir(fullIntermediatePath));
+                        }
+
+                        share.mkdir(fullIntermediatePath);
+                    }
+                });
+            }
+            catch (Exception e) {
+                throw new BapPublisherException(e);
+            }
+
+            intermediatePath += "\\" + dirs[i];
+        }
+
         final String newDirectoryUrl = createUrlForSubDir(directory);
         try {
             executeVoid(share -> {
-                if (share.folderExists(fix(newDirectoryUrl))) {
+                if (share.folderExists(newDirectoryUrl)) {
                     throw new BapPublisherException(Messages.exception_mkdir_directoryExists(newDirectoryUrl));
                 }
 
@@ -126,7 +152,7 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
                     buildInfo.println(Messages.console_mkdir(newDirectoryUrl));
                 }
 
-                share.mkdir(fix(newDirectoryUrl));
+                share.mkdir(newDirectoryUrl);
             });
 
             return true;
@@ -154,7 +180,7 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
     }
 
     public void transferFile(final CifsTransfer transfer, final FilePath filePath, final InputStream content) throws IOException {
-        final String newFileUrl = context + filePath.getName();
+        final String newFileUrl = context + (context.endsWith("\\") ? "" : "\\") + filePath.getName();
         if (buildInfo.isVerbose()) {
             buildInfo.println(Messages.console_copy(newFileUrl));
         }

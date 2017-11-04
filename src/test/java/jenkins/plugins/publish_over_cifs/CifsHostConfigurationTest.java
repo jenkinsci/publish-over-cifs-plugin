@@ -25,7 +25,6 @@
 
 package jenkins.plugins.publish_over_cifs;
 
-import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.smbj.auth.AuthenticationContext;
 import com.hierynomus.smbj.share.DiskShare;
 import hudson.FilePath;
@@ -112,7 +111,7 @@ public class CifsHostConfigurationTest {
 
     @Test public void fixupUnixSeparatorsInShare() throws Exception {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, null, null, "myShare/and/subDirs", mockSmbFile);
-        assertUrl("and\\subDirs\\", config);
+        assertUrl("and\\subDirs", config);
     }
 
     private void assertUrl(final String expectedUrl, final CifsHostConfiguration hostConfig) throws Exception {

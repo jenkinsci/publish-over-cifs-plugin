@@ -28,7 +28,6 @@ package jenkins.plugins.publish_over_cifs;
 import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
 import com.hierynomus.mssmb2.SMB2ShareAccess;
-import com.hierynomus.protocol.transport.TransportException;
 import com.hierynomus.smbj.share.DiskShare;
 import com.hierynomus.smbj.share.File;
 import hudson.FilePath;
@@ -66,7 +65,7 @@ public class CifsClientTest {
     }
 
     @Test public void changeDirectoryUpdatesContext() throws Exception {
-        final String expectedUrl = NEW_DIR + "\\";
+        final String expectedUrl = NEW_DIR;
         final CifsClient cifsClient = new CifsClientWithMockFiles(expectedUrl);
         expect(mockShare.folderExists(fix(expectedUrl))).andReturn(true);
         expect(mockShare.list(fix(expectedUrl))).andReturn(Collections.emptyList());
@@ -77,7 +76,7 @@ public class CifsClientTest {
     }
 
     @Test public void changeDirectoryDoesNotUpdateContextIfDirNotExist() throws Exception {
-        final String absUrl = NEW_DIR + "\\";
+        final String absUrl = NEW_DIR;
         final CifsClient cifsClient = new CifsClientWithMockFiles(absUrl);
         expect(mockShare.folderExists(fix(absUrl))).andReturn(false);
         mockControl.replay();
@@ -87,10 +86,10 @@ public class CifsClientTest {
     }
 
     @Test public void changeDirectoryDoesNotUpdateContextIfCannotReadDir() throws Exception {
-        final String absUrl = NEW_DIR + "/";
+        final String absUrl = NEW_DIR;
         final CifsClient cifsClient = new CifsClientWithMockFiles(absUrl);
         expect(mockShare.folderExists(fix(absUrl))).andReturn(true);
-        expect(mockShare.list(fix(absUrl))).andThrow(new TransportException("cannot list"));
+        expect(mockShare.list(fix(absUrl))).andThrow(new RuntimeException("cannot list"));
         mockControl.replay();
         assertFalse(cifsClient.changeDirectory(NEW_DIR));
         assertEquals("", cifsClient.getContext());
@@ -99,8 +98,8 @@ public class CifsClientTest {
 
     @Test public void changeToInitialDirectoryResetsContext() throws Exception {
         final CifsClient cifsClient = new CifsClientWithMockFiles(NEW_DIR);
-        expect(mockShare.folderExists(fix(NEW_DIR + "/"))).andReturn(true);
-        expect(mockShare.list(fix(NEW_DIR + "/"))).andReturn(Collections.emptyList());
+        expect(mockShare.folderExists(fix(NEW_DIR))).andReturn(true);
+        expect(mockShare.list(fix(NEW_DIR))).andReturn(Collections.emptyList());
         mockControl.replay();
         assertTrue(cifsClient.changeDirectory(NEW_DIR));
         cifsClient.changeToInitialDirectory();
@@ -109,8 +108,9 @@ public class CifsClientTest {
     }
 
     @Test public void testMakeDirectory() throws Exception {
-        final String absUrl = NEW_DIR + "/";
+        final String absUrl = NEW_DIR;
         final CifsClient cifsClient = new CifsClientWithMockFiles(absUrl);
+        expect(mockShare.folderExists(fix(absUrl).split("\\\\")[0])).andReturn(true);
         expect(mockShare.folderExists(fix(absUrl))).andReturn(false);
         mockShare.mkdir(fix(absUrl));
         mockControl.replay();
@@ -120,8 +120,9 @@ public class CifsClientTest {
     }
 
     @Test public void testMakeDirectoryDoesNotAddAnExtraFS() throws Exception {
-        final String directory = "new/dir/";
+        final String directory = "new/dir";
         final CifsClient cifsClient = new CifsClientWithMockFiles(directory);
+        expect(mockShare.folderExists(fix(directory).split("\\\\")[0])).andReturn(true);
         expect(mockShare.folderExists(fix(directory))).andReturn(false);
         mockShare.mkdir(fix(directory));
         mockControl.replay();
@@ -132,8 +133,9 @@ public class CifsClientTest {
 
     @Test
     public void makeDirectoryThrowsExceptionIfDirectoryExists() throws Exception {
-        final String absUrl = NEW_DIR + "\\";
+        final String absUrl = NEW_DIR;
         final CifsClient cifsClient = new CifsClientWithMockFiles(absUrl);
+        expect(mockShare.folderExists(fix(absUrl).split("\\\\")[0])).andReturn(true);
         expect(mockShare.folderExists(fix(absUrl))).andReturn(true);
         mockControl.replay();
         try {
