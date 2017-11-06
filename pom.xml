@@ -72,8 +72,8 @@
             <version>0.19-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.jenkins-ci</groupId>
-            <artifactId>symbol-annotation</artifactId>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>structs</artifactId>
             <version>1.2</version>
         </dependency>
         <dependency>
