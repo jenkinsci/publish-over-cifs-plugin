@@ -26,7 +26,6 @@ package jenkins.plugins.publish_over_cifs;
 
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.AbstractBuild;
 import hudson.model.Node;
 import hudson.model.Run;
 import jenkins.model.Jenkins;
@@ -120,12 +119,7 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
     }
 
     public Descriptor getDescriptor() {
-        Jenkins jenkins = Jenkins.getInstance();
-        if (jenkins != null) {
-            return jenkins.getDescriptorByType(Descriptor.class);
-        } else {
-            return null;
-        }
+        return JenkinsHelper.getDescriptor(Descriptor.class);
     }
 
     public CifsHostConfiguration getConfiguration(final String name) {

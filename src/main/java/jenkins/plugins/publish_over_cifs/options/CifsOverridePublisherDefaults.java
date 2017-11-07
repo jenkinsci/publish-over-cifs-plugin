@@ -27,9 +27,8 @@ package jenkins.plugins.publish_over_cifs.options;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.PublisherOptions;
-import jenkins.plugins.publish_over_cifs.CifsPublisherPlugin;
+import jenkins.plugins.publish_over_cifs.JenkinsHelper;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class CifsOverridePublisherDefaults implements PublisherOptions, Describable<CifsOverridePublisherDefaults> {
@@ -65,12 +64,7 @@ public class CifsOverridePublisherDefaults implements PublisherOptions, Describa
     }
 
     public CifsOverridePublisherDefaultsDescriptor getDescriptor() {
-        Jenkins jenkins = Jenkins.getInstance();
-        if (jenkins != null) {
-            return jenkins.getDescriptorByType(CifsOverridePublisherDefaultsDescriptor.class);
-        } else {
-            return null;
-        }
+        return JenkinsHelper.getDescriptor(CifsOverridePublisherDefaultsDescriptor.class);
     }
 
     @Extension
@@ -79,15 +73,6 @@ public class CifsOverridePublisherDefaults implements PublisherOptions, Describa
         @Override
         public String getDisplayName() {
             return "CifsOverridePublisherDefaultsDescriptor - not visible ...";
-        }
-
-        public CifsPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
-            Jenkins jenkins = Jenkins.getInstance();
-            if (jenkins != null) {
-                return jenkins.getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
-            } else {
-                return null;
-            }
         }
 
         public jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages getCommonFieldNames() {

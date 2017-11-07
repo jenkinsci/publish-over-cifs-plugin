@@ -29,6 +29,7 @@ import hudson.ExtensionPoint;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import jenkins.model.Jenkins;
+import jenkins.plugins.publish_over_cifs.JenkinsHelper;
 
 public abstract class CifsDefaults implements Describable<CifsDefaults>, ExtensionPoint, CifsOptions {
 

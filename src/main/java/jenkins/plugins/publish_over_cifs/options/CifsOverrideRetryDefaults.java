@@ -30,6 +30,7 @@ import hudson.model.Descriptor;
 import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.RetryOptions;
+import jenkins.plugins.publish_over_cifs.JenkinsHelper;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -53,12 +54,7 @@ public class CifsOverrideRetryDefaults implements RetryOptions, Describable<Cifs
     }
 
     public CifsOverrideRetryDefaultsDescriptor getDescriptor() {
-        Jenkins jenkins = Jenkins.getInstance();
-        if (jenkins != null) {
-            return jenkins.getDescriptorByType(CifsOverrideRetryDefaultsDescriptor.class);
-        } else {
-            return null;
-        }
+        return JenkinsHelper.getDescriptor(CifsOverrideRetryDefaultsDescriptor.class);
     }
 
     @Extension
