@@ -28,16 +28,27 @@ import hudson.DescriptorExtensionList;
 import hudson.ExtensionPoint;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
+import jenkins.model.Jenkins;
+import jenkins.plugins.publish_over_cifs.JenkinsHelper;
 
 public abstract class CifsDefaults implements Describable<CifsDefaults>, ExtensionPoint, CifsOptions {
 
     public static DescriptorExtensionList<CifsDefaults, CifsDefaultsDescriptor> all() {
-        return Hudson.getInstance().<CifsDefaults, CifsDefaultsDescriptor>getDescriptorList(CifsDefaults.class);
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            return jenkins.getDescriptorList(CifsDefaults.class);
+        } else {
+            return null;
+        }
     }
 
     public CifsDefaultsDescriptor getDescriptor() {
-        return (CifsDefaultsDescriptor) Hudson.getInstance().getDescriptor(getClass());
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            return (CifsDefaultsDescriptor) jenkins.getDescriptor(getClass());
+        } else {
+            return null;
+        }
     }
 
     public abstract static class CifsDefaultsDescriptor extends Descriptor<CifsDefaults> {

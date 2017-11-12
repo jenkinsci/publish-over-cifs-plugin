@@ -27,8 +27,9 @@ package jenkins.plugins.publish_over_cifs.options;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.InstanceConfigOptions;
+import jenkins.plugins.publish_over_cifs.JenkinsHelper;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class CifsOverrideInstanceConfigDefaults implements InstanceConfigOptions, Describable<CifsOverrideInstanceConfigDefaults> {
@@ -58,7 +59,7 @@ public class CifsOverrideInstanceConfigDefaults implements InstanceConfigOptions
     }
 
     public CifsOverrideInstanceConfigDefaultsDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(CifsOverrideInstanceConfigDefaultsDescriptor.class);
+        return JenkinsHelper.getDescriptor(CifsOverrideInstanceConfigDefaultsDescriptor.class);
     }
 
     @Extension

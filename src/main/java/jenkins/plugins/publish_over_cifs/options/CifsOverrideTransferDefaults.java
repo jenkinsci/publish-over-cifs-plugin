@@ -27,10 +27,8 @@ package jenkins.plugins.publish_over_cifs.options;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
-import jenkins.plugins.publish_over.BPTransfer;
-import jenkins.plugins.publish_over.FileFinder;
 import jenkins.plugins.publish_over.options.TransferOptions;
+import jenkins.plugins.publish_over_cifs.JenkinsHelper;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class CifsOverrideTransferDefaults implements TransferOptions, Describable<CifsOverrideTransferDefaults> {
@@ -104,7 +102,7 @@ public class CifsOverrideTransferDefaults implements TransferOptions, Describabl
     }
 
     public CifsOverrideTransferDefaultsDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(CifsOverrideTransferDefaultsDescriptor.class);
+        return JenkinsHelper.getDescriptor(CifsOverrideTransferDefaultsDescriptor.class);
     }
 
     @Extension

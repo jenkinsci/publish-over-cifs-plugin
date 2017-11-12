@@ -27,8 +27,8 @@ package jenkins.plugins.publish_over_cifs.options;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
 import jenkins.plugins.publish_over.options.PublisherLabelOptions;
+import jenkins.plugins.publish_over_cifs.JenkinsHelper;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class CifsOverridePublisherLabelDefaults implements PublisherLabelOptions, Describable<CifsOverridePublisherLabelDefaults> {
@@ -45,7 +45,7 @@ public class CifsOverridePublisherLabelDefaults implements PublisherLabelOptions
     }
 
     public CifsOverridePublisherLabelDefaultsDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(CifsOverridePublisherLabelDefaultsDescriptor.class);
+        return JenkinsHelper.getDescriptor(CifsOverridePublisherLabelDefaultsDescriptor.class);
     }
 
     @Extension
