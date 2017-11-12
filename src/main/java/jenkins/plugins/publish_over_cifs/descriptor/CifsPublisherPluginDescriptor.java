@@ -96,6 +96,25 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         return null;
     }
 
+    /**
+     * Adds the given CifsHostConfiguration to the current collection of host configurations.
+     * @param configuration The CifsHostConfiguration to add.
+     */
+    public void addHostConfiguration(final CifsHostConfiguration configuration) {
+        hostConfigurations.add(configuration);
+    }
+
+    /**
+     * Removes the host configuration with the given name from the current collection of host configurations.
+     * @param name The name of the host configuration to remove.
+     */
+    public void removeHostConfiguration(final String name) {
+        CifsHostConfiguration configuration = getConfiguration(name);
+        if (configuration != null) {
+            hostConfigurations.remove(configuration);
+        }
+    }
+
     public boolean configure(final StaplerRequest request, final JSONObject formData) {
         hostConfigurations.replaceBy(request.bindJSONToList(CifsHostConfiguration.class, formData.get("instance")));
         if (isEnableOverrideDefaults())
