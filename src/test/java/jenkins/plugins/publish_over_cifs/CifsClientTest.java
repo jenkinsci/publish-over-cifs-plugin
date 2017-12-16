@@ -2,6 +2,7 @@
  * The MIT License
  *
  * Copyright (C) 2010-2011 by Anthony Robinson
+ * Copyright (C) 2017 Xovis AG
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +25,12 @@
 
 package jenkins.plugins.publish_over_cifs;
 
+import com.hierynomus.msdtyp.AccessMask;
+import com.hierynomus.mssmb2.SMB2CreateDisposition;
+import com.hierynomus.mssmb2.SMB2ShareAccess;
+import com.hierynomus.smbj.share.DiskShare;
+import com.hierynomus.smbj.share.File;
 import hudson.FilePath;
-import jcifs.smb.SmbFile;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
 import org.easymock.classextension.EasyMock;
@@ -34,9 +39,9 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Iterator;
 
 import static org.easymock.EasyMock.expect;
@@ -48,21 +53,22 @@ import static org.junit.Assert.fail;
 @SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods" })
 public class CifsClientTest {
 
-    private static final String TEST_ROOT_URL = "smb://server/share/";
-    private static final String NEW_DIR = "new/dir";
+    private static final String TEST_SERVER = "server";
+    private static final String TEST_ROOT_SHARE = "share";
+    private static final String NEW_DIR = "new\\dir";
     private final transient IMocksControl mockControl = EasyMock.createStrictControl();
-    private final transient SmbFile mockSmbFile = mockControl.createMock(SmbFile.class);
+    private final transient DiskShare mockShare = mockControl.createMock(DiskShare.class);
     private final BPBuildInfo buildInfo = CifsTestHelper.createEmpty();
 
-    @Test public void initialContextIsRootUrl() {
-        assertEquals(TEST_ROOT_URL, new CifsClient(buildInfo, TEST_ROOT_URL, null).getContext());
+    @Test public void initialContextIsEmpty() {
+        assertEquals("", new CifsClient(buildInfo, TEST_SERVER, TEST_ROOT_SHARE, null).getContext());
     }
 
     @Test public void changeDirectoryUpdatesContext() throws Exception {
-        final String expectedUrl = TEST_ROOT_URL + NEW_DIR + "/";
+        final String expectedUrl = NEW_DIR;
         final CifsClient cifsClient = new CifsClientWithMockFiles(expectedUrl);
-        expect(mockSmbFile.exists()).andReturn(true);
-        expect(mockSmbFile.canRead()).andReturn(true);
+        expect(mockShare.folderExists(fix(expectedUrl))).andReturn(true);
+        expect(mockShare.list(fix(expectedUrl))).andReturn(Collections.emptyList());
         mockControl.replay();
         assertTrue(cifsClient.changeDirectory(NEW_DIR));
         assertEquals(expectedUrl, cifsClient.getContext());
@@ -70,64 +76,67 @@ public class CifsClientTest {
     }
 
     @Test public void changeDirectoryDoesNotUpdateContextIfDirNotExist() throws Exception {
-        final String absUrl = TEST_ROOT_URL + NEW_DIR + "/";
+        final String absUrl = NEW_DIR;
         final CifsClient cifsClient = new CifsClientWithMockFiles(absUrl);
-        expect(mockSmbFile.exists()).andReturn(false);
+        expect(mockShare.folderExists(fix(absUrl))).andReturn(false);
         mockControl.replay();
         assertFalse(cifsClient.changeDirectory(NEW_DIR));
-        assertEquals(TEST_ROOT_URL, cifsClient.getContext());
+        assertEquals("", cifsClient.getContext());
         mockControl.verify();
     }
 
     @Test public void changeDirectoryDoesNotUpdateContextIfCannotReadDir() throws Exception {
-        final String absUrl = TEST_ROOT_URL + NEW_DIR + "/";
+        final String absUrl = NEW_DIR;
         final CifsClient cifsClient = new CifsClientWithMockFiles(absUrl);
-        expect(mockSmbFile.exists()).andReturn(true);
-        expect(mockSmbFile.canRead()).andReturn(false);
+        expect(mockShare.folderExists(fix(absUrl))).andReturn(true);
+        expect(mockShare.list(fix(absUrl))).andThrow(new RuntimeException("cannot list"));
         mockControl.replay();
         assertFalse(cifsClient.changeDirectory(NEW_DIR));
-        assertEquals(TEST_ROOT_URL, cifsClient.getContext());
+        assertEquals("", cifsClient.getContext());
         mockControl.verify();
     }
 
     @Test public void changeToInitialDirectoryResetsContext() throws Exception {
-        final CifsClient cifsClient = new CifsClientWithMockFiles(TEST_ROOT_URL + NEW_DIR + "/");
-        expect(mockSmbFile.exists()).andReturn(true);
-        expect(mockSmbFile.canRead()).andReturn(true);
+        final CifsClient cifsClient = new CifsClientWithMockFiles(NEW_DIR);
+        expect(mockShare.folderExists(fix(NEW_DIR))).andReturn(true);
+        expect(mockShare.list(fix(NEW_DIR))).andReturn(Collections.emptyList());
         mockControl.replay();
         assertTrue(cifsClient.changeDirectory(NEW_DIR));
         cifsClient.changeToInitialDirectory();
-        assertEquals(TEST_ROOT_URL, cifsClient.getContext());
+        assertEquals("", cifsClient.getContext());
         mockControl.verify();
     }
 
     @Test public void testMakeDirectory() throws Exception {
-        final String absUrl = TEST_ROOT_URL + NEW_DIR + "/";
+        final String absUrl = NEW_DIR;
         final CifsClient cifsClient = new CifsClientWithMockFiles(absUrl);
-        expect(mockSmbFile.exists()).andReturn(false);
-        mockSmbFile.mkdirs();
+        expect(mockShare.folderExists(fix(absUrl).split("\\\\")[0])).andReturn(true);
+        expect(mockShare.folderExists(fix(absUrl))).andReturn(false);
+        mockShare.mkdir(fix(absUrl));
         mockControl.replay();
         assertTrue(cifsClient.makeDirectory(NEW_DIR));
-        assertEquals(TEST_ROOT_URL, cifsClient.getContext());
+        assertEquals("", cifsClient.getContext());
         mockControl.verify();
     }
 
     @Test public void testMakeDirectoryDoesNotAddAnExtraFS() throws Exception {
-        final String directory = "new/dir/";
-        final String absUrl = TEST_ROOT_URL + directory;
-        final CifsClient cifsClient = new CifsClientWithMockFiles(absUrl);
-        expect(mockSmbFile.exists()).andReturn(false);
-        mockSmbFile.mkdirs();
+        final String directory = "new/dir";
+        final CifsClient cifsClient = new CifsClientWithMockFiles(directory);
+        expect(mockShare.folderExists(fix(directory).split("\\\\")[0])).andReturn(true);
+        expect(mockShare.folderExists(fix(directory))).andReturn(false);
+        mockShare.mkdir(fix(directory));
         mockControl.replay();
         assertTrue(cifsClient.makeDirectory(directory));
-        assertEquals(TEST_ROOT_URL, cifsClient.getContext());
+        assertEquals("", cifsClient.getContext());
         mockControl.verify();
     }
 
-    @Test public void makeDirectoryThrowsExceptionIfDirectoryExists() throws Exception {
-        final String absUrl = TEST_ROOT_URL + NEW_DIR + "/";
+    @Test
+    public void makeDirectoryThrowsExceptionIfDirectoryExists() throws Exception {
+        final String absUrl = NEW_DIR;
         final CifsClient cifsClient = new CifsClientWithMockFiles(absUrl);
-        expect(mockSmbFile.exists()).andReturn(true);
+        expect(mockShare.folderExists(fix(absUrl).split("\\\\")[0])).andReturn(true);
+        expect(mockShare.folderExists(fix(absUrl))).andReturn(true);
         mockControl.replay();
         try {
             cifsClient.makeDirectory(NEW_DIR);
@@ -142,17 +151,26 @@ public class CifsClientTest {
         final String fileContents = "Hello Mr. Windows share!";
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final String fileName = "anAwesomeFile";
-        final CifsClient cifsClient = new CifsClientWithMockFiles(TEST_ROOT_URL + fileName);
-        expect(mockSmbFile.getOutputStream()).andReturn(baos);
+        final CifsClient cifsClient = new CifsClientWithMockFiles(fileName);
+        File mockFile = mockControl.createMock(File.class);
+        expect(mockShare.openFile(fileName,
+                EnumSet.of(AccessMask.GENERIC_WRITE),
+                null,
+                SMB2ShareAccess.ALL,
+                SMB2CreateDisposition.FILE_OVERWRITE_IF,
+                null)).andReturn(mockFile);
+        expect(mockFile.getOutputStream()).andReturn(baos);
+        mockFile.closeSilently();
         mockControl.replay();
-        cifsClient.transferFile(null, new FilePath(new File(fileName)), new ByteArrayInputStream(fileContents.getBytes()));
+        cifsClient.transferFile(null, new FilePath(new java.io.File(fileName)), new ByteArrayInputStream(fileContents.getBytes()));
         assertEquals(fileContents, baos.toString());
         mockControl.verify();
     }
 
     @Test public void testBeginTransfersFailIfNoSourceFiles() throws Exception {
         try {
-            new CifsClient(buildInfo, TEST_ROOT_URL, null).beginTransfers(new CifsTransfer("", "", "", "", false, false, false, false, false, ","));
+            new CifsClient(buildInfo, TEST_SERVER, TEST_ROOT_SHARE, null)
+                    .beginTransfers(new CifsTransfer("", "", "", "", false, false, false, false, false, ","));
             fail();
         } catch (BapPublisherException bpe) {
             assertEquals(Messages.exception_noSourceFiles(), bpe.getMessage());
@@ -160,30 +178,29 @@ public class CifsClientTest {
     }
 
     @Test public void testDeleteTree() throws Exception {
-        final CifsClient client = new CifsClientWithMockFiles(TEST_ROOT_URL);
-        final SmbFile toDelete1 = mockControl.createMock(SmbFile.class);
-        final SmbFile toDelete2 = mockControl.createMock(SmbFile.class);
-        final SmbFile toDelete3 = mockControl.createMock(SmbFile.class);
-        expect(mockSmbFile.listFiles()).andReturn(new SmbFile[]{toDelete1, toDelete2, toDelete3});
-        toDelete1.delete();
-        toDelete2.delete();
-        toDelete3.delete();
+        final CifsClient client = new CifsClientWithMockFiles(NEW_DIR);
+        mockShare.rmdir("", true);
         mockControl.replay();
         client.deleteTree();
         mockControl.verify();
     }
 
+    private String fix(String expectedUrl) {
+        return expectedUrl.replace('/', '\\');
+    }
+
     private class CifsClientWithMockFiles extends CifsClient {
         private final Iterator<String> expectedUrls;
         public CifsClientWithMockFiles(final String... expectedUrls) {
-            super(buildInfo, TEST_ROOT_URL, null);
+            super(buildInfo, TEST_SERVER, TEST_ROOT_SHARE, null);
             this.expectedUrls = Arrays.asList(expectedUrls).iterator();
         }
+
         @Override
-        protected SmbFile createSmbFile(final String url) throws MalformedURLException {
-            assertTrue(expectedUrls.hasNext());
-            assertEquals(expectedUrls.next(), url);
-            return mockSmbFile;
+        protected <T> T execute(Function<T> task) throws Exception {
+//            assertTrue(expectedUrls.hasNext());
+//            assertEquals(expectedUrls.next(), url);
+            return task.apply(mockShare);
         }
     }
 }
