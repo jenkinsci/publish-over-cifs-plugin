@@ -36,7 +36,7 @@
     <artifactId>publish-over-cifs</artifactId>
     <packaging>hpi</packaging>
     <name>Publish Over CIFS</name>
-    <version>0.5-xovis3-SNAPSHOT</version>
+    <version>0.6-xovis-SNAPSHOT</version>
     <description>Send build artifacts to a windows share (CIFS/SMB/samba)</description>
     <url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+CIFS+Plugin</url> 
 
@@ -87,7 +87,12 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>publish-over</artifactId>
-            <version>0.18</version>
+            <version>0.20</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>structs</artifactId>
+            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>com.hierynomus</groupId>
@@ -114,12 +119,24 @@
             <artifactId>junit</artifactId>
             <version>4.9</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>1.8.5</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
@@ -140,40 +157,18 @@
         <url>https://github.com/jenkinsci/publish-over-cifs-plugin</url>        
         <connection>scm:git:git://github.com/jenkinsci/publish-over-cifs-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/publish-over-cifs-plugin.git</developerConnection>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
     
     <issueManagement>
         <system>JIRA</system>
         <url>http://issues.jenkins-ci.org/</url>
     </issueManagement>
     
-    <distributionManagement>
-        <repository>
-            <id>maven.jenkins-ci.org</id>
-            <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
-        </repository>
-    </distributionManagement>
+
     
     <build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.6.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.12.4</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-enforcer-plugin</artifactId>
-					<version>1.1</version>
-				</plugin>
-			</plugins>		
-		</pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.jenkins-ci.tools</groupId>
@@ -267,20 +262,20 @@
         </profile>
     </profiles>
     
+<repositories>
+  <repository>
+    <id>repo.jenkins-ci.org</id>
+    <url>https://repo.jenkins-ci.org/public/</url>
+  </repository>
+</repositories>
+<pluginRepositories>
+  <pluginRepository>
+    <id>repo.jenkins-ci.org</id>
+    <url>https://repo.jenkins-ci.org/public/</url>
+  </pluginRepository>
+</pluginRepositories>
 
-    <repositories>
-        <repository>
-            <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
-        </repository>
-    </repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
-        </pluginRepository>
-    </pluginRepositories>
 </project>  
   
 

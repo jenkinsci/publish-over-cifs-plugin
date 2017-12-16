@@ -26,9 +26,9 @@ package jenkins.plugins.publish_over_cifs;
 
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.AbstractBuild;
-import hudson.model.Hudson;
 import hudson.model.Node;
+import hudson.model.Run;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPPluginDescriptor;
@@ -37,9 +37,11 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Object> {
@@ -53,18 +55,44 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
                 paramPublish);
     }
 
-    @Override
-    protected void fixup(final AbstractBuild<?, ?> build, final BPBuildInfo buildInfo) {
-        final Hudson hudson = Hudson.getInstance();
-        final CifsNodeProperties defaults = hudson.getGlobalNodeProperties().get(CifsNodeProperties.class);
-        if (defaults != null) buildInfo.put(CifsPublisher.CTX_KEY_NODE_PROPERTIES_DEFAULT, map(defaults));
-        final String currNodeName = buildInfo.getCurrentBuildEnv().getEnvVars().get(BPBuildInfo.ENV_NODE_NAME);
-        storeProperties(buildInfo, hudson, currNodeName, CifsPublisher.CTX_KEY_NODE_PROPERTIES_CURRENT);
+    public List<CifsPublisher> getPublishers() {
+        return this.getDelegate().getPublishers();
     }
 
-    private void storeProperties(final BPBuildInfo buildInfo, final Hudson hudson, final String nodeName, final String contextKey) {
+    public boolean isContinueOnError() {
+        return this.getDelegate().isContinueOnError();
+    }
+
+    public boolean isFailOnError() {
+        return this.getDelegate().isFailOnError();
+    }
+
+    public boolean isAlwaysPublishFromMaster() {
+        return this.getDelegate().isAlwaysPublishFromMaster();
+    }
+
+    public String getMasterNodeName() {
+        return this.getDelegate().getMasterNodeName();
+    }
+
+    public CifsParamPublish getParamPublish() {
+        return (CifsParamPublish) this.getDelegate().getParamPublish();
+    }
+
+    @Override
+    protected void fixup(final Run<?, ?> build, final BPBuildInfo buildInfo) {
+        final Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            final CifsNodeProperties defaults = jenkins.getGlobalNodeProperties().get(CifsNodeProperties.class);
+            if (defaults != null) buildInfo.put(CifsPublisher.CTX_KEY_NODE_PROPERTIES_DEFAULT, map(defaults));
+            final String currNodeName = buildInfo.getCurrentBuildEnv().getEnvVars().get(BPBuildInfo.ENV_NODE_NAME);
+            storeProperties(buildInfo, jenkins, currNodeName, CifsPublisher.CTX_KEY_NODE_PROPERTIES_CURRENT);
+        }
+    }
+
+    private void storeProperties(final BPBuildInfo buildInfo, final Jenkins jenkins, final String nodeName, final String contextKey) {
         if (Util.fixEmptyAndTrim(nodeName) == null) return;
-        final Node node = hudson.getNode(nodeName);
+        final Node node = jenkins.getNode(nodeName);
         if (node == null) return;
         final CifsNodeProperties currNodeProps = node.getNodeProperties().get(CifsNodeProperties.class);
         if (currNodeProps != null) buildInfo.put(contextKey, map(currNodeProps));
@@ -91,7 +119,7 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
     }
 
     public Descriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(Descriptor.class);
+        return JenkinsHelper.getDescriptor(Descriptor.class);
     }
 
     public CifsHostConfiguration getConfiguration(final String name) {
@@ -99,6 +127,7 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
     }
 
     @Extension
+    @Symbol("cifsPublisher")
     public static class Descriptor extends CifsPublisherPluginDescriptor {
 
         // While this looks redundant, it resolves some issues with XStream Reflection causing it
