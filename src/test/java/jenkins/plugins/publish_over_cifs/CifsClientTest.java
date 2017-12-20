@@ -48,6 +48,7 @@ import static org.junit.Assert.fail;
 @SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods" })
 public class CifsClientTest {
 
+    private static final int BUFFER_SIZE = 4096;
     private static final String TEST_ROOT_URL = "smb://server/share/";
     private static final String NEW_DIR = "new/dir";
     private final transient IMocksControl mockControl = EasyMock.createStrictControl();
@@ -55,7 +56,7 @@ public class CifsClientTest {
     private final BPBuildInfo buildInfo = CifsTestHelper.createEmpty();
 
     @Test public void initialContextIsRootUrl() {
-        assertEquals(TEST_ROOT_URL, new CifsClient(buildInfo, TEST_ROOT_URL, null).getContext());
+        assertEquals(TEST_ROOT_URL, new CifsClient(buildInfo, TEST_ROOT_URL, null, BUFFER_SIZE).getContext());
     }
 
     @Test public void changeDirectoryUpdatesContext() throws Exception {
@@ -152,7 +153,7 @@ public class CifsClientTest {
 
     @Test public void testBeginTransfersFailIfNoSourceFiles() throws Exception {
         try {
-            new CifsClient(buildInfo, TEST_ROOT_URL, null).beginTransfers(new CifsTransfer("", "", "", "", false, false, false, false, false, ","));
+            new CifsClient(buildInfo, TEST_ROOT_URL, null, BUFFER_SIZE).beginTransfers(new CifsTransfer("", "", "", "", false, false, false, false, false, ","));
             fail();
         } catch (BapPublisherException bpe) {
             assertEquals(Messages.exception_noSourceFiles(), bpe.getMessage());
@@ -176,7 +177,7 @@ public class CifsClientTest {
     private class CifsClientWithMockFiles extends CifsClient {
         private final Iterator<String> expectedUrls;
         public CifsClientWithMockFiles(final String... expectedUrls) {
-            super(buildInfo, TEST_ROOT_URL, null);
+            super(buildInfo, TEST_ROOT_URL, null, BUFFER_SIZE);
             this.expectedUrls = Arrays.asList(expectedUrls).iterator();
         }
         @Override

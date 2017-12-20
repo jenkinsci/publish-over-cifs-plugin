@@ -44,12 +44,14 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
     private final String baseUrl;
     private final NtlmPasswordAuthentication auth;
     private String context;
+    private int bufferSize;
 
     public CifsClient(final BPBuildInfo buildInfo, final String baseUrl,
-	NtlmPasswordAuthentication auth) {
+	NtlmPasswordAuthentication auth, final int bufferSize) {
         this.buildInfo = buildInfo;
         this.baseUrl = baseUrl;
         this.auth = auth;
+        this.bufferSize = bufferSize;
         context = baseUrl;
     }
 
@@ -106,7 +108,7 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
         if (buildInfo.isVerbose()) buildInfo.println(Messages.console_copy(helper.hideUserInfo(newFileUrl)));
         final OutputStream out = createFile(newFileUrl).getOutputStream();
         try {
-            IOUtils.copy(content, out);
+            IOUtils.copy(content, out, bufferSize);
         } finally {
             out.close();
         }

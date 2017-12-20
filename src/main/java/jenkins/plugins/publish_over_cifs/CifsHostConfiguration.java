@@ -59,6 +59,9 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     private static final int URL_BUILDER_INITIAL_SIZE = 60;
     private static final int ESCAPED_BUILDER_SIZE_MULTIPLIER = 3;
 
+    //hard coded value because apache IOUtils doesn't provide any method to get the default value of buffer size
+    public static final int DEFAULT_BUFFER_SIZE = 4 * 1024;
+
     private static final String RESOLVE_WITH_WINS = "LMHOSTS,WINS,DNS,BCAST";
     private static final String RESOLVE_WITHOUT_WINS = "LMHOSTS,DNS,BCAST";
     public static final String CONFIG_PROPERTY_TIMEOUT = "jcifs.smb.client.responseTimeout";
@@ -71,14 +74,17 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
 
     public static int getDefaultPort() { return DEFAULT_PORT; }
     public static int getDefaultTimeout() { return DEFAULT_TIMEOUT; }
+    public static int getDefaultBufferSize() { return DEFAULT_BUFFER_SIZE; }
 
     private int timeout;
+    private int bufferSize;
 
     @DataBoundConstructor
     public CifsHostConfiguration(final String name, final String hostname, final String username, final String password,
-                                 final String remoteRootDir, final int port, final int timeout) {
+                                 final String remoteRootDir, final int port, final int timeout, final int bufferSize) {
         super(name, hostname, username, password, remoteRootDir, port);
         this.timeout = timeout;
+        this.bufferSize = bufferSize;
     }
 
     protected final String getPassword() {
@@ -95,7 +101,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         final String url = buildUrl(false);
         final NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(getDomain(), getUsername(false), getPassword()); 
         testConfig(url, auth);
-        return new CifsClient(buildInfo, url, auth);
+        return new CifsClient(buildInfo, url, auth, bufferSize);
     }
 
     private void configureJcifs(final BPBuildInfo buildInfo) {
@@ -115,6 +121,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         if (buildInfo.isVerbose()) {
             buildInfo.println(Messages.console_config_timout(timeout));
             buildInfo.println(Messages.console_config_soTimeout(soTimeout));
+            buildInfo.println(Messages.console_config_bufferSize(bufferSize));
         }
         System.setProperty(CONFIG_PROPERTY_TIMEOUT, Integer.toString(timeout));
         System.setProperty(CONFIG_PROPERTY_SO_TIMEOUT, Integer.toString(soTimeout));
