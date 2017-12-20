@@ -67,6 +67,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>publish-over</artifactId>
             <version>0.20</version>
@@ -116,8 +122,8 @@
             <artifactId>easymockclassextension</artifactId>
             <version>2.4</version>
             <scope>test</scope>
-        </dependency>
-        
+    </dependency>
+
     </dependencies>
 
     <scm>
@@ -142,8 +148,9 @@
                 <artifactId>maven-hpi-plugin</artifactId>
 				<!--  <version>1.67</version> -->
                 <extensions>true</extensions>
-                <configuration>
-                    <compatibleSinceVersion>0.2</compatibleSinceVersion>
+		<configuration>
+			<pluginFirstClassLoader>true</pluginFirstClassLoader>
+			<!-- <compatibleSinceVersion>0.2</compatibleSinceVersion> -->
                 </configuration>
             </plugin>
 			<plugin>
@@ -203,7 +210,7 @@
                         <artifactId>maven-pmd-plugin</artifactId>
                         <version>2.5</version>
                         <configuration>
-                            <targetJdk>1.5</targetJdk>
+                            <targetJdk>1.7</targetJdk>
                             <includeTests>true</includeTests>
                             <rulesets>
                                 <ruleset>src/metrics/pmd_rules.xml</ruleset>

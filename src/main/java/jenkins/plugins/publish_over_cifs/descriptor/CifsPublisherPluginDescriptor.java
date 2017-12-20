@@ -49,6 +49,7 @@ import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import sun.misc.FormattedFloatingDecimal;
 
 import java.util.List;
 
@@ -137,6 +138,9 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     }
     public FormValidation doCheckTimeout(@QueryParameter final String value) {
         return FormValidation.validateNonNegativeInteger(value);
+    }
+    public FormValidation doCheckBufferSize(@QueryParameter final String value) {
+        return FormValidation.validatePositiveInteger(value);
     }
     public FormValidation doCheckSourceFiles(@QueryParameter final String value) {
         return FormValidation.validateRequired(value);

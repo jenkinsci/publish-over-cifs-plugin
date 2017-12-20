@@ -31,6 +31,7 @@
   <j:set var="helpUrl" value="/plugin/publish-over-cifs/help/global/"/>
   <j:invokeStatic className="jenkins.plugins.publish_over_cifs.CifsHostConfiguration" method="getDefaultPort" var="defaultPort"/>
   <j:invokeStatic className="jenkins.plugins.publish_over_cifs.CifsHostConfiguration" method="getDefaultTimeout" var="defaultTimeout"/>
+  <j:invokeStatic className="jenkins.plugins.publish_over_cifs.CifsHostConfiguration" method="getDefaultBufferSize" var="defaultBufferSize"/>
 
   <f:section title="${%hostconfig.section.title}" description="${%hostconfig.section.description}">
     <f:entry title="${%hostconfig.entry}">
@@ -58,10 +59,13 @@
             <f:entry title="${m.timeout()}" help="${helpUrl}timeOut.html">
               <f:textbox name="_.timeout" value="${instance.timeOut}" default="${defaultTimeout}" checkUrl="${descriptor.getCheckUrl('timeout')}"/>
             </f:entry>
+            <f:entry title="${%hostconfig.field.bufferSize}" help="${helpUrl}bufferSize.html">
+              <f:textbox name="_.bufferSize" value="${instance.bufferSize}" default="${defaultBufferSize}" checkUrl="${descriptor.getCheckUrl('bufferSize')}" />
+            </f:entry>
           </f:advanced>
           <f:validateButton
             title="${m.test_title()}" progress="${m.test_progress()}"
-            method="testConnection" with="name,hostname,username,password,remoteRootDir,port,timeout,poc-np.winsServer"/>
+            method="testConnection" with="name,hostname,username,password,remoteRootDir,port,timeout,bufferSize,poc-np.winsServer"/>
           <f:entry title="">
             <div align="right">
               <f:repeatableDeleteButton />

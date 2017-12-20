@@ -206,7 +206,7 @@ public class CifsHostConfigurationTest {
                            final int port,
                            final int timeout,
                            final SmbFile smbFile) {
-            super(configName, hostname, username, password, remoteDirectory, port, timeout);
+            super(configName, hostname, username, password, remoteDirectory, port, timeout, DEFAULT_BUFFER_SIZE);
             this.smbFile = smbFile;
         }
         @Override
