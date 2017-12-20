@@ -23,7 +23,8 @@
   ~ THE SOFTWARE.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -38,19 +39,19 @@
     <name>Publish Over CIFS</name>
     <version>0.6-SNAPSHOT</version>
     <description>Send build artifacts to a windows share (CIFS/SMB/samba)</description>
-    <url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+CIFS+Plugin</url> 
+    <url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+CIFS+Plugin</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
     <licenses>
         <license>
             <name>The MIT license</name>
             <comments>All source code is under the MIT license.</comments>
         </license>
     </licenses>
-    
+
     <developers>
         <developer>
             <id>slide_o_mix</id>
@@ -125,55 +126,54 @@
     </dependencies>
 
     <scm>
-        <url>https://github.com/jenkinsci/publish-over-cifs-plugin</url>        
+        <url>https://github.com/jenkinsci/publish-over-cifs-plugin</url>
         <connection>scm:git:git://github.com/jenkinsci/publish-over-cifs-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/publish-over-cifs-plugin.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
-    
+        <tag>HEAD</tag>
+    </scm>
+
     <issueManagement>
         <system>JIRA</system>
         <url>http://issues.jenkins-ci.org/</url>
     </issueManagement>
-    
-  
-    
+
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.jenkins-ci.tools</groupId>
                 <artifactId>maven-hpi-plugin</artifactId>
-				<!--  <version>1.67</version> -->
+                <!--  <version>1.67</version> -->
                 <extensions>true</extensions>
-		<configuration>
-			<pluginFirstClassLoader>true</pluginFirstClassLoader>
-			<compatibleSinceVersion>0.2</compatibleSinceVersion>
+                <configuration>
+                    <pluginFirstClassLoader>true</pluginFirstClassLoader>
+                    <compatibleSinceVersion>0.2</compatibleSinceVersion>
                 </configuration>
             </plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<!--  <version>1.7</version> -->
-				<executions>
-					<execution>
-						<id>add-eclipse-sources</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${basedir}/target/generated-sources/groovy-stubs/main</source>
-								<source>${basedir}/target/generated-sources/localizer</source>
-								<source>${basedir}/target/generated-sources/taglib-interface</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <!--  <version>1.7</version> -->
+                <executions>
+                    <execution>
+                        <id>add-eclipse-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${basedir}/target/generated-sources/groovy-stubs/main</source>
+                                <source>${basedir}/target/generated-sources/localizer</source>
+                                <source>${basedir}/target/generated-sources/taglib-interface</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
         <profile>
             <!-- mvn clean test emma:emma findbugs:findbugs checkstyle:checkstyle pmd:pmd pmd:cpd -->
@@ -232,7 +232,7 @@
             </build>
         </profile>
     </profiles>
-    
+
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
