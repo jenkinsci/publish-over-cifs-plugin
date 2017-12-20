@@ -71,7 +71,6 @@
             <artifactId>commons-io</artifactId>
             <version>2.5</version>
         </dependency>
-
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>publish-over</artifactId>
@@ -141,7 +140,6 @@
   
     
     <build>
-	
         <plugins>
             <plugin>
                 <groupId>org.jenkins-ci.tools</groupId>
@@ -150,7 +148,7 @@
                 <extensions>true</extensions>
 		<configuration>
 			<pluginFirstClassLoader>true</pluginFirstClassLoader>
-			<!-- <compatibleSinceVersion>0.2</compatibleSinceVersion> -->
+			<compatibleSinceVersion>0.2</compatibleSinceVersion>
                 </configuration>
             </plugin>
 			<plugin>

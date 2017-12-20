@@ -49,7 +49,6 @@ import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-import sun.misc.FormattedFloatingDecimal;
 
 import java.util.List;
 

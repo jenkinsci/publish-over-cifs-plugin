@@ -101,7 +101,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         final String url = buildUrl(false);
         final NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(getDomain(), getUsername(false), getPassword()); 
         testConfig(url, auth);
-        return new CifsClient(buildInfo, url, auth, this.bufferSize);
+        return new CifsClient(buildInfo, url, auth, bufferSize);
     }
 
     private void configureJcifs(final BPBuildInfo buildInfo) {

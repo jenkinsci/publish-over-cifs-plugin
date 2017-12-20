@@ -108,7 +108,7 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
         if (buildInfo.isVerbose()) buildInfo.println(Messages.console_copy(helper.hideUserInfo(newFileUrl)));
         final OutputStream out = createFile(newFileUrl).getOutputStream();
         try {
-            IOUtils.copy(content, out, this.bufferSize);
+            IOUtils.copy(content, out, bufferSize);
         } finally {
             out.close();
         }
