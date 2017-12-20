@@ -121,6 +121,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         if (buildInfo.isVerbose()) {
             buildInfo.println(Messages.console_config_timout(timeout));
             buildInfo.println(Messages.console_config_soTimeout(soTimeout));
+            buildInfo.println(Messages.console_config_bufferSize(bufferSize));
         }
         System.setProperty(CONFIG_PROPERTY_TIMEOUT, Integer.toString(timeout));
         System.setProperty(CONFIG_PROPERTY_SO_TIMEOUT, Integer.toString(soTimeout));
