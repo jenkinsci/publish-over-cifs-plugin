@@ -90,5 +90,4 @@ public class CifsPublisher extends BapPublisher<CifsTransfer> {
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
-
 }
