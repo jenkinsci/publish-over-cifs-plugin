@@ -23,8 +23,7 @@
   ~ THE SOFTWARE.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -37,7 +36,7 @@
     <artifactId>publish-over-cifs</artifactId>
     <packaging>hpi</packaging>
     <name>Publish Over CIFS</name>
-    <version>0.6-SNAPSHOT</version>
+    <version>0.6</version>
     <description>Send build artifacts to a windows share (CIFS/SMB/samba)</description>
     <url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+CIFS+Plugin</url>
 
@@ -129,7 +128,7 @@
         <url>https://github.com/jenkinsci/publish-over-cifs-plugin</url>
         <connection>scm:git:git://github.com/jenkinsci/publish-over-cifs-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/publish-over-cifs-plugin.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>publish-over-cifs-0.6</tag>
     </scm>
 
     <issueManagement>
