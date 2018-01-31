@@ -288,6 +288,9 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     // not to persist settings after a reboot
     @Override
     public Object readResolve() {
+        if(bufferSize == 0) {
+            bufferSize = DEFAULT_BUFFER_SIZE;
+        }
         return super.readResolve();
     }
 
