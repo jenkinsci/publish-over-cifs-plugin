@@ -75,10 +75,10 @@
                         </f:entry>
                         <f:optionalBlock title="${m_pub.retry()}" name="retry" checked="${publisher.retry != null}"  help="${helpUrl}retry.html">
                             <f:entry title="${m_retry.retries()}" help="${helpUrl}retries.html">
-                                <f:textbox name="retries" value="${publisher.retry.retries}" default="${defaults.retry.retries}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('retries')}"/>
+                                <f:textbox name="retries" value="${publisher.retry.retries}" default="${defaults.retry.retries}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('retries')}+'?value='+escape(this.value)"/>
                             </f:entry>
                             <f:entry title="${m_retry.retryDelay()}" help="${helpUrl}retryDelay.html">
-                                <f:textbox name="retryDelay" value="${publisher.retry.retryDelay}" default="${defaults.retry.retryDelay}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('retryDelay')}"/>
+                                <f:textbox name="retryDelay" value="${publisher.retry.retryDelay}" default="${defaults.retry.retryDelay}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('retryDelay')}+'?value='+escape(this.value)"/>
                             </f:entry>
                         </f:optionalBlock>
                         <f:optionalBlock title="${m_pub.label()}" name="label" checked="${publisher.label != null}"  help="${helpUrl}label.html">
@@ -93,7 +93,7 @@
                             <table width="100%" padding="0">
 
                                 <f:entry title="${m_trans.sourceFiles()}" help="${helpUrl}sourceFiles${promoHelpSuffix}.html">
-                                    <f:textbox name="sourceFiles" value="${transfer.sourceFiles}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('sourceFiles')}" default="${defaults.transfer.sourceFiles}"/>
+                                    <f:textbox name="sourceFiles" value="${transfer.sourceFiles}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('sourceFiles')}+'?value='+escape(this.value)" default="${defaults.transfer.sourceFiles}"/>
                                 </f:entry>
 
                                 <f:entry title="${m_trans.removePrefix()}" help="${helpUrl}removePrefix.html">

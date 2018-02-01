@@ -38,10 +38,10 @@
       <f:repeatable var="instance" items="${descriptor.hostConfigurations}" header="${%hostconfig.dragAndDrop}">
         <table width="100%">
           <f:entry title="${m.name()}" help="${helpUrl}name.html">
-            <f:textbox name="_.name" value="${instance.name}" checkUrl="${descriptor.getCheckUrl('name')}"/>
+            <f:textbox name="_.name" value="${instance.name}" checkUrl="${descriptor.getCheckUrl('name')}+'?value='+escape(this.value)"/>
           </f:entry>
           <f:entry title="${m.hostname()}" help="${helpUrl}hostname.html">
-            <f:textbox name="_.hostname" value="${instance.hostname}" checkUrl="${descriptor.getCheckUrl('hostname')}"/>
+            <f:textbox name="_.hostname" value="${instance.hostname}" checkUrl="${descriptor.getCheckUrl('hostname')}+'?value='+escape(this.value)"/>
           </f:entry>
           <f:entry title="${m.username()}" help="${helpUrl}username.html">
             <f:textbox name="_.username" value="${instance.username}" />
@@ -50,17 +50,17 @@
             <input class="setting-input" name="_.password" type="password" value="${instance.encryptedPassword}" />
           </f:entry>
           <f:entry title="${%remotePath}" help="${helpUrl}remoteRootDir.html">
-            <f:textbox name="_.remoteRootDir" value="${instance.remoteRootDir}" checkUrl="${descriptor.getCheckUrl('remoteRootDir')}"/>
+            <f:textbox name="_.remoteRootDir" value="${instance.remoteRootDir}" checkUrl="${descriptor.getCheckUrl('remoteRootDir')}+'?value='+escape(this.value)"/>
           </f:entry>
           <f:advanced>
             <f:entry title="${m.port()}" help="${helpUrl}port.html">
-              <f:textbox name="_.port" value="${instance.port}" default="${defaultPort}" checkUrl="${descriptor.getCheckUrl('port')}"/>
+              <f:textbox name="_.port" value="${instance.port}" default="${defaultPort}" checkUrl="${descriptor.getCheckUrl('port')}+'?value='+escape(this.value)"/>
             </f:entry>
             <f:entry title="${m.timeout()}" help="${helpUrl}timeOut.html">
-              <f:textbox name="_.timeout" value="${instance.timeOut}" default="${defaultTimeout}" checkUrl="${descriptor.getCheckUrl('timeout')}"/>
+              <f:textbox name="_.timeout" value="${instance.timeOut}" default="${defaultTimeout}" checkUrl="${descriptor.getCheckUrl('timeout')}+'?value='+escape(this.value)"/>
             </f:entry>
             <f:entry title="${%hostconfig.field.bufferSize}" help="${helpUrl}bufferSize.html">
-              <f:textbox name="_.bufferSize" value="${instance.bufferSize}" default="${defaultBufferSize}" checkUrl="${descriptor.getCheckUrl('bufferSize')}" />
+              <f:textbox name="_.bufferSize" value="${instance.bufferSize}" default="${defaultBufferSize}" checkUrl="${descriptor.getCheckUrl('bufferSize')}+'?value='+escape(this.value)" />
             </f:entry>
           </f:advanced>
           <f:validateButton
