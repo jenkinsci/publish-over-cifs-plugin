@@ -94,6 +94,16 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     public int getTimeout() { return timeout; }
     public void setTimeout(final int timeout) { this.timeout = timeout; }
 
+    public int getBufferSize() {
+        return bufferSize;
+    }
+
+    public void setBufferSize(final int bufferSize) {
+        if(bufferSize > 0) {
+            this.bufferSize = bufferSize;
+        }
+    }
+
     @Override
     public CifsClient createClient(final BPBuildInfo buildInfo) {
         assertRequiredOptions();
@@ -256,17 +266,20 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
 
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return super.addToHashCode(builder)
-            .append(timeout);
+            .append(timeout)
+            .append(bufferSize);
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final CifsHostConfiguration that) {
         return super.addToEquals(builder, that)
-            .append(timeout, that.timeout);
+            .append(timeout, that.timeout)
+            .append(bufferSize, that.bufferSize);
     }
 
     protected ToStringBuilder addToToString(final ToStringBuilder builder) {
         return super.addToToString(builder)
-            .append("timeout", timeout);
+            .append("timeout", timeout)
+            .append("bufferSize", bufferSize);
     }
 
     public boolean equals(final Object that) {
@@ -288,7 +301,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     // not to persist settings after a reboot
     @Override
     public Object readResolve() {
-        if(bufferSize == 0) {
+        if(bufferSize <= 0) {
             bufferSize = DEFAULT_BUFFER_SIZE;
         }
         return super.readResolve();
