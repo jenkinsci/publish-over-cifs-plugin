@@ -84,7 +84,9 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
                                  final String remoteRootDir, final int port, final int timeout, final int bufferSize) {
         super(name, hostname, username, password, remoteRootDir, port);
         this.timeout = timeout;
-        this.bufferSize = bufferSize;
+        // when bufferSize is not entered in global config - ex. when upgrade from older version
+        // that does not know bufferSize property, then use DEFAULT_BUFFER_SIZE
+        this.bufferSize = bufferSize == 0 ? DEFAULT_BUFFER_SIZE : bufferSize;
     }
 
     protected final String getPassword() {
