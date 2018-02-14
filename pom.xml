@@ -36,7 +36,7 @@
     <artifactId>publish-over-cifs</artifactId>
     <packaging>hpi</packaging>
     <name>Publish Over CIFS</name>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.7</version>
     <description>Send build artifacts to a windows share (CIFS/SMB/samba)</description>
     <url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+CIFS+Plugin</url>
 
@@ -128,7 +128,7 @@
         <url>https://github.com/jenkinsci/publish-over-cifs-plugin</url>
         <connection>scm:git:git://github.com/jenkinsci/publish-over-cifs-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/publish-over-cifs-plugin.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>publish-over-cifs-0.7</tag>
     </scm>
 
     <issueManagement>
