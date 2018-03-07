@@ -155,7 +155,7 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
     }
 
     public Descriptor getDescriptor() {
-        return JenkinsHelper.getDescriptor(Descriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(Descriptor.class);
     }
 
     public CifsHostConfiguration getConfiguration(final String name) {

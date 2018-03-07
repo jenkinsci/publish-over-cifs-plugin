@@ -27,8 +27,8 @@ package jenkins.plugins.publish_over_cifs.options;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.ParamPublishOptions;
-import jenkins.plugins.publish_over_cifs.JenkinsHelper;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class CifsOverrideParamPublishDefaults implements ParamPublishOptions, Describable<CifsOverrideParamPublishDefaults> {
@@ -45,7 +45,7 @@ public class CifsOverrideParamPublishDefaults implements ParamPublishOptions, De
     }
 
     public CifsOverrideParamPublishDefaultsDescriptor getDescriptor() {
-        return JenkinsHelper.getDescriptor(CifsOverrideParamPublishDefaultsDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(CifsOverrideParamPublishDefaultsDescriptor.class);
     }
 
     @Extension
