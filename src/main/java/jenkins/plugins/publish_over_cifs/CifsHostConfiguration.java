@@ -25,6 +25,11 @@
 package jenkins.plugins.publish_over_cifs;
 
 import hudson.Util;
+import jcifs.CIFSContext;
+import jcifs.CIFSException;
+import jcifs.config.PropertyConfiguration;
+import jcifs.context.BaseContext;
+import jcifs.context.SingletonContext;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.NtlmPasswordAuthentication;
@@ -36,6 +41,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 import java.net.MalformedURLException;
 import java.nio.ByteBuffer;
@@ -43,6 +49,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.util.Properties;
 
 @SuppressWarnings("PMD.CyclomaticComplexity") // yeah that encode method aint great, but we want it to be reasonably quick
 public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Object> {
@@ -68,6 +75,8 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     public static final String CONFIG_PROPERTY_SO_TIMEOUT = "jcifs.smb.client.soTimeout";
     public static final String CONFIG_PROPERTY_WINS = "jcifs.netbios.wins";
     public static final String CONFIG_PROPERTY_RESOLVE_ORDER = "jcifs.resolveOrder";
+    public static final String CONFIG_PROPERTY_ENABLE_SMB2 = "jcifs.smb.client.enableSMB2";
+    public static final String CONFIG_PROPERTY_DISABLE_SMB1 = "jcifs.smb.client.disableSMB1";
     private static final int LOW_NIBBLE_BIT_MASK = 0xF;
     private static final int HEX_LETTERS_START_AT = 10;
     private static final int HI_TO_LOW_NIBBLE_BIT_SHIFT = 4;
@@ -78,6 +87,27 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
 
     private int timeout;
     private int bufferSize;
+    private SmbVersions smbVersion = SmbVersions.SMB_V2;
+
+    public enum SmbVersions {
+        CIFS_SMB_V1("SMB v1/CIFS"),
+        SMB_V2("SMB v2"),
+        SMB_V3("SMB v3");
+
+        private String description;
+
+        SmbVersions(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String toString() {
+            return description;
+        }
+    }
 
     @DataBoundConstructor
     public CifsHostConfiguration(final String name, final String hostname, final String username, final String password,
@@ -91,13 +121,23 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         return super.getPassword();
     }
 
+    public SmbVersions getSmbVersion() { return smbVersion; }
+
+    @DataBoundSetter
+    public void setSmbVersion(SmbVersions smbVersion) {
+        this.smbVersion = smbVersion;
+    }
+
     public int getTimeout() { return timeout; }
+
+    @DataBoundSetter
     public void setTimeout(final int timeout) { this.timeout = timeout; }
 
     public int getBufferSize() {
         return bufferSize;
     }
 
+    @DataBoundSetter
     public void setBufferSize(final int bufferSize) {
         if(bufferSize > 0) {
             this.bufferSize = bufferSize;
@@ -107,40 +147,59 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     @Override
     public CifsClient createClient(final BPBuildInfo buildInfo) {
         assertRequiredOptions();
-        configureJcifs(buildInfo);
         final String url = buildUrl(false);
-        final NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(getDomain(), getUsername(false), getPassword()); 
-        testConfig(url, auth);
-        return new CifsClient(buildInfo, url, auth, bufferSize);
+
+        CIFSContext context = null;
+        try {
+            context = configureJcifs(buildInfo);
+        } catch(CIFSException e) {
+            buildInfo.printIfVerbose(Messages.exception_jCifsException_testConfig(url, e.getMessage()));
+        }
+
+        if(context == null) {
+            context = SingletonContext.getInstance();
+        }
+
+        final NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(context, getDomain(), getUsername(false), getPassword());
+        context = context.withCredentials(auth);
+        testConfig(context, url);
+        return new CifsClient(context, buildInfo, url, bufferSize);
     }
 
-    private void configureJcifs(final BPBuildInfo buildInfo) {
-        // freaking statics/sys props - what could possibly go wrong? aaargh!
-        // will it even have any effect if the config changes after we have used jCIFS and have not rebooted?
+    private CIFSContext configureJcifs(final BPBuildInfo buildInfo) throws CIFSException {
+        Properties props = new Properties();
+
+        if(smbVersion == SmbVersions.SMB_V2 || smbVersion == SmbVersions.SMB_V3) {
+            props.put(CONFIG_PROPERTY_ENABLE_SMB2, "true");
+            props.put(CONFIG_PROPERTY_DISABLE_SMB1, "false");
+        }
+
         final String winsServer = (String) buildInfo.get(CifsPublisher.CTX_KEY_WINS_SERVER);
         final int soTimeout = timeout + SO_TIMEOUT_AFTER;
         if (winsServer == null) {
             buildInfo.printIfVerbose(Messages.console_config_noWins());
-            System.clearProperty(CONFIG_PROPERTY_WINS);
-            System.setProperty(CONFIG_PROPERTY_RESOLVE_ORDER, RESOLVE_WITHOUT_WINS);
+            props.remove(CONFIG_PROPERTY_WINS);
+            props.put(CONFIG_PROPERTY_RESOLVE_ORDER, RESOLVE_WITHOUT_WINS);
         } else {
             buildInfo.printIfVerbose(Messages.console_config_wins(winsServer));
-            System.setProperty(CONFIG_PROPERTY_WINS, winsServer);
-            System.setProperty(CONFIG_PROPERTY_RESOLVE_ORDER, RESOLVE_WITH_WINS);
+            props.put(CONFIG_PROPERTY_WINS, winsServer);
+            props.put(CONFIG_PROPERTY_RESOLVE_ORDER, RESOLVE_WITH_WINS);
         }
         if (buildInfo.isVerbose()) {
             buildInfo.println(Messages.console_config_timout(timeout));
             buildInfo.println(Messages.console_config_soTimeout(soTimeout));
             buildInfo.println(Messages.console_config_bufferSize(bufferSize));
         }
-        System.setProperty(CONFIG_PROPERTY_TIMEOUT, Integer.toString(timeout));
-        System.setProperty(CONFIG_PROPERTY_SO_TIMEOUT, Integer.toString(soTimeout));
+
+        props.put(CONFIG_PROPERTY_TIMEOUT, Integer.toString(timeout));
+        props.put(CONFIG_PROPERTY_SO_TIMEOUT, Integer.toString(soTimeout));
+
+        return new BaseContext(new PropertyConfiguration(props));
     }
 
     private String buildUrl(final boolean hidePassword) {
         final StringBuilder urlSB = new StringBuilder(URL_BUILDER_INITIAL_SIZE);
         urlSB.append(SMB_URL_PREFIX);
-        //addCredentials(urlSB, hidePassword);
         addServer(urlSB);
         addSharename(urlSB);
         return urlSB.toString();
@@ -209,10 +268,10 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     }
 
     @SuppressWarnings({ "PMD.PreserveStackTrace", "PMD.JUnit4TestShouldUseTestAnnotation" }) // FFS
-    private void testConfig(final String url, final NtlmPasswordAuthentication auth) {
+    private void testConfig(final CIFSContext context, final String url) {
         SmbFile file;
         try {
-            file = createSmbFile(url, auth);
+            file = createSmbFile(context, url);
         } catch (final MalformedURLException mue) {
             throw new BapPublisherException(Messages.exception_maformedUrlException(buildUrl(true)));
         }
@@ -224,12 +283,8 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         }
     }
 
-    protected SmbFile createSmbFile(final String url, NtlmPasswordAuthentication auth) throws MalformedURLException {
-        if(auth != null) {
-            return new SmbFile(url, auth);
-        } else {
-            return new SmbFile(url);
-        }
+    protected SmbFile createSmbFile(final CIFSContext context, final String url) throws MalformedURLException {
+        return new SmbFile(url, context);
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")

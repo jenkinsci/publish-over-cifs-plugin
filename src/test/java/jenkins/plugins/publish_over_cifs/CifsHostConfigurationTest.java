@@ -27,6 +27,9 @@ package jenkins.plugins.publish_over_cifs;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import hudson.util.SecretHelper;
+import jcifs.CIFSContext;
+import jcifs.Configuration;
+import jcifs.ResolverType;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbFile;
 import jenkins.plugins.publish_over.BPBuildInfo;
@@ -165,12 +168,12 @@ public class CifsHostConfigurationTest {
         expect(mockSmbFile.canRead()).andReturn(true);
         mockControl.replay();
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, null, null, SHARE, 99, timeout, mockSmbFile);
-        config.createClient(buildInfo);
-        assertEquals(wins, System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_WINS));
-        assertEquals(Integer.toString(timeout), System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_TIMEOUT));
-        assertTrue(System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_RESOLVE_ORDER).contains("WINS"));
-        assertTrue(Integer.parseInt(System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_SO_TIMEOUT))
-                   > Integer.parseInt(System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_TIMEOUT)));
+        Configuration c = config.createClient(buildInfo).getCifsContext().getConfig();
+        assertEquals(1, c.getWinsServers().length);
+        assertEquals("/" + wins, c.getWinsServers()[0].toString());
+        assertEquals(timeout, c.getResponseTimeout());
+        assertTrue(c.getResolveOrder().contains(ResolverType.RESOLVER_WINS));
+        assertTrue(c.getSoTimeout() > c.getResponseTimeout());
     }
 
     @Test public void testWinsServerRemovedFromResolveOrderWhenNotSet() throws Exception {
@@ -181,9 +184,9 @@ public class CifsHostConfigurationTest {
         expect(mockSmbFile.canRead()).andReturn(true);
         mockControl.replay();
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, null, null, SHARE, 99, timeout, mockSmbFile);
-        config.createClient(buildInfo);
-        assertNull(System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_WINS));
-        assertFalse(System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_RESOLVE_ORDER).contains("WINS"));
+        Configuration c = config.createClient(buildInfo).getCifsContext().getConfig();
+        assertEquals(0, c.getWinsServers().length);
+        assertFalse(c.getResolveOrder().contains(ResolverType.RESOLVER_WINS));
     }
 
     private static class ConfigWithMockFile extends CifsHostConfiguration {
@@ -210,7 +213,7 @@ public class CifsHostConfigurationTest {
             this.smbFile = smbFile;
         }
         @Override
-        public SmbFile createSmbFile(final String url, NtlmPasswordAuthentication auth) {
+        public SmbFile createSmbFile(final CIFSContext context, String url) {
             this.url = url;
             return smbFile;
         }

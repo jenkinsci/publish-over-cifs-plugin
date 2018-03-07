@@ -25,6 +25,7 @@
 package jenkins.plugins.publish_over_cifs;
 
 import hudson.FilePath;
+import jcifs.context.SingletonContext;
 import jcifs.smb.SmbFile;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
@@ -56,7 +57,7 @@ public class CifsClientTest {
     private final BPBuildInfo buildInfo = CifsTestHelper.createEmpty();
 
     @Test public void initialContextIsRootUrl() {
-        assertEquals(TEST_ROOT_URL, new CifsClient(buildInfo, TEST_ROOT_URL, null, BUFFER_SIZE).getContext());
+        assertEquals(TEST_ROOT_URL, new CifsClient(SingletonContext.getInstance(), buildInfo, TEST_ROOT_URL, BUFFER_SIZE).getContext());
     }
 
     @Test public void changeDirectoryUpdatesContext() throws Exception {
@@ -153,7 +154,7 @@ public class CifsClientTest {
 
     @Test public void testBeginTransfersFailIfNoSourceFiles() throws Exception {
         try {
-            new CifsClient(buildInfo, TEST_ROOT_URL, null, BUFFER_SIZE).beginTransfers(new CifsTransfer("", "", "", "", false, false, false, false, false, ","));
+            new CifsClient(SingletonContext.getInstance(), buildInfo, TEST_ROOT_URL, BUFFER_SIZE).beginTransfers(new CifsTransfer("", "", "", "", false, false, false, false, false, ","));
             fail();
         } catch (BapPublisherException bpe) {
             assertEquals(Messages.exception_noSourceFiles(), bpe.getMessage());
@@ -177,7 +178,7 @@ public class CifsClientTest {
     private class CifsClientWithMockFiles extends CifsClient {
         private final Iterator<String> expectedUrls;
         public CifsClientWithMockFiles(final String... expectedUrls) {
-            super(buildInfo, TEST_ROOT_URL, null, BUFFER_SIZE);
+            super(SingletonContext.getInstance(), buildInfo, TEST_ROOT_URL, BUFFER_SIZE);
             this.expectedUrls = Arrays.asList(expectedUrls).iterator();
         }
         @Override

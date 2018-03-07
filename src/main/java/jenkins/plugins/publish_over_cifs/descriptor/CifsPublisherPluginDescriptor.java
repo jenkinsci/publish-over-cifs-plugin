@@ -173,6 +173,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
 
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
         final CifsHostConfiguration hostConfig = request.bindParameters(CifsHostConfiguration.class, "");
+        request.bindParameters(hostConfig);
         final BPBuildInfo buildInfo = createDummyBuildInfo(request);
         try {
             hostConfig.createClient(buildInfo).disconnect();

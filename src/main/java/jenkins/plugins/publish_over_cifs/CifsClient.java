@@ -25,8 +25,8 @@
 package jenkins.plugins.publish_over_cifs;
 
 import hudson.FilePath;
+import jcifs.CIFSContext;
 import jcifs.smb.SmbFile;
-import jcifs.smb.NtlmPasswordAuthentication;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPDefaultClient;
 import jenkins.plugins.publish_over.BapPublisherException;
@@ -42,20 +42,21 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
     private final CifsHelper helper = new CifsHelper();
     private final BPBuildInfo buildInfo;
     private final String baseUrl;
-    private final NtlmPasswordAuthentication auth;
     private String context;
     private int bufferSize;
+    final private CIFSContext cifsContext;
 
-    public CifsClient(final BPBuildInfo buildInfo, final String baseUrl,
-	NtlmPasswordAuthentication auth, final int bufferSize) {
+    public CifsClient(final CIFSContext cifsContext, final BPBuildInfo buildInfo, final String baseUrl, final int bufferSize) {
         this.buildInfo = buildInfo;
         this.baseUrl = baseUrl;
-        this.auth = auth;
         this.bufferSize = bufferSize;
         context = baseUrl;
+        this.cifsContext = cifsContext;
     }
 
     protected String getContext() { return context; }
+
+    CIFSContext getCifsContext() { return cifsContext; }
 
     @Override
     public boolean changeToInitialDirectory() {
@@ -107,6 +108,7 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
         final String newFileUrl = context + filePath.getName();
         if (buildInfo.isVerbose()) buildInfo.println(Messages.console_copy(helper.hideUserInfo(newFileUrl)));
         final OutputStream out = createFile(newFileUrl).getOutputStream();
+
         try {
             IOUtils.copy(content, out, bufferSize);
         } finally {
@@ -130,11 +132,7 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
     }
 
     protected SmbFile createSmbFile(final String url) throws MalformedURLException {
-	if(auth != null) {
-            return new SmbFile(url, auth);
-        } else {
-            return new SmbFile(url);
-        }
+        return new SmbFile(url, cifsContext);
     }
 
 }

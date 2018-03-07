@@ -29,19 +29,21 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>2.32</version>
+        <version>3.5</version>
     </parent>
 
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>publish-over-cifs</artifactId>
     <packaging>hpi</packaging>
     <name>Publish Over CIFS</name>
-    <version>0.9</version>
+    <version>1.0-SNAPSHOT</version>
     <description>Send build artifacts to a windows share (CIFS/SMB/samba)</description>
     <url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+CIFS+Plugin</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jenkins.version>2.89.4</jenkins.version>
+        <java.level>8</java.level>
     </properties>
 
     <licenses>
@@ -82,14 +84,14 @@
             <version>1.2</version>
         </dependency>
         <dependency>
-            <groupId>org.samba.jcifs</groupId>
-            <artifactId>jcifs</artifactId>
-            <version>1.3.17-largetransfer-1</version>
+            <groupId>eu.agno3.jcifs</groupId>
+            <artifactId>jcifs-ng</artifactId>
+            <version>2.0.5</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.9</version>
+            <version>4.12</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -142,95 +144,12 @@
             <plugin>
                 <groupId>org.jenkins-ci.tools</groupId>
                 <artifactId>maven-hpi-plugin</artifactId>
-                <!--  <version>1.67</version> -->
-                <extensions>true</extensions>
                 <configuration>
                     <pluginFirstClassLoader>true</pluginFirstClassLoader>
-                    <compatibleSinceVersion>0.2</compatibleSinceVersion>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <!--  <version>1.7</version> -->
-                <executions>
-                    <execution>
-                        <id>add-eclipse-sources</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${basedir}/target/generated-sources/groovy-stubs/main</source>
-                                <source>${basedir}/target/generated-sources/localizer</source>
-                                <source>${basedir}/target/generated-sources/taglib-interface</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <!-- mvn clean test emma:emma findbugs:findbugs checkstyle:checkstyle pmd:pmd pmd:cpd -->
-            <id>metrics</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>emma-maven-plugin</artifactId>
-                        <version>1.0-alpha-3</version>
-                        <configuration>
-                            <filters>
-                                <filter>-*.Messages</filter>
-                            </filters>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
-                        <version>2.3.1</version>
-                        <configuration>
-                            <effort>Max</effort>
-                            <threshold>Low</threshold>
-                            <xmlOutput>true</xmlOutput>
-                            <includeTests>true</includeTests>
-                            <excludeFilterFile>src/metrics/findBugs_excludes.xml</excludeFilterFile>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-pmd-plugin</artifactId>
-                        <version>2.5</version>
-                        <configuration>
-                            <targetJdk>1.7</targetJdk>
-                            <includeTests>true</includeTests>
-                            <rulesets>
-                                <ruleset>src/metrics/pmd_rules.xml</ruleset>
-                            </rulesets>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>2.6</version>
-                        <configuration>
-                            <configLocation>src/metrics/checkstyle_rules.xml</configLocation>
-                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>2.1</version>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
     <repositories>
         <repository>
