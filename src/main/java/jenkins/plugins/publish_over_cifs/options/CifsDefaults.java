@@ -33,21 +33,11 @@ import jenkins.model.Jenkins;
 public abstract class CifsDefaults implements Describable<CifsDefaults>, ExtensionPoint, CifsOptions {
 
     public static DescriptorExtensionList<CifsDefaults, CifsDefaultsDescriptor> all() {
-        Jenkins jenkins = Jenkins.getInstance();
-        if (jenkins != null) {
-            return jenkins.getDescriptorList(CifsDefaults.class);
-        } else {
-            return null;
-        }
+        return Jenkins.getInstance().getDescriptorList(CifsDefaults.class);
     }
 
     public CifsDefaultsDescriptor getDescriptor() {
-        Jenkins jenkins = Jenkins.getInstance();
-        if (jenkins != null) {
-            return (CifsDefaultsDescriptor) jenkins.getDescriptor(getClass());
-        } else {
-            return null;
-        }
+        return (CifsDefaultsDescriptor) Jenkins.getInstance().getDescriptor(getClass());
     }
 
     public abstract static class CifsDefaultsDescriptor extends Descriptor<CifsDefaults> {

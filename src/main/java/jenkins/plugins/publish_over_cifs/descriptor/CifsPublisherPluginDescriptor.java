@@ -187,22 +187,17 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     }
 
     protected BPBuildInfo createDummyBuildInfo(final StaplerRequest request) {
-        Jenkins jenkins = Jenkins.getInstance();
-        if (jenkins != null) {
-            final BPBuildInfo buildInfo = new BPBuildInfo(
-                    TaskListener.NULL,
-                    "",
-                    jenkins.getRootPath(),
-                    null,
-                    null
-            );
-            final CifsNodeProperties defaults = request.bindParameters(CifsNodeProperties.class, CifsNodeProperties.FORM_PREFIX);
-            if (defaults != null && Util.fixEmptyAndTrim(defaults.getWinsServer()) != null)
-                buildInfo.put(CifsPublisher.CTX_KEY_WINS_SERVER, defaults.getWinsServer().trim());
-            return buildInfo;
-        } else {
-            return null;
-        }
+        final BPBuildInfo buildInfo = new BPBuildInfo(
+                TaskListener.NULL,
+                "",
+                Jenkins.getInstance().getRootPath(),
+                null,
+                null
+        );
+        final CifsNodeProperties defaults = request.bindParameters(CifsNodeProperties.class, CifsNodeProperties.FORM_PREFIX);
+        if (defaults != null && Util.fixEmptyAndTrim(defaults.getWinsServer()) != null)
+            buildInfo.put(CifsPublisher.CTX_KEY_WINS_SERVER, defaults.getWinsServer().trim());
+        return buildInfo;
     }
 
     public Object readResolve() {
