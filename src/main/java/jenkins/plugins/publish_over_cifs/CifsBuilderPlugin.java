@@ -103,6 +103,9 @@ public class CifsBuilderPlugin extends Builder {
         public String getConfigPage() {
             return getViewPage(CifsPublisherPlugin.class, "config.jelly");
         }
+        public CifsPublisherPlugin.Descriptor getPublisherDescriptor() {
+            return  Jenkins.getInstance().getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
+        }
     }
 
 }
