@@ -37,6 +37,7 @@ import hudson.tasks.Publisher;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPInstanceConfig;
 import jenkins.plugins.publish_over.BPPlugin;
+import jenkins.plugins.publish_over_cifs.descriptor.CifsPublisherPluginDescriptor;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -119,6 +120,10 @@ public class CifsPromotionPublisherPlugin extends Notifier implements SimpleBuil
         }
         public String getConfigPage() {
             return getViewPage(CifsPublisherPlugin.class, "config.jelly");
+        }
+
+        public CifsPublisherPlugin.Descriptor getPublisherDescriptor() {
+            return  Jenkins.getInstance().getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
         }
     }
 
