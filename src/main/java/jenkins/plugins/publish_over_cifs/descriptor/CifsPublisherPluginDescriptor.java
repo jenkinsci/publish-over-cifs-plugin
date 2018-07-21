@@ -37,7 +37,6 @@ import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPInstanceConfig;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPValidators;
-import jenkins.plugins.publish_over.JenkinsCapabilities;
 import jenkins.plugins.publish_over_cifs.CifsHostConfiguration;
 import jenkins.plugins.publish_over_cifs.CifsNodeProperties;
 import jenkins.plugins.publish_over_cifs.CifsPublisher;
@@ -157,10 +156,10 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         return BPInstanceConfig.DEFAULT_MASTER_NODE_NAME;
     }
     public boolean canSetMasterNodeName() {
-        return JenkinsCapabilities.missing(JenkinsCapabilities.MASTER_HAS_NODE_NAME);
+        return false;
     }
     public boolean isEnableOverrideDefaults() {
-        return JenkinsCapabilities.available(JenkinsCapabilities.SIMPLE_DESCRIPTOR_SELECTOR);
+        return true;
     }
     public CifsPublisherPluginDescriptor getPublisherDescriptor() {
         return this;
