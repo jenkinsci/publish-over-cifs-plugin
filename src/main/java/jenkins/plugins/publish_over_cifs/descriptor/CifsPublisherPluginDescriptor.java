@@ -49,6 +49,7 @@ import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.verb.POST;
 
 import java.util.List;
 
@@ -170,8 +171,10 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         return new jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages();
     }
 
-
+    @POST
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
+        Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
+
         final CifsHostConfiguration hostConfig = request.bindParameters(CifsHostConfiguration.class, "");
         request.bindParameters(hostConfig);
         final BPBuildInfo buildInfo = createDummyBuildInfo(request);
