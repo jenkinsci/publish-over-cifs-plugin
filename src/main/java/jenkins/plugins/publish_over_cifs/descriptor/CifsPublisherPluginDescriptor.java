@@ -166,6 +166,10 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         return this;
     }
 
+    public CifsPluginDefaults.CifsDefaultsDescriptor getPluginDefaultsDescriptor() {
+        return (CifsDefaults.CifsDefaultsDescriptor) Jenkins.getInstance().getDescriptor(CifsDefaults.class);
+    }
+
     public jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages getCommonManageMessages() {
         return new jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages();
     }

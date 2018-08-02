@@ -25,6 +25,7 @@
 package jenkins.plugins.publish_over_cifs;
 
 import jenkins.plugins.publish_over.BPTransfer;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -40,7 +41,7 @@ public class CifsTransfer extends BPTransfer {
                         final boolean remoteDirectorySDF, final boolean flatten, final boolean cleanRemote, final boolean noDefaultExcludes,
                         final boolean makeEmptyDirs, final String patternSeparator) {
         super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, cleanRemote,
-              noDefaultExcludes, makeEmptyDirs, patternSeparator);
+              noDefaultExcludes, makeEmptyDirs, StringUtils.isEmpty(patternSeparator) ? null : patternSeparator);
     }
 
     public boolean equals(final Object that) {

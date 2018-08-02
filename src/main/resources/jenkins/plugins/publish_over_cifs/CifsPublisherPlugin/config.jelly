@@ -38,6 +38,7 @@
     <j:set var="helpUrl" value="/plugin/publish-over-cifs/help/config/"/>
     <j:set var="inPromotionSection" value='${descriptor.getClass().canonicalName.contains("CifsPromotionPublisherPlugin")}'/>
 
+
     <f:entry title='${inPromotionSection ? "" : "%publishers.section"}'>
 
             <f:repeatable items="${instance.instanceConfig.publishers}" var="publisher" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${%addPublisher}">
@@ -59,19 +60,19 @@
                             </j:when>
                             <j:otherwise>
                                 <f:entry help="${helpUrl}useWorkspaceInPromotion.html">
-                                    <poj:checkbox name="useWorkspaceInPromotion" checked="${publisher.useWorkspaceInPromotion}" title="${m_pub.useWorkspaceInPromotion()}" default="${defaults.publisher.useWorkspaceInPromotion}"/>
+                                    <f:checkbox name="useWorkspaceInPromotion" checked="${publisher.useWorkspaceInPromotion}" title="${m_pub.useWorkspaceInPromotion()}" default="${defaults.publisher.useWorkspaceInPromotion}"/>
                                 </f:entry>
                             </j:otherwise>
                         </j:choose>
                         <f:entry help="${helpUrl}usePromotionTimestamp.html">
-                            <poj:checkbox name="usePromotionTimestamp" checked="${publisher.usePromotionTimestamp}" title="${m_pub.usePromotionTimestamp()}" default="${defaults.publisher.usePromotionTimestamp}"/>
+                            <f:checkbox name="usePromotionTimestamp" checked="${publisher.usePromotionTimestamp}" title="${m_pub.usePromotionTimestamp()}" default="${defaults.publisher.usePromotionTimestamp}"/>
                         </f:entry>
                         <j:set var="promoHelpSuffix" value="ForPromotion"/>
                     </j:if>
 
                     <f:advanced>
                         <f:entry help="${helpUrl}verbose.html">
-                            <poj:checkbox name="verbose" checked="${publisher.verbose}" title="${m_pub.verbose()}" default="${defaults.publisher.verbose}"/>
+                            <f:checkbox name="verbose" checked="${publisher.verbose}" title="${m_pub.verbose()}" default="${defaults.publisher.verbose}"/>
                         </f:entry>
                         <f:optionalBlock title="${m_pub.retry()}" name="retry" checked="${publisher.retry != null}"  help="${helpUrl}retry.html">
                             <f:entry title="${m_retry.retries()}" help="${helpUrl}retries.html">
@@ -162,13 +163,13 @@
 
             <f:advanced>
                 <f:entry help="${helpUrl}continueOnError.html">
-                    <poj:checkbox name="continueOnError" checked="${instance.instanceConfig.continueOnError}" title="${%continueOnError}" default="${defaults.instanceConfig.continueOnError}"/>
+                    <f:checkbox name="continueOnError" checked="${instance.instanceConfig.continueOnError}" title="${%continueOnError}" default="${defaults.instanceConfig.continueOnError}"/>
                 </f:entry>
                 <f:entry help="${helpUrl}failOnError.html">
-                    <poj:checkbox name="failOnError" checked="${instance.instanceConfig.failOnError}" title="${m_plugin.failOnError()}" default="${defaults.instanceConfig.failOnError}"/>
+                    <f:checkbox name="failOnError" checked="${instance.instanceConfig.failOnError}" title="${m_plugin.failOnError()}" default="${defaults.instanceConfig.failOnError}"/>
                 </f:entry>
                 <f:entry help="${helpUrl}alwaysTxfrFromMaster.html">
-                    <poj:checkbox name="alwaysPublishFromMaster" checked="${instance.instanceConfig.alwaysPublishFromMaster}" title="${%alwaysTxfrFromMaster}" default="${defaults.instanceConfig.alwaysPublishFromMaster}"/>
+                    <f:checkbox name="alwaysPublishFromMaster" checked="${instance.instanceConfig.alwaysPublishFromMaster}" title="${%alwaysTxfrFromMaster}" default="${defaults.instanceConfig.alwaysPublishFromMaster}"/>
                 </f:entry>
                 <j:if test="${descriptor.publisherDescriptor.canSetMasterNodeName()}">
                     <f:entry title="${m_plugin.masterNodeName()}" help="${helpUrl}masterNodeName.html">

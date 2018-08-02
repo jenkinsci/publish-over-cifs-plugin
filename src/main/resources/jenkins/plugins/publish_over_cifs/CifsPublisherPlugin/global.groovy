@@ -60,7 +60,7 @@ f.section(description: _("hostconfig.section.description"), title: _("hostconfig
       }
     }
   }
-/*
+
   if(descriptor.enableOverrideDefaults) {
     f.advanced() {
       f.entry() {
@@ -68,5 +68,4 @@ f.section(description: _("hostconfig.section.description"), title: _("hostconfig
       }
     }
   }
-*/
 }
