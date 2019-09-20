@@ -127,7 +127,7 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
         try {
             return createSmbFile(url);
         } catch (MalformedURLException mue) {
-            throw new BapPublisherException(Messages.exception_maformedUrlException(helper.hideUserInfo(url)));
+            throw new BapPublisherException(Messages.exception_malformedUrlException(helper.hideUserInfo(url)));
         }
     }
 

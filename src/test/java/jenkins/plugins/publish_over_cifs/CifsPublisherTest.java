@@ -77,9 +77,9 @@ public class CifsPublisherTest {
         final String defaultServer = "1.2.3.4";
         final String currentServer = "5.6.7.8";
         final CifsCleanNodeProperties current = new CifsCleanNodeProperties(currentServer);
-        final CifsCleanNodeProperties defautls = new CifsCleanNodeProperties(defaultServer);
+        final CifsCleanNodeProperties defaults = new CifsCleanNodeProperties(defaultServer);
         buildInfo.put(CTX_KEY_NODE_PROPERTIES_CURRENT, current);
-        buildInfo.put(CTX_KEY_NODE_PROPERTIES_DEFAULT, defautls);
+        buildInfo.put(CTX_KEY_NODE_PROPERTIES_DEFAULT, defaults);
         CifsTestHelper.setOnMaster(buildInfo);
         mockControl.replay();
         createPublisher().perform(mockConfig, buildInfo);

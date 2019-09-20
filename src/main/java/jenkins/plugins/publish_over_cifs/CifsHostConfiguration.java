@@ -51,7 +51,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.Properties;
 
-@SuppressWarnings("PMD.CyclomaticComplexity") // yeah that encode method aint great, but we want it to be reasonably quick
+@SuppressWarnings("PMD.CyclomaticComplexity") // yeah that encode method ain't great, but we want it to be reasonably quick
 public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Object> {
 
     private static final long serialVersionUID = 1L;
@@ -273,7 +273,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
         try {
             file = createSmbFile(context, url);
         } catch (final MalformedURLException mue) {
-            throw new BapPublisherException(Messages.exception_maformedUrlException(buildUrl(true)));
+            throw new BapPublisherException(Messages.exception_malformedUrlException(buildUrl(true)));
         }
         try {
             if (!file.exists()) throw new BapPublisherException(Messages.exception_shareNotExist(buildUrl(true)));
