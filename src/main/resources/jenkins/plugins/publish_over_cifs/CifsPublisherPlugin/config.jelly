@@ -177,6 +177,9 @@
                                    default="${descriptor.publisherDescriptor.defaultMasterNodeName}"/>
                     </f:entry>
                 </j:if>
+                <f:entry help="${helpUrl}publishWhenFailed.html">
+                    <f:checkbox name="publishWhenFailed" checked="${instance.instanceConfig.publishWhenFailed}" title="${%publishWhenFailed}" default="${defaults.instanceConfig.publishWhenFailed}"/>
+                </f:entry>
                 <f:optionalBlock title="${m_plugin.paramPublish()}" name="paramPublish" checked="${instance.instanceConfig.paramPublish != null}"  help="${descriptor.publisherDescriptor.getHelpFile('paramPublish')}">
                     <f:entry title="${m_param.parameterName()}" help="${helpUrl}parameterName.html">
                         <f:textbox name="parameterName" value="${instance.instanceConfig.paramPublish.parameterName}" default="${defaults.paramPublish.parameterName}"/>

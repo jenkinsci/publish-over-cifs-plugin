@@ -28,6 +28,7 @@ import hudson.Extension;
 import hudson.Util;
 import hudson.model.Node;
 import hudson.model.Run;
+import java.io.PrintStream;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPPlugin;
@@ -49,6 +50,7 @@ import java.util.List;
 public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Object> {
 
     private static final long serialVersionUID = 1L;
+    private boolean publishWhenFailed = false;
 
     public CifsPublisherPlugin(final ArrayList<CifsPublisher> publishers, final boolean continueOnError, final boolean failOnError,
                                final boolean alwaysPublishFromMaster, final String masterNodeName, final CifsParamPublish paramPublish) {
@@ -61,6 +63,12 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
         super(Messages.console_message_prefix());
     }
 
+    @DataBoundSetter
+    public void setPublishWhenFailed(final boolean publishWhenFailed) {
+        this.publishWhenFailed = publishWhenFailed;
+    }
+    public boolean getPublishWhenFailed() { return this.publishWhenFailed; }
+    
     public List<CifsPublisher> getPublishers() {
         return this.getDelegate().getPublishers();
     }
@@ -173,6 +181,16 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
             return super.readResolve();
         }
 
+    }
+    
+    protected boolean isBuildGoodEnoughToRun(final Run<?, ?> build, final PrintStream console) {
+        if (this.publishWhenFailed) {
+            return true;
+        }
+        else {
+            // Default behaviour
+            return super.isBuildGoodEnoughToRun(build, console);
+        }
     }
 
     public static class DescriptorMessages implements BPPluginDescriptor.BPDescriptorMessages { }
