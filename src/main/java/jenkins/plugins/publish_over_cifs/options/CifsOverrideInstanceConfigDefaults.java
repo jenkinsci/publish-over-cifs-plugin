@@ -36,13 +36,15 @@ public class CifsOverrideInstanceConfigDefaults implements InstanceConfigOptions
     private final boolean continueOnError;
     private final boolean failOnError;
     private final boolean alwaysPublishFromMaster;
+    private final boolean publishWhenFailed;
 
     @DataBoundConstructor
     public CifsOverrideInstanceConfigDefaults(final boolean alwaysPublishFromMaster, final boolean continueOnError,
-                                              final boolean failOnError) {
+                                              final boolean failOnError, final boolean publishWhenFailed) {
         this.alwaysPublishFromMaster = alwaysPublishFromMaster;
         this.continueOnError = continueOnError;
         this.failOnError = failOnError;
+        this.publishWhenFailed = publishWhenFailed;
     }
 
     public boolean isContinueOnError() {
@@ -57,6 +59,9 @@ public class CifsOverrideInstanceConfigDefaults implements InstanceConfigOptions
         return alwaysPublishFromMaster;
     }
 
+    public boolean isPublishWhenFailed() {
+        return publishWhenFailed;
+    }
     public CifsOverrideInstanceConfigDefaultsDescriptor getDescriptor() {
         return Jenkins.getInstance().getDescriptorByType(CifsOverrideInstanceConfigDefaultsDescriptor.class);
     }
