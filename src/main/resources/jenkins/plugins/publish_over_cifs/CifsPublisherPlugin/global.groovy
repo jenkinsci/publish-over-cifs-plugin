@@ -2,6 +2,7 @@
 xml = namespace("http://www.w3.org/XML/1998/namespace")
 j = namespace("jelly:core")
 f = namespace("/lib/form")
+poc = namespace("/lib/publish_over_cifs")
 
 
 def m = descriptor.hostConfigurationFieldNames
@@ -13,7 +14,7 @@ def defaultBufferSize = jenkins.plugins.publish_over_cifs.CifsHostConfiguration.
 f.section(description: _("hostconfig.section.description"), title: _("hostconfig.section.title")) {
   f.entry(title: _("hostconfig.entry")) {
     f.repeatable(var: "instance", header: _("hostconfig.dragAndDrop"), items: descriptor.hostConfigurations) {
-      table(width: "100%") {
+      poc.blockWrapper {
         f.entry(help: "${helpUrl}name.html", title: m.name()) {
           f.textbox(name: "_.name", checkUrl: "${descriptor.getCheckUrl('name')}+'?value='+escape(this.value)", value: instance?.name)
         }
