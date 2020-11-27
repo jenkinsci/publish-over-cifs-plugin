@@ -24,7 +24,7 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:st="jelly:stapler" xmlns:poj="/pojelly">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:st="jelly:stapler" xmlns:poj="/pojelly" xmlns:poc="/lib/publish_over_cifs">
 
     <j:set var="defaults" value="${descriptor.publisherDescriptor.defaults}"/>
 
@@ -43,7 +43,7 @@
 
             <f:repeatable items="${instance.instanceConfig.publishers}" var="publisher" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${%addPublisher}">
 
-                <table width="100%" padding="0">
+                <poc:blockWrapper>
 
                     <f:entry title="${m_pub.hostconfig()}" help="${helpUrl}configName.html">
                         <select class="setting-input" name="configName" description="${%hostconfig.description}">
@@ -91,7 +91,7 @@
 
                     <f:entry title="${m_pub.transfers_section()}">
                         <f:repeatable items="${publisher.transfers}" var="transfer" name="transfers" minimum="1" header="${m_pub.transfers_dragAndDropLabel()}" add="${m_pub.addTransfer()}">
-                            <table width="100%" padding="0">
+                            <poc:blockWrapper>
 
                                 <f:entry title="${m_trans.sourceFiles()}" help="${helpUrl}sourceFiles${promoHelpSuffix}.html">
                                     <f:textbox name="sourceFiles" value="${transfer.sourceFiles}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('sourceFiles')}+'?value='+escape(this.value)" default="${defaults.transfer.sourceFiles}"/>
@@ -147,7 +147,7 @@
                                     </div>
                                 </f:entry>
 
-                           </table>
+                           </poc:blockWrapper>
                         </f:repeatable>
                     </f:entry>
 
@@ -157,7 +157,7 @@
                         </div>
                     </f:entry>
 
-                </table>
+                </poc:blockWrapper>
 
             </f:repeatable>
 
