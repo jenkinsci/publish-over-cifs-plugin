@@ -29,7 +29,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.13</version>
+        <version>3.50</version>
     </parent>
 
     <artifactId>publish-over-cifs</artifactId>
@@ -43,7 +43,7 @@
         <revision>0.16</revision>
         <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/publish-over-cifs-plugin</gitHubRepo>
-        <jenkins.version>2.204.6</jenkins.version>
+        <jenkins.version>2.89.4</jenkins.version>
         <java.level>8</java.level>
     </properties>
 
@@ -73,8 +73,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
-            <!-- use version provided by core -->
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
@@ -84,6 +82,7 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
+            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>eu.agno3.jcifs</groupId>
@@ -104,17 +103,6 @@
         </dependency>
     </dependencies>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.204.x</artifactId>
-                <version>18</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <scm>
         <url>https://github.com/${gitHubRepo}</url>
