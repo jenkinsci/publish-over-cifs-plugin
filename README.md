@@ -102,7 +102,7 @@ share during a build.
 Select "Send files to a windows share" from the "Add build step" drop
 down (pic below) and then configure just like [Configure a job to send
 files to a windows
-share](http://localhost:8085/display/JENKINS/Publish+Over+CIFS+Plugin#PublishOverCIFSPlugin-configjob)
+share](https://plugins.jenkins.io/publish-over/#configjob)
 below
 
 ![cifs_builder](docs/images/cifs_builder.png)
