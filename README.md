@@ -107,7 +107,7 @@ below
 
 ![cifs_builder](docs/images/cifs_builder.png)
 
-#### Configure a job to send files to a windows share
+# Configure a job to send files to a windows share
 
 Open a jobs main page and then click "Configure" from the left hand
 menu.
