@@ -67,7 +67,7 @@ Configurations](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-h
 Hostname is the hostname, IP address or windows servername of the host
 that contains the share
 
-###### Username
+### Username
 
 To specify a user in a specific windows domain, use a back slash to
 separate eg MYDOMAIN\\myuser
