@@ -164,7 +164,7 @@ available.
 ![cifs_promotions](docs/images/cifs_promotions.png)
 
 [see Publish Over ... for common options for
-Promotions](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-promotions)
+Promotions](https://plugins.jenkins.io/publish-over/#promotions)
 
 # Change log
 
