@@ -18,7 +18,7 @@ log](http://localhost:8085/display/JENKINS/Publish+Over+CIFS+Plugin#PublishOverC
 
 -   Send files to windows shares
 -   The plugin is "promotion aware" see
-    [Promotions](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-promotions)
+    [Promotions](https://plugins.jenkins.io/publish-over/#promotions)
 -   Publish to multiple shares in the "Post-build Actions"
 -   Passwords are encrypted in the configuration files and in the UI
 -   Copy files to a windows share during a build
