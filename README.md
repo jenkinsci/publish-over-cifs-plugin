@@ -90,7 +90,7 @@ make more configuration options available (see below)
 [see Publish Over ... for common options for Host
 Configurations](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-host)
 
-##### Click "Test Configuration".
+## Click "Test Configuration".
 
 ##### Add more server configurations (if required)
 
