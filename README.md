@@ -153,7 +153,7 @@ Server" button, then you will make more configuration options available
 ![cifs_publisher_advanced](docs/images/cifs_publisher_advanced.png)
 
 [see Publish Over ... for common options for
-Publisher](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-publisher)
+Publisher](https://plugins.jenkins.io/publish-over/#publisher)
 
 # Options to override the default Promotion behaviour
 
