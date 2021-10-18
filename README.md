@@ -131,7 +131,7 @@ Source files
 
 The build will fail if you do not select any Source files to transfer
 
-##### Advanced (Transfer Sets)
+## Advanced (Transfer Sets)
 
 If you click the "Advanced..." button for a Transfer Set, then you will
 make more configuration options available (see below)  
