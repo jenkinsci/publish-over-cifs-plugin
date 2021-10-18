@@ -44,7 +44,7 @@ If a default WINS server has been specified in the "Global properties",
 a node can be configured to not use WINS by checking the "Publish Over
 CIFS" property and leaving the WINS server empty.
 
-#### Create host configurations in the main Jenkins configuration
+## Create host configurations in the main Jenkins configuration
 
 From the Jenkins home page, click "Manage Jenkins" and the click on
 "Configure System"
