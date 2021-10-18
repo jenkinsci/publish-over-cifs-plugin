@@ -20,7 +20,7 @@ Common configuration options that are documented in the [Publish Over ... page](
 
 # Configure
 
-#### Configure a WINS server
+## Configure a WINS server
 
 From the Jenkins home page, click "Manage Jenkins" and then click on
 "Configure System"
