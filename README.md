@@ -2,12 +2,8 @@ Send build artifacts to a windows share (CIFS/SMB/samba)
 
 # Publish Over ...
 
-Read Publish Over ... wiki page first
-
-Please read [Publish
-Over](http://localhost:8085/display/JENKINS/Publish+Over) first.  
-Common configuration options that are documented in the Publish Over ...
-wiki page will not be repeated here.
+Please read [Publish Over](https://plugins.jenkins.io/publish-over/) first.  
+Common configuration options that are documented in the [Publish Over ... page](https://plugins.jenkins.io/publish-over/) will not be repeated here.
 
 [Features](http://localhost:8085/display/JENKINS/Publish+Over+CIFS+Plugin#PublishOverCIFSPlugin-features)  
 [Configure](http://localhost:8085/display/JENKINS/Publish+Over+CIFS+Plugin#PublishOverCIFSPlugin-configuration)  
