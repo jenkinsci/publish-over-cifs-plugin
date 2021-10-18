@@ -58,9 +58,8 @@ You should now have the configuration options as below
 
 ![cifs_global_configured](docs/images/cifs_global_configured.png)
 
-Fill in Name, Hostname, Username, Password and Share. [see Publish Over
-... for common options for Host
-Configurations](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-host)
+Fill in Name, Hostname, Username, Password and Share. see Publish Over ... for [common options for Host
+Configurations](https://plugins.jenkins.io/publish-over/#host)
 
 ### Hostname
 
