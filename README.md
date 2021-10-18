@@ -155,7 +155,7 @@ Server" button, then you will make more configuration options available
 [see Publish Over ... for common options for
 Publisher](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-publisher)
 
-#### Options to override the default Promotion behaviour
+# Options to override the default Promotion behaviour
 
 If you are configuring an action in a promotion, new options will become
 available.  
