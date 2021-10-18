@@ -125,7 +125,7 @@ see Publish Over ... for [common options for
 Server](https://plugins.jenkins.io/publish-over/#server)
 
 [see Publish Over ... for common options for Transfer
-Sets](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-transfer)
+Sets](https://plugins.jenkins.io/publish-over/#transfer)
 
 Source files
 
