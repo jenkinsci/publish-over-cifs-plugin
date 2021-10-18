@@ -121,8 +121,8 @@ You should now have the configuration options as below
 
 ![cifs_configured](docs/images/cifs_configured.png)
 
-[see Publish Over ... for common options for
-Server](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-server)
+see Publish Over ... for [common options for
+Server](https://plugins.jenkins.io/publish-over/#server)
 
 [see Publish Over ... for common options for Transfer
 Sets](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-transfer)
