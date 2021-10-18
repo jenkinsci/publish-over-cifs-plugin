@@ -147,7 +147,7 @@ Sets](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-transfer)
 Delete all files and directories from the remote directory before
 uploading the new files.
 
-##### Advanced (Publisher)
+## Advanced (Publisher)
 
 If you click the "Advanced..." button that is immediately below the "Add
 Server" button, then you will make more configuration options available
