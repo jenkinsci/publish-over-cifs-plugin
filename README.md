@@ -90,11 +90,11 @@ see Publish Over ... for [common options for Host Configurations](https://plugin
 
 ## Click "Test Configuration".
 
-##### Add more server configurations (if required)
+## Add more server configurations (if required)
 
-##### Save
+# Save
 
-#### Send files to a windows share during a build
+## Send files to a windows share during a build
 
 This plugin adds a build step to enable you to send files to a windows
 share during a build.
