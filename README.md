@@ -140,7 +140,7 @@ make more configuration options available (see below)
 [see Publish Over ... for common options for Transfer
 Sets](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-transfer)
 
-###### Clean remote
+## Clean remote
 
 Delete all files and directories from the remote directory before
 uploading the new files.
