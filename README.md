@@ -138,7 +138,7 @@ make more configuration options available (see below)
 ![cifs_advanced](docs/images/cifs_advanced.png)
 
 [see Publish Over ... for common options for Transfer
-Sets](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-transfer)
+Sets](https://plugins.jenkins.io/publish-over/#transfer)
 
 ## Clean remote
 
