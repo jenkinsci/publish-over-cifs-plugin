@@ -184,7 +184,7 @@ Promotions](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-promo
 # Questions, Comments, Bugs and Feature Requests
 
 Please post questions or comments about this plugin to the [Jenkins User
-mailing list](http://jenkins-ci.org/content/mailing-lists).  
+mailing list](http://www.jenkins.io/content/mailing-lists).  
 To report a bug or request an enhancement to this plugin please [create
 a ticket in
 JIRA](https://issues.jenkins-ci.org/browse/JENKINS/component/15850).
