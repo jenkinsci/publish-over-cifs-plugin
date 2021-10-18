@@ -80,7 +80,7 @@ being relative.
 The share must be, or begin with, a windows share name on the server
 named in Hostname.
 
-##### Advanced
+### Advanced
 
 If you click the "Advanced..." button for a configuration, then you will
 make more configuration options available (see below)
