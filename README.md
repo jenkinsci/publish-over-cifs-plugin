@@ -186,7 +186,7 @@ Promotions](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-promo
     49010](https://issues.jenkins-ci.org/browse/JENKINS-49010))  
       
 
-Questions, Comments, Bugs and Feature Requests
+# Questions, Comments, Bugs and Feature Requests
 
 Please post questions or comments about this plugin to the [Jenkins User
 mailing list](http://jenkins-ci.org/content/mailing-lists).  
