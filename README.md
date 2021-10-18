@@ -86,8 +86,7 @@ make more configuration options available (see below)
 
 ![cifs_global_advanced](docs/images/cifs_global_advanced.png)
 
-[see Publish Over ... for common options for Host
-Configurations](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-host)
+see Publish Over ... for [common options for Host Configurations](https://plugins.jenkins.io/publish-over/#host)
 
 ## Click "Test Configuration".
 
