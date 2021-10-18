@@ -23,7 +23,7 @@ log](http://localhost:8085/display/JENKINS/Publish+Over+CIFS+Plugin#PublishOverC
 
 #### Configure a WINS server
 
-From the Jenkins home page, click "Manage Jenkins" and the click on
+From the Jenkins home page, click "Manage Jenkins" and then click on
 "Configure System"
 
 In the main Jenkins configuration page, there will be a "Publish Over
