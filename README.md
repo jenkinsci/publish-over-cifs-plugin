@@ -30,7 +30,7 @@ CIFS" checkbox in the "Global properties" section.
 
 ![cifs_node_props_global](docs/images/cifs_node_props_global.png)
 
-###### WINS server
+## WINS server
 
 Set this option to the IP address of a WINS server that will be used by
 the Jenkins controller, and will be the default for all other agents.
