@@ -72,7 +72,7 @@ that contains the share
 To specify a user in a specific windows domain, use a back slash to
 separate eg MYDOMAIN\\myuser
 
-###### Share
+### Share
 
 The share is equivalent to the standard Remote directory option, except
 that the Share is required and there is no concept of the directories
