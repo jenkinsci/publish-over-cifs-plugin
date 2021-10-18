@@ -62,7 +62,7 @@ Fill in Name, Hostname, Username, Password and Share. [see Publish Over
 ... for common options for Host
 Configurations](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-host)
 
-###### Hostname
+### Hostname
 
 Hostname is the hostname, IP address or windows servername of the host
 that contains the share
