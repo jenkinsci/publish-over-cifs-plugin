@@ -187,4 +187,4 @@ Please post questions or comments about this plugin to the [Jenkins User
 mailing list](http://www.jenkins.io/content/mailing-lists).  
 To report a bug or request an enhancement to this plugin please [create
 a ticket in
-JIRA](https://issues.jenkins-ci.org/browse/JENKINS/component/15850).
+JIRA](https://www.jenkins.io/participate/report-issue/redirect/#15850).
