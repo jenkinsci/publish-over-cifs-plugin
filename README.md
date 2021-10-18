@@ -178,7 +178,7 @@ Promotions](http://localhost:8085/display/JENKINS/Publish+Over#PublishOver-promo
 -   Fixed issue with parameter verification using incorrect check urls
 -   Fixed issue with bufferSize not being set correctly on ugprade
     ([issue
-    49010](https://issues.jenkins-ci.org/browse/JENKINS-49010))  
+    49010](https://issues.jenkins.io/browse/JENKINS-49010))  
       
 
 # Questions, Comments, Bugs and Feature Requests
