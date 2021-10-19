@@ -125,7 +125,7 @@ see Publish Over ... for [common options for
 Server](https://plugins.jenkins.io/publish-over/#server)
 
 [see Publish Over ... for common options for Transfer
-Sets](https://plugins.jenkins.io/publish-over/#transfer)
+Sets](https://plugins.jenkins.io/publish-over/#transfer-set)
 
 Source files
 
@@ -138,7 +138,7 @@ make more configuration options available (see below)
 ![cifs_advanced](docs/images/cifs_advanced.png)
 
 [see Publish Over ... for common options for Transfer
-Sets](https://plugins.jenkins.io/publish-over/#transfer)
+Sets](https://plugins.jenkins.io/publish-over/#transfer-set)
 
 ## Clean remote
 
