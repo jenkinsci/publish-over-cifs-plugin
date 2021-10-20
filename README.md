@@ -5,9 +5,9 @@ Send build artifacts to a windows share (CIFS/SMB/samba)
 Please read [Publish Over](https://plugins.jenkins.io/publish-over/) first.  
 Common configuration options that are documented in the [Publish Over ... page](https://plugins.jenkins.io/publish-over/) will not be repeated here.
 
-[Features](https://plugins.jenkins.io/publish-over/#features)
+[Features](https://plugins.jenkins.io/publish-over/#overview)
+
 [Configure](https://plugins.jenkins.io/publish-over/#configuration)
-[Change log](https://plugins.jenkins.io/publish-over/#releases)
 
 # Features
 
@@ -87,7 +87,9 @@ see Publish Over ... for [common options for Host Configurations](https://plugin
 
 This plugin adds a build step to enable you to send files to a windows share during a build.
 
-Select "Send files to a windows share" from the "Add build step" drop down (pic below) and then configure just like [Configure a job to send files to a windows share](https://plugins.jenkins.io/publish-over/#configjob)
+Select "Send files to a windows share" from the "Add build step" drop down (pic below) and then configure just like [Configure a job to send files to a windows share](#configure-a-job-to-send-files-to-a-windows-share)
+
+![]
 below
 
 ![cifs_builder](docs/images/cifs_builder.png)
