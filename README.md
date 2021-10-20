@@ -61,7 +61,7 @@ Hostname is the hostname, IP address or windows servername of the host that cont
 
 ### Username
 
-To specify a user in a specific windows domain, use a back slash to separate eg `MYDOMAIN\\myuser`
+To specify a user in a specific windows domain, use a back slash to separate eg `MYDOMAIN\myuser`
 
 ### Share
 
