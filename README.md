@@ -32,7 +32,7 @@ In the main Jenkins configuration page, there will be a "Publish Over CIFS" chec
 
 Set this option to the IP address of a WINS server that will be used by the Jenkins controller, and will be the default for all other agents.
 
-The WINS server can be set or overridden for individual nodes (slaves)
+The WINS server can be set or overridden for individual agents
 
 A "Publish Over CIFS" checkbox will appear under "Node Properties" in the configuration for a node.  
 Set the WINS server to an IP address that this node will use for name
