@@ -28,3 +28,4 @@ target/
 out/
 *~
 work/
+.DS_Store
