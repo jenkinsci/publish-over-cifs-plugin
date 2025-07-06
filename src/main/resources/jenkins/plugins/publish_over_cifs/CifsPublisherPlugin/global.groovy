@@ -65,7 +65,7 @@ f.section(description: _("hostconfig.section.description"), title: _("hostconfig
   if(descriptor.enableOverrideDefaults) {
     f.advanced() {
       f.entry() {
-        f.dropdownDescriptorSelector(default: descriptor.pluginDefaultsDescriptor, field: "defaults", title: descriptor.commonManageMessages.defaults()) 
+        f.dropdownDescriptorSelector(default: descriptor.pluginDefaultsDescriptor, field: "defaults", title: descriptor.commonManageMessages.defaults())
       }
     }
   }
