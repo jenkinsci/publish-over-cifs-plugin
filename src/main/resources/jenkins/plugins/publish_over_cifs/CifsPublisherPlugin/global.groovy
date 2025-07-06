@@ -16,10 +16,10 @@ f.section(description: _("hostconfig.section.description"), title: _("hostconfig
     f.repeatable(var: "instance", header: _("hostconfig.dragAndDrop"), items: descriptor.hostConfigurations) {
       poc.blockWrapper {
         f.entry(help: "${helpUrl}name.html", title: m.name()) {
-          f.textbox(name: "_.name", checkUrl: "${descriptor.getCheckUrl('name')}+'?value='+escape(this.value)", value: instance?.name)
+          f.textbox(name: "_.name", checkUrl: "${descriptor.getCheckUrl('name')}" checkDependsOn="", value: instance?.name)
         }
         f.entry(help: "${helpUrl}hostname.html", title: m.hostname()) {
-          f.textbox(name: "_.hostname", checkUrl: "${descriptor.getCheckUrl('hostname')}+'?value='+escape(this.value)", value: instance?.hostname)
+          f.textbox(name: "_.hostname", checkUrl: "${descriptor.getCheckUrl('hostname')}" checkDependsOn="", value: instance?.hostname)
         }
         f.entry(help: "${helpUrl}username.html", title: m.username()) {
           f.textbox(name: "_.username", value: instance?.username)
@@ -28,17 +28,17 @@ f.section(description: _("hostconfig.section.description"), title: _("hostconfig
           input(name: "_.password", type: "password", value: instance?.encryptedPassword, class: "setting-input")
         }
         f.entry(help: "${helpUrl}remoteRootDir.html", title: _("remotePath")) {
-          f.textbox(name: "_.remoteRootDir", checkUrl: "${descriptor.getCheckUrl('remoteRootDir')}+'?value='+escape(this.value)", value: instance?.remoteRootDir)
+          f.textbox(name: "_.remoteRootDir", checkUrl: "${descriptor.getCheckUrl('remoteRootDir')}" checkDependsOn="", value: instance?.remoteRootDir)
         }
         f.advanced() {
           f.entry(help: "${helpUrl}port.html", title: m.port()) {
-            f.textbox(default: defaultPort, name: "_.port", checkUrl: "${descriptor.getCheckUrl('port')}+'?value='+escape(this.value)", value: instance?.port)
+            f.textbox(default: defaultPort, name: "_.port", checkUrl: "${descriptor.getCheckUrl('port')}" checkDependsOn="", value: instance?.port)
           }
           f.entry(help: "${helpUrl}timeOut.html", title: m.timeout()) {
-            f.textbox(default: defaultTimeout, name: "_.timeout", checkUrl: "${descriptor.getCheckUrl('timeout')}+'?value='+escape(this.value)", value: instance?.timeout)
+            f.textbox(default: defaultTimeout, name: "_.timeout", checkUrl: "${descriptor.getCheckUrl('timeout')}" checkDependsOn="", value: instance?.timeout)
           }
           f.entry(help: "${helpUrl}bufferSize.html", title: _("hostconfig.field.bufferSize")) {
-            f.textbox(default: defaultBufferSize, name: "_.bufferSize", checkUrl: "${descriptor.getCheckUrl('bufferSize')}+'?value='+escape(this.value)", value: instance?.bufferSize)
+            f.textbox(default: defaultBufferSize, name: "_.bufferSize", checkUrl: "${descriptor.getCheckUrl('bufferSize')}" checkDependsOn="", value: instance?.bufferSize)
           }
           f.entry(help: "${helpUrl}smbVersion.html", title: _("hostconfig.field.smbVersion")) {
             select(name: "_.smbVersion", class: "setting-input") {
