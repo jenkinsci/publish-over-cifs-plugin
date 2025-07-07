@@ -107,12 +107,9 @@ public class CifsClient extends BPDefaultClient<CifsTransfer> {
     public void transferFile(final CifsTransfer transfer, final FilePath filePath, final InputStream content) throws IOException {
         final String newFileUrl = context + filePath.getName();
         if (buildInfo.isVerbose()) buildInfo.println(Messages.console_copy(helper.hideUserInfo(newFileUrl)));
-        final OutputStream out = createFile(newFileUrl).getOutputStream();
 
-        try {
+        try (OutputStream out = createFile(newFileUrl).getOutputStream()) {
             IOUtils.copy(content, out, bufferSize);
-        } finally {
-            out.close();
         }
     }
 

@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_cifs.options;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import jenkins.plugins.publish_over.options.GlobalDefaults;
 import jenkins.plugins.publish_over.options.InstanceConfigOptions;
@@ -69,6 +70,7 @@ public final class CifsPluginDefaults extends CifsDefaults {
     @Extension
     public static final class CifsPluginDefaultsDescriptor extends CifsDefaultsDescriptor {
 
+        @NonNull
         @Override
         public String getDisplayName() {
             return Messages.defaults_pluginDefaults();

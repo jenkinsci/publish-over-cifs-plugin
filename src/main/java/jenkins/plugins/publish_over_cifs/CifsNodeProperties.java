@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_cifs;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Node;
 import hudson.slaves.NodeProperty;
@@ -35,7 +36,6 @@ import org.kohsuke.stapler.QueryParameter;
 
 public class CifsNodeProperties extends NodeProperty<Node> {
 
-    private static final long serialVersionUID = 1L;
     public static final String FORM_PREFIX = "poc-np.";
     private String winsServer;
 
@@ -49,6 +49,7 @@ public class CifsNodeProperties extends NodeProperty<Node> {
 
     @Extension
     public static class CifsWinsNodePropertyDescriptor extends NodePropertyDescriptor {
+        @NonNull
         @Override
         public String getDisplayName() {
             return Messages.winsNodeProperty_descriptor_displayName();

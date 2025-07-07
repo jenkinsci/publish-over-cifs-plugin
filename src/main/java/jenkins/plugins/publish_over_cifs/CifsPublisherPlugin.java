@@ -43,12 +43,14 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Object> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private boolean publishWhenFailed = false;
 
@@ -68,7 +70,7 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
         this.publishWhenFailed = publishWhenFailed;
     }
     public boolean getPublishWhenFailed() { return this.publishWhenFailed; }
-    
+
     public List<CifsPublisher> getPublishers() {
         return this.getDelegate().getPublishers();
     }
@@ -125,7 +127,7 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
 
     @Override
     protected void fixup(final Run<?, ?> build, final BPBuildInfo buildInfo) {
-        final Jenkins jenkins = Jenkins.getInstance();
+        final Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins != null) {
             final CifsNodeProperties defaults = jenkins.getGlobalNodeProperties().get(CifsNodeProperties.class);
             if (defaults != null) buildInfo.put(CifsPublisher.CTX_KEY_NODE_PROPERTIES_DEFAULT, map(defaults));
@@ -163,7 +165,7 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
     }
 
     public Descriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(Descriptor.class);
+        return Jenkins.get().getDescriptorByType(Descriptor.class);
     }
 
     public CifsHostConfiguration getConfiguration(final String name) {
@@ -182,7 +184,7 @@ public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Obj
         }
 
     }
-    
+
     protected boolean isBuildGoodEnoughToRun(final Run<?, ?> build, final PrintStream console) {
         if (this.publishWhenFailed) {
             return true;

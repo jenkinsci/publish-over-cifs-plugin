@@ -37,7 +37,6 @@ import hudson.tasks.Publisher;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPInstanceConfig;
 import jenkins.plugins.publish_over.BPPlugin;
-import jenkins.plugins.publish_over_cifs.descriptor.CifsPublisherPluginDescriptor;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -115,6 +114,8 @@ public class CifsPromotionPublisherPlugin extends Notifier implements SimpleBuil
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
+        @NonNull
+        @Override
         public String getDisplayName() {
             return Messages.promotion_descriptor_displayName();
         }
@@ -123,7 +124,7 @@ public class CifsPromotionPublisherPlugin extends Notifier implements SimpleBuil
         }
 
         public CifsPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return  Jenkins.getInstance().getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
+            return  Jenkins.get().getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
         }
     }
 

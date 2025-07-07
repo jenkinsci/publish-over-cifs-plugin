@@ -30,8 +30,6 @@ import jenkins.plugins.publish_over.BapPublisherException;
 
 public class CifsHelper {
 
-    private static final long serialVersionUID = 1L;
-
     public SmbFile[] listFiles(final SmbFile file, final String url) {
         try {
             return file.listFiles();

@@ -30,13 +30,14 @@ import jenkins.plugins.publish_over.BPBuildEnv;
 import jenkins.plugins.publish_over.BPBuildInfo;
 
 import java.io.File;
+import java.io.Serial;
 import java.util.Calendar;
 import java.util.TreeMap;
 
 public class CifsTestHelper {
 
     public static BPBuildEnv createEmptyBuildEnv() {
-        return new BPBuildEnv(new TreeMap<String, String>(), new FilePath(new File("")), Calendar.getInstance());
+        return new BPBuildEnv(new TreeMap<>(), new FilePath(new File("")), Calendar.getInstance());
     }
 
     public static BPBuildInfo createEmpty() {
@@ -59,6 +60,7 @@ public class CifsTestHelper {
     }
 
     public static class FakeBuildInfo extends BPBuildInfo {
+        @Serial
         private static final long serialVersionUID = 1L;
         private boolean isOnMaster;
         public FakeBuildInfo() {

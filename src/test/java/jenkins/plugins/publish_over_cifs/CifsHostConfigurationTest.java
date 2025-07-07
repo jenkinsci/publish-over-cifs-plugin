@@ -30,27 +30,29 @@ import hudson.util.SecretHelper;
 import jcifs.CIFSContext;
 import jcifs.Configuration;
 import jcifs.ResolverType;
-import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbFile;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.Serial;
 
-import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import org.junit.runner.RunWith;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods", "PMD.AvoidUsingHardCodedIP" })
+@RunWith(MockitoJUnitRunner.class)
 public class CifsHostConfigurationTest {
 
     private static final String CFG_NAME = "xxx";
@@ -62,9 +64,9 @@ public class CifsHostConfigurationTest {
     private static String origSoTimeout;
     private static String origResolveOrder;
 
-    @Rule 
+    @Rule
     public JenkinsRule jenkinsRule = new JenkinsRule() {
-        @Override 
+        @Override
         public void before() throws Throwable {
             super.before();
             SecretHelper.setSecretKey();
@@ -90,9 +92,10 @@ public class CifsHostConfigurationTest {
         else System.setProperty(key, orig);
     }
 
-    private final transient BPBuildInfo buildInfo = new BPBuildInfo(TaskListener.NULL, "", new FilePath(new File("")), null, null);
-    private final transient IMocksControl mockControl = EasyMock.createStrictControl();
-    private final transient SmbFile mockSmbFile = mockControl.createMock(SmbFile.class);
+    private final BPBuildInfo buildInfo = new BPBuildInfo(TaskListener.NULL, "", new FilePath(new File("")), null, null);
+
+    @Mock
+    private SmbFile mockSmbFile;
 
 //    from SmbFile, this is what we are looking for:
 //    smb://[[[domain;]username[:password]@]server[:port]/[[share/[dir/]file]]][?[param=value[param2=value2[...]]]
@@ -117,22 +120,14 @@ public class CifsHostConfigurationTest {
 
     @Test public void hostnameIsRequired() throws Exception {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, "", null, null, SHARE, mockSmbFile);
-        try {
-            config.createClient(buildInfo).getContext();
-            fail();
-        } catch (final BapPublisherException bpe) {
-            assertTrue(bpe.getLocalizedMessage().contains(Messages.exception_hostnameRequired()));
-        }
+        BapPublisherException bpe = assertThrows(BapPublisherException.class, () -> config.createClient(buildInfo).getContext());
+        assertTrue(bpe.getLocalizedMessage().contains(Messages.exception_hostnameRequired()));
     }
 
     @Test public void sharenameIsRequired() throws Exception {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, "hello", null, null, "", mockSmbFile);
-        try {
-            config.createClient(buildInfo).getContext();
-            fail();
-        } catch (final BapPublisherException bpe) {
-            assertTrue(bpe.getLocalizedMessage().contains(Messages.exception_shareRequired()));
-        }
+        BapPublisherException bpe = assertThrows(BapPublisherException.class, () -> config.createClient(buildInfo).getContext());
+        assertTrue(bpe.getLocalizedMessage().contains(Messages.exception_shareRequired()));
     }
 
     @Test public void canHazPort() throws Exception {
@@ -148,12 +143,12 @@ public class CifsHostConfigurationTest {
     }
 
     private void assertUrl(final String expectedUrl, final CifsHostConfiguration hostConfig) throws Exception {
-        expect(mockSmbFile.exists()).andReturn(true);
-        expect(mockSmbFile.canRead()).andReturn(true);
-        mockControl.replay();
+        when(mockSmbFile.exists()).thenReturn(true);
+        when(mockSmbFile.canRead()).thenReturn(true);
         assertEquals(expectedUrl, hostConfig.createClient(buildInfo).getContext());
         assertEquals(expectedUrl, ((ConfigWithMockFile) hostConfig).url);
-        mockControl.verify();
+        verify(mockSmbFile).exists();
+        verify(mockSmbFile).canRead();
     }
 
     @Test public void testWinsServerIsSetFromBuildInfo() throws Exception {
@@ -164,9 +159,8 @@ public class CifsHostConfigurationTest {
         final String wins = "5.6.7.8";
         final int timeout = 45000;
         buildInfo.put(CifsPublisher.CTX_KEY_WINS_SERVER, wins);
-        expect(mockSmbFile.exists()).andReturn(true);
-        expect(mockSmbFile.canRead()).andReturn(true);
-        mockControl.replay();
+        when(mockSmbFile.exists()).thenReturn(true);
+        when(mockSmbFile.canRead()).thenReturn(true);
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, null, null, SHARE, 99, timeout, mockSmbFile);
         Configuration c = config.createClient(buildInfo).getCifsContext().getConfig();
         assertEquals(1, c.getWinsServers().length);
@@ -174,22 +168,26 @@ public class CifsHostConfigurationTest {
         assertEquals(timeout, c.getResponseTimeout());
         assertTrue(c.getResolveOrder().contains(ResolverType.RESOLVER_WINS));
         assertTrue(c.getSoTimeout() > c.getResponseTimeout());
+        verify(mockSmbFile).exists();
+        verify(mockSmbFile).canRead();
     }
 
     @Test public void testWinsServerRemovedFromResolveOrderWhenNotSet() throws Exception {
         System.setProperty(CifsHostConfiguration.CONFIG_PROPERTY_WINS, "1.2.3.4");
         System.setProperty(CifsHostConfiguration.CONFIG_PROPERTY_RESOLVE_ORDER, "WINS");
         final int timeout = 45000;
-        expect(mockSmbFile.exists()).andReturn(true);
-        expect(mockSmbFile.canRead()).andReturn(true);
-        mockControl.replay();
+        when(mockSmbFile.exists()).thenReturn(true);
+        when(mockSmbFile.canRead()).thenReturn(true);
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, null, null, SHARE, 99, timeout, mockSmbFile);
         Configuration c = config.createClient(buildInfo).getCifsContext().getConfig();
         assertEquals(0, c.getWinsServers().length);
         assertFalse(c.getResolveOrder().contains(ResolverType.RESOLVER_WINS));
+        verify(mockSmbFile).exists();
+        verify(mockSmbFile).canRead();
     }
 
     private static class ConfigWithMockFile extends CifsHostConfiguration {
+        @Serial
         private static final long serialVersionUID = 1L;
         private final transient SmbFile smbFile;
         private String url;
