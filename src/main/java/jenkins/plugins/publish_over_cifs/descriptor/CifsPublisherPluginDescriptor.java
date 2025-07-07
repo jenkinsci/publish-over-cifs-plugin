@@ -46,8 +46,8 @@ import jenkins.plugins.publish_over_cifs.options.CifsDefaults;
 import jenkins.plugins.publish_over_cifs.options.CifsPluginDefaults;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.verb.POST;
 
 import java.util.List;
@@ -115,7 +115,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         }
     }
 
-    public boolean configure(final StaplerRequest request, final JSONObject formData) {
+    public boolean configure(final StaplerRequest2 request, final JSONObject formData) {
         hostConfigurations.replaceBy(request.bindJSONToList(CifsHostConfiguration.class, formData.get("instance")));
         if (isEnableOverrideDefaults())
             defaults = request.bindJSON(CifsDefaults.class, formData.getJSONObject("defaults"));
@@ -175,7 +175,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     }
 
     @POST
-    public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
+    public FormValidation doTestConnection(final StaplerRequest2 request, final StaplerResponse2 response) {
         Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
 
         final CifsHostConfiguration hostConfig = request.bindParameters(CifsHostConfiguration.class, "");
@@ -192,7 +192,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         }
     }
 
-    protected BPBuildInfo createDummyBuildInfo(final StaplerRequest request) {
+    protected BPBuildInfo createDummyBuildInfo(final StaplerRequest2 request) {
         final BPBuildInfo buildInfo = new BPBuildInfo(
                 TaskListener.NULL,
                 "",
