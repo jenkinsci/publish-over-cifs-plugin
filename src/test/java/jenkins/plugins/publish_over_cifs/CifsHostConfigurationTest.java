@@ -30,7 +30,6 @@ import hudson.util.SecretHelper;
 import jcifs.CIFSContext;
 import jcifs.Configuration;
 import jcifs.ResolverType;
-import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbFile;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
@@ -38,13 +37,12 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.Serial;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -122,22 +120,14 @@ public class CifsHostConfigurationTest {
 
     @Test public void hostnameIsRequired() throws Exception {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, "", null, null, SHARE, mockSmbFile);
-        try {
-            config.createClient(buildInfo).getContext();
-            fail();
-        } catch (final BapPublisherException bpe) {
-            assertTrue(bpe.getLocalizedMessage().contains(Messages.exception_hostnameRequired()));
-        }
+        BapPublisherException bpe = assertThrows(BapPublisherException.class, () -> config.createClient(buildInfo).getContext());
+        assertTrue(bpe.getLocalizedMessage().contains(Messages.exception_hostnameRequired()));
     }
 
     @Test public void sharenameIsRequired() throws Exception {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, "hello", null, null, "", mockSmbFile);
-        try {
-            config.createClient(buildInfo).getContext();
-            fail();
-        } catch (final BapPublisherException bpe) {
-            assertTrue(bpe.getLocalizedMessage().contains(Messages.exception_shareRequired()));
-        }
+        BapPublisherException bpe = assertThrows(BapPublisherException.class, () -> config.createClient(buildInfo).getContext());
+        assertTrue(bpe.getLocalizedMessage().contains(Messages.exception_shareRequired()));
     }
 
     @Test public void canHazPort() throws Exception {
@@ -197,6 +187,7 @@ public class CifsHostConfigurationTest {
     }
 
     private static class ConfigWithMockFile extends CifsHostConfiguration {
+        @Serial
         private static final long serialVersionUID = 1L;
         private final transient SmbFile smbFile;
         private String url;

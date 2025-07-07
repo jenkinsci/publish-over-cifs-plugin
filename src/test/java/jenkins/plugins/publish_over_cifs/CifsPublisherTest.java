@@ -97,6 +97,6 @@ public class CifsPublisherTest {
     }
 
     private CifsPublisher createPublisher() {
-        return new CifsPublisher("abc", false, new ArrayList<CifsTransfer>(0), false, false, null, null);
+        return new CifsPublisher("abc", false, new ArrayList<>(0), false, false, null, null);
     }
 }

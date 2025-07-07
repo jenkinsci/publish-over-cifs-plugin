@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_cifs.descriptor;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Util;
 import hudson.model.AbstractProject;
@@ -61,7 +62,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     /** null - prevent complaints from xstream */
     @SuppressFBWarnings("URF_UNREAD_FIELD")
     private Class hostConfigClass;
-    private final CopyOnWriteList<CifsHostConfiguration> hostConfigurations = new CopyOnWriteList<CifsHostConfiguration>();
+    private final CopyOnWriteList<CifsHostConfiguration> hostConfigurations = new CopyOnWriteList<>();
     private CifsDefaults defaults;
 
     public CifsPublisherPluginDescriptor() {
@@ -75,6 +76,8 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         return defaults;
     }
 
+    @NonNull
+    @Override
     public String getDisplayName() {
         return Messages.descriptor_displayName();
     }
@@ -167,7 +170,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     }
 
     public CifsPluginDefaults.CifsDefaultsDescriptor getPluginDefaultsDescriptor() {
-        return (CifsDefaults.CifsDefaultsDescriptor) Jenkins.getInstance().getDescriptor(CifsDefaults.class);
+        return (CifsDefaults.CifsDefaultsDescriptor) Jenkins.get().getDescriptor(CifsDefaults.class);
     }
 
     public jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages getCommonManageMessages() {
@@ -176,7 +179,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
 
     @POST
     public FormValidation doTestConnection(final StaplerRequest2 request, final StaplerResponse2 response) {
-        Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
 
         final CifsHostConfiguration hostConfig = request.bindParameters(CifsHostConfiguration.class, "");
         request.bindParameters(hostConfig);
@@ -196,7 +199,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         final BPBuildInfo buildInfo = new BPBuildInfo(
                 TaskListener.NULL,
                 "",
-                Jenkins.getInstance().getRootPath(),
+                Jenkins.get().getRootPath(),
                 null,
                 null
         );

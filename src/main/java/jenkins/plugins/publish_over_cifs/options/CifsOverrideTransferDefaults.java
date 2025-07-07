@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_cifs.options;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
@@ -102,12 +103,13 @@ public class CifsOverrideTransferDefaults implements TransferOptions, Describabl
     }
 
     public CifsOverrideTransferDefaultsDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(CifsOverrideTransferDefaultsDescriptor.class);
+        return Jenkins.get().getDescriptorByType(CifsOverrideTransferDefaultsDescriptor.class);
     }
 
     @Extension
     public static class CifsOverrideTransferDefaultsDescriptor extends Descriptor<CifsOverrideTransferDefaults> {
 
+        @NonNull
         @Override
         public String getDisplayName() {
             return "CifsOverrideTransferDefaultsDescriptor - not visible ...";

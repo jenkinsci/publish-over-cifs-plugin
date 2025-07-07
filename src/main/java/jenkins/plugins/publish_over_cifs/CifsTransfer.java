@@ -32,8 +32,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import java.io.Serial;
+
 public class CifsTransfer extends BPTransfer {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @DataBoundConstructor

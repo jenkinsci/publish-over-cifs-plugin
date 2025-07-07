@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_cifs.options;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
@@ -45,12 +46,13 @@ public class CifsOverridePublisherLabelDefaults implements PublisherLabelOptions
     }
 
     public CifsOverridePublisherLabelDefaultsDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(CifsOverridePublisherLabelDefaultsDescriptor.class);
+        return Jenkins.get().getDescriptorByType(CifsOverridePublisherLabelDefaultsDescriptor.class);
     }
 
     @Extension
     public static class CifsOverridePublisherLabelDefaultsDescriptor extends Descriptor<CifsOverridePublisherLabelDefaults> {
 
+        @NonNull
         @Override
         public String getDisplayName() {
             return "CifsOverridePublisherLabelDefaultsDescriptor - not visible ...";

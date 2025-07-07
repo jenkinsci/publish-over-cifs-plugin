@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_cifs;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -97,6 +98,8 @@ public class CifsBuilderPlugin extends Builder {
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
+        @NonNull
+        @Override
         public String getDisplayName() {
             return Messages.builder_descriptor_displayName();
         }
@@ -104,7 +107,7 @@ public class CifsBuilderPlugin extends Builder {
             return getViewPage(CifsPublisherPlugin.class, "config.jelly");
         }
         public CifsPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return  Jenkins.getInstance().getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
+            return  Jenkins.get().getDescriptorByType(CifsPublisherPlugin.Descriptor.class);
         }
     }
 

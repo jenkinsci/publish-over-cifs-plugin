@@ -43,17 +43,19 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
+import java.io.Serial;
 import java.net.MalformedURLException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 @SuppressWarnings("PMD.CyclomaticComplexity") // yeah that encode method ain't great, but we want it to be reasonably quick
 public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Object> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public static final String SMB_URL_PREFIX = "smb://";
@@ -264,7 +266,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
                 return username;
             }
         }
-        return "";        
+        return "";
     }
 
     @SuppressWarnings({ "PMD.PreserveStackTrace", "PMD.JUnit4TestShouldUseTestAnnotation" }) // FFS
@@ -291,7 +293,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
     private static String encode(final String raw) {
         if (raw == null) return null;
         final StringBuilder encoded = new StringBuilder(raw.length() * ESCAPED_BUILDER_SIZE_MULTIPLIER);
-        final CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
+        final CharsetEncoder encoder = StandardCharsets.UTF_8.newEncoder();
         final CharBuffer buffer = CharBuffer.allocate(1);
         for (final char c : raw.toCharArray()) {
             if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
@@ -354,6 +356,7 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Objec
 
     // While this looks redundant, it resolves some issues with XStream Reflection causing it
     // not to persist settings after a reboot
+    @Serial
     @Override
     public Object readResolve() {
         if(bufferSize <= 0) {

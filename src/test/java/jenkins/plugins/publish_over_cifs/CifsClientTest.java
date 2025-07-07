@@ -45,7 +45,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -152,12 +151,9 @@ public class CifsClientTest {
     }
 
     @Test public void testBeginTransfersFailIfNoSourceFiles() throws Exception {
-        try {
-            new CifsClient(SingletonContext.getInstance(), buildInfo, TEST_ROOT_URL, BUFFER_SIZE).beginTransfers(new CifsTransfer("", "", "", "", false, false, false, false, false, ","));
-            fail();
-        } catch (BapPublisherException bpe) {
-            assertEquals(Messages.exception_noSourceFiles(), bpe.getMessage());
-        }
+        BapPublisherException bpe = assertThrows(BapPublisherException.class,
+                () -> new CifsClient(SingletonContext.getInstance(), buildInfo, TEST_ROOT_URL, BUFFER_SIZE).beginTransfers(new CifsTransfer("", "", "", "", false, false, false, false, false, ",")));
+        assertEquals(Messages.exception_noSourceFiles(), bpe.getMessage());
     }
 
     @Test public void testDeleteTree() throws Exception {
