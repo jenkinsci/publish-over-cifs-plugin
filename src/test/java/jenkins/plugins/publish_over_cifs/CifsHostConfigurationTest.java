@@ -33,27 +33,30 @@ import jcifs.ResolverType;
 import jcifs.smb.SmbFile;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.Serial;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods", "PMD.AvoidUsingHardCodedIP" })
-@RunWith(MockitoJUnitRunner.class)
-public class CifsHostConfigurationTest {
+@ExtendWith(MockitoExtension.class)
+@WithJenkins
+class CifsHostConfigurationTest {
 
     private static final String CFG_NAME = "xxx";
     private static final String SERVER = "myServer";
@@ -64,79 +67,85 @@ public class CifsHostConfigurationTest {
     private static String origSoTimeout;
     private static String origResolveOrder;
 
-    @Rule
-    public JenkinsRule jenkinsRule = new JenkinsRule() {
-        @Override
-        public void before() throws Throwable {
-            super.before();
-            SecretHelper.setSecretKey();
-            origWinsServer = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_WINS);
-            origTimeout = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_TIMEOUT);
-            origSoTimeout = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_SO_TIMEOUT);
-            origResolveOrder = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_RESOLVE_ORDER);
-        }
+    private final BPBuildInfo buildInfo = new BPBuildInfo(TaskListener.NULL, "", new FilePath(new File("")), null, null);
 
-        @Override
-        public void after() throws Exception {
-            super.after();
-            SecretHelper.clearSecretKey();
-            restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_WINS, origWinsServer);
-            restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_TIMEOUT, origTimeout);
-            restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_SO_TIMEOUT, origSoTimeout);
-            restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_RESOLVE_ORDER, origResolveOrder);
-        }
-    };
+    @Mock
+    private SmbFile mockSmbFile;
+
+    @SuppressWarnings("unused")
+    private JenkinsRule jenkinsRule;
+
+    @BeforeEach
+    void beforeEach(JenkinsRule rule) {
+        jenkinsRule = rule;
+        SecretHelper.setSecretKey();
+        origWinsServer = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_WINS);
+        origTimeout = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_TIMEOUT);
+        origSoTimeout = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_SO_TIMEOUT);
+        origResolveOrder = System.getProperty(CifsHostConfiguration.CONFIG_PROPERTY_RESOLVE_ORDER);
+    }
+
+    @AfterEach
+    void afterEach() {
+        SecretHelper.clearSecretKey();
+        restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_WINS, origWinsServer);
+        restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_TIMEOUT, origTimeout);
+        restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_SO_TIMEOUT, origSoTimeout);
+        restoreSysProp(CifsHostConfiguration.CONFIG_PROPERTY_RESOLVE_ORDER, origResolveOrder);
+    }
 
     private static void restoreSysProp(final String key, final String orig) {
         if (orig == null) System.clearProperty(key);
         else System.setProperty(key, orig);
     }
 
-    private final BPBuildInfo buildInfo = new BPBuildInfo(TaskListener.NULL, "", new FilePath(new File("")), null, null);
-
-    @Mock
-    private SmbFile mockSmbFile;
-
 //    from SmbFile, this is what we are looking for:
 //    smb://[[[domain;]username[:password]@]server[:port]/[[share/[dir/]file]]][?[param=value[param2=value2[...]]]
 
-    @Test public void createSimplestUrl() throws Exception {
+    @Test
+    void createSimplestUrl() throws Exception {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, null, null, "myShare/", mockSmbFile);
         final String expectedUrl = SIMPLEST_URL;
         assertUrl(expectedUrl, config);
     }
 
-    @Test public void shareAlwaysEndsWithSeparator() throws Exception {
+    @Test
+    void shareAlwaysEndsWithSeparator() throws Exception {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, null, null, SHARE, mockSmbFile);
         final String expectedUrl = SIMPLEST_URL;
         assertUrl(expectedUrl, config);
     }
 
-    @Test public void shareCanBeAbsolute() throws Exception {
+    @Test
+    void shareCanBeAbsolute() throws Exception {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, null, null, "/myShare", mockSmbFile);
         final String expectedUrl = SIMPLEST_URL;
         assertUrl(expectedUrl, config);
     }
 
-    @Test public void hostnameIsRequired() throws Exception {
+    @Test
+    void hostnameIsRequired() {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, "", null, null, SHARE, mockSmbFile);
         BapPublisherException bpe = assertThrows(BapPublisherException.class, () -> config.createClient(buildInfo).getContext());
         assertTrue(bpe.getLocalizedMessage().contains(Messages.exception_hostnameRequired()));
     }
 
-    @Test public void sharenameIsRequired() throws Exception {
+    @Test
+    void sharenameIsRequired() {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, "hello", null, null, "", mockSmbFile);
         BapPublisherException bpe = assertThrows(BapPublisherException.class, () -> config.createClient(buildInfo).getContext());
         assertTrue(bpe.getLocalizedMessage().contains(Messages.exception_shareRequired()));
     }
 
-    @Test public void canHazPort() throws Exception {
+    @Test
+    void canHazPort() throws Exception {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, null, null, "/myShare", 123, 100000, mockSmbFile);
         final String expectedUrl = "smb://myServer:123/myShare/";
         assertUrl(expectedUrl, config);
     }
 
-    @Test public void fixupWindowsSeparatorsInShare() throws Exception {
+    @Test
+    void fixupWindowsSeparatorsInShare() throws Exception {
         final CifsHostConfiguration config = new ConfigWithMockFile(CFG_NAME, SERVER, null, null, "myShare\\and\\subDirs", mockSmbFile);
         final String expectedUrl = "smb://myServer/myShare/and/subDirs/";
         assertUrl(expectedUrl, config);
@@ -151,7 +160,8 @@ public class CifsHostConfigurationTest {
         verify(mockSmbFile).canRead();
     }
 
-    @Test public void testWinsServerIsSetFromBuildInfo() throws Exception {
+    @Test
+    void testWinsServerIsSetFromBuildInfo() throws Exception {
         System.setProperty(CifsHostConfiguration.CONFIG_PROPERTY_WINS, "1.2.3.4");
         System.setProperty(CifsHostConfiguration.CONFIG_PROPERTY_TIMEOUT, "20000");
         System.setProperty(CifsHostConfiguration.CONFIG_PROPERTY_SO_TIMEOUT, "300000");
@@ -172,7 +182,8 @@ public class CifsHostConfigurationTest {
         verify(mockSmbFile).canRead();
     }
 
-    @Test public void testWinsServerRemovedFromResolveOrderWhenNotSet() throws Exception {
+    @Test
+    void testWinsServerRemovedFromResolveOrderWhenNotSet() throws Exception {
         System.setProperty(CifsHostConfiguration.CONFIG_PROPERTY_WINS, "1.2.3.4");
         System.setProperty(CifsHostConfiguration.CONFIG_PROPERTY_RESOLVE_ORDER, "WINS");
         final int timeout = 45000;

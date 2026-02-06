@@ -25,24 +25,25 @@
 package jenkins.plugins.publish_over_cifs;
 
 import jenkins.plugins.publish_over.BPBuildInfo;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static jenkins.plugins.publish_over_cifs.CifsPublisher.CTX_KEY_NODE_PROPERTIES_CURRENT;
 import static jenkins.plugins.publish_over_cifs.CifsPublisher.CTX_KEY_NODE_PROPERTIES_DEFAULT;
 import static jenkins.plugins.publish_over_cifs.CifsPublisher.CTX_KEY_WINS_SERVER;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
-@SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.AvoidUsingHardCodedIP" })
-@RunWith(MockitoJUnitRunner.class)
-public class CifsPublisherTest {
+@SuppressWarnings({"PMD.SignatureDeclareThrowsException", "PMD.AvoidUsingHardCodedIP"})
+@ExtendWith(MockitoExtension.class)
+class CifsPublisherTest {
 
     private final BPBuildInfo buildInfo = CifsTestHelper.createEmpty();
 
@@ -51,22 +52,26 @@ public class CifsPublisherTest {
     @Mock(strictness = Mock.Strictness.LENIENT)
     private CifsHostConfiguration mockConfig;
 
-    @Before public void setUp() {
+    @BeforeEach
+    void beforeEach() {
         when(mockConfig.createClient(buildInfo)).thenReturn(mockClient);
     }
 
-    @Test public void noWinsServerIfNoDefaultsAndNoneForNode() throws Exception {
+    @Test
+    void noWinsServerIfNoDefaultsAndNoneForNode() throws Exception {
         CifsTestHelper.setOnMaster(buildInfo);
         createPublisher().perform(mockConfig, buildInfo);
         assertNull(buildInfo.get(CifsPublisher.CTX_KEY_WINS_SERVER));
     }
 
-    @Test public void noWinsServerIfNoDefaultsAndOnMaster() throws Exception {
+    @Test
+    void noWinsServerIfNoDefaultsAndOnMaster() throws Exception {
         createPublisher().perform(mockConfig, buildInfo);
         assertNull(buildInfo.get(CifsPublisher.CTX_KEY_WINS_SERVER));
     }
 
-    @Test public void winsServerFromCurrent() throws Exception {
+    @Test
+    void winsServerFromCurrent() throws Exception {
         final String winsServer = "1.2.3.4";
         final CifsCleanNodeProperties current = new CifsCleanNodeProperties(winsServer);
         buildInfo.put(CTX_KEY_NODE_PROPERTIES_CURRENT, current);
@@ -74,7 +79,8 @@ public class CifsPublisherTest {
         assertEquals(winsServer, buildInfo.get(CTX_KEY_WINS_SERVER));
     }
 
-    @Test public void winsServerDefaultIfOnMaster() throws Exception {
+    @Test
+    void winsServerDefaultIfOnMaster() throws Exception {
         final String defaultServer = "1.2.3.4";
         final String currentServer = "5.6.7.8";
         final CifsCleanNodeProperties current = new CifsCleanNodeProperties(currentServer);
@@ -86,7 +92,8 @@ public class CifsPublisherTest {
         assertEquals(defaultServer, buildInfo.get(CTX_KEY_WINS_SERVER));
     }
 
-    @Test public void noWinsServerIfWinsServerEmptyInCurrent() throws Exception {
+    @Test
+    void noWinsServerIfWinsServerEmptyInCurrent() throws Exception {
         final String defaultServer = "1.2.3.4";
         final CifsCleanNodeProperties current = new CifsCleanNodeProperties(null);
         final CifsCleanNodeProperties defaults = new CifsCleanNodeProperties(defaultServer);
