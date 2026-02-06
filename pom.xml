@@ -29,20 +29,19 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>5.18</version>
+        <version>5.28</version>
         <relativePath />
     </parent>
 
     <artifactId>publish-over-cifs</artifactId>
     <packaging>hpi</packaging>
     <name>Publish Over CIFS</name>
-    <version>0.17</version>
+    <version>${changelist}</version>
     <description>Send build artifacts to a windows share (CIFS/SMB/samba)</description>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
 
     <properties>
-        <revision>0.17</revision>
-        <changelist>-SNAPSHOT</changelist>
+        <changelist>999999-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.baseline>2.479</jenkins.baseline>
@@ -111,7 +110,7 @@
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
                 <artifactId>bom-${jenkins.baseline}.x</artifactId>
-                <version>5015.vb_52d36583443</version>
+                <version>5054.v620b_5d2b_d5e6</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

@@ -1,3 +1,0 @@
-_extends: .github
-tag-template: publish-over-cifs-$NEXT_MINOR_VERSION
-
