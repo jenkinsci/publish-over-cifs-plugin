@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_cifs.options;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
@@ -53,12 +54,13 @@ public class CifsOverrideRetryDefaults implements RetryOptions, Describable<Cifs
     }
 
     public CifsOverrideRetryDefaultsDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(CifsOverrideRetryDefaultsDescriptor.class);
+        return Jenkins.get().getDescriptorByType(CifsOverrideRetryDefaultsDescriptor.class);
     }
 
     @Extension
     public static class CifsOverrideRetryDefaultsDescriptor extends Descriptor<CifsOverrideRetryDefaults> {
 
+        @NonNull
         @Override
         public String getDisplayName() {
             return "CifsOverrideRetryDefaultsDescriptor - not visible ...";

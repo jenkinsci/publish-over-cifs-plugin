@@ -33,11 +33,13 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import java.io.Serial;
 import java.util.ArrayList;
 
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class CifsPublisher extends BapPublisher<CifsTransfer> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     public static final String CTX_KEY_NODE_PROPERTIES_DEFAULT = "cifs.np.default";
     public static final String CTX_KEY_NODE_PROPERTIES_CURRENT = "cifs.np.current";

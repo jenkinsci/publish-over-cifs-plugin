@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_cifs.descriptor;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Util;
 import hudson.model.AbstractProject;
@@ -46,8 +47,8 @@ import jenkins.plugins.publish_over_cifs.options.CifsDefaults;
 import jenkins.plugins.publish_over_cifs.options.CifsPluginDefaults;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.verb.POST;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     /** null - prevent complaints from xstream */
     @SuppressFBWarnings("URF_UNREAD_FIELD")
     private Class hostConfigClass;
-    private final CopyOnWriteList<CifsHostConfiguration> hostConfigurations = new CopyOnWriteList<CifsHostConfiguration>();
+    private final CopyOnWriteList<CifsHostConfiguration> hostConfigurations = new CopyOnWriteList<>();
     private CifsDefaults defaults;
 
     public CifsPublisherPluginDescriptor() {
@@ -75,6 +76,8 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         return defaults;
     }
 
+    @NonNull
+    @Override
     public String getDisplayName() {
         return Messages.descriptor_displayName();
     }
@@ -115,7 +118,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         }
     }
 
-    public boolean configure(final StaplerRequest request, final JSONObject formData) {
+    public boolean configure(final StaplerRequest2 request, final JSONObject formData) {
         hostConfigurations.replaceBy(request.bindJSONToList(CifsHostConfiguration.class, formData.get("instance")));
         if (isEnableOverrideDefaults())
             defaults = request.bindJSON(CifsDefaults.class, formData.getJSONObject("defaults"));
@@ -167,7 +170,7 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     }
 
     public CifsPluginDefaults.CifsDefaultsDescriptor getPluginDefaultsDescriptor() {
-        return (CifsDefaults.CifsDefaultsDescriptor) Jenkins.getInstance().getDescriptor(CifsDefaults.class);
+        return (CifsDefaults.CifsDefaultsDescriptor) Jenkins.get().getDescriptor(CifsDefaults.class);
     }
 
     public jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages getCommonManageMessages() {
@@ -175,8 +178,8 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
     }
 
     @POST
-    public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
-        Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
+    public FormValidation doTestConnection(final StaplerRequest2 request, final StaplerResponse2 response) {
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
 
         final CifsHostConfiguration hostConfig = request.bindParameters(CifsHostConfiguration.class, "");
         request.bindParameters(hostConfig);
@@ -192,11 +195,11 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         }
     }
 
-    protected BPBuildInfo createDummyBuildInfo(final StaplerRequest request) {
+    protected BPBuildInfo createDummyBuildInfo(final StaplerRequest2 request) {
         final BPBuildInfo buildInfo = new BPBuildInfo(
                 TaskListener.NULL,
                 "",
-                Jenkins.getInstance().getRootPath(),
+                Jenkins.get().getRootPath(),
                 null,
                 null
         );
