@@ -44,6 +44,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -53,7 +54,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 @SuppressWarnings("PMD.CyclomaticComplexity") // yeah that encode method ain't great, but we want it to be reasonably quick
-public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Object> {
+public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Serializable> {
 
     @Serial
     private static final long serialVersionUID = 1L;

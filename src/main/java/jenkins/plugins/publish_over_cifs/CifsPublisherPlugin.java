@@ -44,11 +44,12 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("PMD.LooseCoupling") // serializable
-public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Object> {
+public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Serializable> {
 
     @Serial
     private static final long serialVersionUID = 1L;
