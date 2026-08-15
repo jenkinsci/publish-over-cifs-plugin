@@ -35,20 +35,21 @@ import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPPluginDescriptor;
 import jenkins.plugins.publish_over.ParamPublish;
 import jenkins.plugins.publish_over_cifs.descriptor.CifsPublisherPluginDescriptor;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("PMD.LooseCoupling") // serializable
-public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Object> {
+public class CifsPublisherPlugin extends BPPlugin<CifsPublisher, CifsClient, Serializable> {
 
     @Serial
     private static final long serialVersionUID = 1L;

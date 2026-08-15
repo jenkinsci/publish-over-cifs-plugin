@@ -29,7 +29,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>5.28</version>
+        <version>6.2221.va_045130417c9</version>
         <relativePath />
     </parent>
 
@@ -44,9 +44,10 @@
         <changelist>999999-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-        <jenkins.baseline>2.479</jenkins.baseline>
+        <jenkins.baseline>2.555</jenkins.baseline>
         <jenkins.version>${jenkins.baseline}.3</jenkins.version>
         <ban-junit4-imports.skip>false</ban-junit4-imports.skip>
+        <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
     </properties>
 
     <licenses>
@@ -73,6 +74,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>access-modifier-suppressions</artifactId>
+            <version>1.35</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jenkins.plugins</groupId>
+            <artifactId>commons-lang3-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.21.0</version>
@@ -86,7 +97,7 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>publish-over</artifactId>
-            <version>0.22</version>
+            <version>242.vf56f6892cb_b_a_</version>
         </dependency>
         <dependency>
             <groupId>eu.agno3.jcifs</groupId>
@@ -111,7 +122,7 @@
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
                 <artifactId>bom-${jenkins.baseline}.x</artifactId>
-                <version>5054.v620b_5d2b_d5e6</version>
+                <version>6904.v75208ee5a_206</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

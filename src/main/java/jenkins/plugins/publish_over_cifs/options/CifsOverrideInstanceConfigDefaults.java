@@ -31,6 +31,7 @@ import hudson.model.Descriptor;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.InstanceConfigOptions;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 
 public class CifsOverrideInstanceConfigDefaults implements InstanceConfigOptions, Describable<CifsOverrideInstanceConfigDefaults> {
 
@@ -68,6 +69,7 @@ public class CifsOverrideInstanceConfigDefaults implements InstanceConfigOptions
     }
 
     @Extension
+    @SuppressRestrictedWarnings(jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages.class)
     public static class CifsOverrideInstanceConfigDefaultsDescriptor extends Descriptor<CifsOverrideInstanceConfigDefaults> {
 
         @NonNull

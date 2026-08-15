@@ -33,6 +33,7 @@ import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.RetryOptions;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 
 public class CifsOverrideRetryDefaults implements RetryOptions, Describable<CifsOverrideRetryDefaults> {
 
@@ -58,6 +59,7 @@ public class CifsOverrideRetryDefaults implements RetryOptions, Describable<Cifs
     }
 
     @Extension
+    @SuppressRestrictedWarnings(jenkins.plugins.publish_over.view_defaults.Retry.Messages.class)
     public static class CifsOverrideRetryDefaultsDescriptor extends Descriptor<CifsOverrideRetryDefaults> {
 
         @NonNull
