@@ -31,6 +31,7 @@ import hudson.model.Descriptor;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.ParamPublishOptions;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 
 public class CifsOverrideParamPublishDefaults implements ParamPublishOptions, Describable<CifsOverrideParamPublishDefaults> {
 
@@ -50,6 +51,7 @@ public class CifsOverrideParamPublishDefaults implements ParamPublishOptions, De
     }
 
     @Extension
+    @SuppressRestrictedWarnings(jenkins.plugins.publish_over.view_defaults.ParamPublish.Messages.class)
     public static class CifsOverrideParamPublishDefaultsDescriptor extends Descriptor<CifsOverrideParamPublishDefaults> {
 
         @NonNull

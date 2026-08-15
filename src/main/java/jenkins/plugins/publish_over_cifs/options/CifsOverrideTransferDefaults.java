@@ -31,6 +31,7 @@ import hudson.model.Descriptor;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.TransferOptions;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 
 public class CifsOverrideTransferDefaults implements TransferOptions, Describable<CifsOverrideTransferDefaults> {
 
@@ -107,6 +108,7 @@ public class CifsOverrideTransferDefaults implements TransferOptions, Describabl
     }
 
     @Extension
+    @SuppressRestrictedWarnings(jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages.class)
     public static class CifsOverrideTransferDefaultsDescriptor extends Descriptor<CifsOverrideTransferDefaults> {
 
         @NonNull

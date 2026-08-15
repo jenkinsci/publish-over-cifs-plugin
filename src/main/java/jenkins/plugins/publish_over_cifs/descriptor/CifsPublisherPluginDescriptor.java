@@ -52,8 +52,10 @@ import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.verb.POST;
 
 import java.util.List;
+import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 
 @SuppressWarnings("PMD.TooManyMethods")
+@SuppressRestrictedWarnings({jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages.class, jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages.class, jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages.class, jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages.class, jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages.class, jenkins.plugins.publish_over.view_defaults.ParamPublish.Messages.class, jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages.class, jenkins.plugins.publish_over.view_defaults.Retry.Messages.class})
 public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher> {
 
     /** null - prevent complaints from xstream */

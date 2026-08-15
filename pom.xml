@@ -74,6 +74,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>access-modifier-suppressions</artifactId>
+            <version>1.35</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>commons-lang3-api</artifactId>
         </dependency>
