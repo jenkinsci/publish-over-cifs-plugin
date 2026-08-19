@@ -29,10 +29,10 @@
     <poj:defaultMessages/>
     
     <f:entry title="${m.retries()}" field="retries">
-        <f:textbox default="${defaults.retry.retries}"/>
+        <f:number default="${defaults.retry.retries}" min="0" step="1" clazz="number"/>
     </f:entry>
     <f:entry title="${m.retryDelay()}" field="retryDelay">
-        <f:textbox default="${defaults.retry.retryDelay}"/>
+        <f:number default="${defaults.retry.retryDelay}" min="1" step="1" clazz="positive-number"/>
     </f:entry>
 
 </j:jelly>

@@ -75,11 +75,11 @@
                             <f:checkbox name="verbose" checked="${publisher.verbose}" title="${m_pub.verbose()}" default="${defaults.publisher.verbose}"/>
                         </f:entry>
                         <f:optionalBlock title="${m_pub.retry()}" name="retry" checked="${publisher.retry != null}"  help="${helpUrl}retry.html">
-                            <f:entry title="${m_retry.retries()}" help="${helpUrl}retries.html">
-                                <f:textbox name="retries" value="${publisher.retry.retries}" default="${defaults.retry.retries}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('retries')}" checkDependsOn=""/>
+                            <f:entry title="${m_retry.retries()}" field="retries" help="${helpUrl}retries.html">
+                                <f:number name="retries" value="${publisher.retry.retries}" default="${defaults.retry.retries}" min="0" step="1" clazz="number"/>
                             </f:entry>
-                            <f:entry title="${m_retry.retryDelay()}" help="${helpUrl}retryDelay.html">
-                                <f:textbox name="retryDelay" value="${publisher.retry.retryDelay}" default="${defaults.retry.retryDelay}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('retryDelay')}" checkDependsOn=""/>
+                            <f:entry title="${m_retry.retryDelay()}" field="retryDelay" help="${helpUrl}retryDelay.html">
+                                <f:number name="retryDelay" value="${publisher.retry.retryDelay}" default="${defaults.retry.retryDelay}" min="1" step="1" clazz="positive-number"/>
                             </f:entry>
                         </f:optionalBlock>
                         <f:optionalBlock title="${m_pub.label()}" name="label" checked="${publisher.label != null}"  help="${helpUrl}label.html">
@@ -93,8 +93,8 @@
                         <f:repeatable items="${publisher.transfers}" var="transfer" name="transfers" minimum="1" header="${m_pub.transfers_dragAndDropLabel()}" add="${m_pub.addTransfer()}">
                             <poc:blockWrapper>
 
-                                <f:entry title="${m_trans.sourceFiles()}" help="${helpUrl}sourceFiles${promoHelpSuffix}.html">
-                                    <f:textbox name="sourceFiles" value="${transfer.sourceFiles}" default="${defaults.transfer.sourceFiles}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('sourceFiles')}" checkDependsOn="" />
+                                <f:entry title="${m_trans.sourceFiles()}" field="sourceFiles" help="${helpUrl}sourceFiles${promoHelpSuffix}.html">
+                                    <f:textbox name="sourceFiles" value="${transfer.sourceFiles}" default="${defaults.transfer.sourceFiles}"/>
                                 </f:entry>
 
                                 <f:entry title="${m_trans.removePrefix()}" help="${helpUrl}removePrefix.html">
