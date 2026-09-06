@@ -124,6 +124,11 @@ public class CifsHostConfiguration extends BPHostConfiguration<CifsClient, Seria
         return super.getPassword();
     }
 
+    @DataBoundSetter
+    public void setEncryptedPassword(final String encryptedPassword) {
+        setPassword(encryptedPassword);
+    }
+
     public SmbVersions getSmbVersion() { return smbVersion; }
 
     @DataBoundSetter

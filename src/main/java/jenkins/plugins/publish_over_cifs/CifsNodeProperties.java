@@ -31,6 +31,7 @@ import hudson.slaves.NodeProperty;
 import hudson.slaves.NodePropertyDescriptor;
 import hudson.util.FormValidation;
 import jenkins.plugins.publish_over.BPValidators;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -48,6 +49,7 @@ public class CifsNodeProperties extends NodeProperty<Node> {
     public void setWinsServer(final String winsServer) { this.winsServer = winsServer; }
 
     @Extension
+    @Symbol("cifs")
     public static class CifsWinsNodePropertyDescriptor extends NodePropertyDescriptor {
         @NonNull
         @Override

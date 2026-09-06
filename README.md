@@ -83,6 +83,68 @@ see Publish Over ... for [common options for Host Configurations](https://plugin
 
 # Save
 
+# Configuration as Code (JCasC)
+
+All of the system configuration described above (CIFS server host configurations, the plugin/override defaults, and the WINS server) can be managed with the [Jenkins Configuration as Code plugin](https://plugins.jenkins.io/configuration-as-code/) instead of the UI.
+
+Host configurations and defaults live under `unclassified.cifsPublisher`, and the WINS server is set through `jenkins.globalNodeProperties` using the `cifs` symbol:
+
+```yaml
+unclassified:
+  cifsPublisher:
+    hostConfigurations:
+      - name: "primary"
+        hostname: "files.example.com"
+        username: "MYDOMAIN\\jenkins"
+        password: "${CIFS_PASSWORD}"
+        remoteRootDir: "artifacts/releases"
+        port: 445
+        timeout: 45000
+        bufferSize: 8192
+        smbVersion: "SMB_V3"
+    defaults:
+      overrideDefaults:
+        overrideInstanceConfig:
+          alwaysPublishFromMaster: true
+          continueOnError: true
+          failOnError: true
+          publishWhenFailed: true
+        overrideParamPublish:
+          parameterName: "CIFS_PUBLISH"
+        overridePublisher:
+          configName: "primary"
+          useWorkspaceInPromotion: true
+          usePromotionTimestamp: true
+          verbose: true
+        overridePublisherLabel:
+          label: "release"
+        overrideRetry:
+          retries: 4
+          retryDelay: 15000
+        overrideTransfer:
+          sourceFiles: "target/*.zip"
+          excludes: "target/*-sources.zip"
+          removePrefix: "target"
+          remoteDirectory: "builds"
+          flatten: true
+          remoteDirectorySDF: true
+          cleanRemote: true
+          noDefaultExcludes: true
+          makeEmptyDirs: true
+          patternSeparator: "[, ]+"
+
+jenkins:
+  globalNodeProperties:
+    - cifs:
+        winsServer: "192.0.2.10"
+```
+
+Notes:
+
+-   Use `password` (plain text, encrypted on write) when authoring configuration, or a [secret source](https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/docs/features/secrets.adoc) reference such as `${CIFS_PASSWORD}` so the credential isn't committed in plain text. When exporting the current configuration with the "View Configuration"/export feature, the password is emitted back as an already-encrypted value and never in plain text.
+-   `defaults` accepts either `pluginDefaults` (use the global publish-over defaults unchanged) or `overrideDefaults` (override one or more of the six option groups shown above) - only set the groups you want to override, the rest fall back to the plugin defaults.
+-   If no WINS server is configured, omit the `cifs` global node property entirely.
+
 ## Send files to a windows share during a build
 
 This plugin adds a build step to enable you to send files to a windows share during a build.

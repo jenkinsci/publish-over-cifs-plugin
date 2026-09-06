@@ -34,6 +34,7 @@ import jenkins.plugins.publish_over.options.PublisherOptions;
 import jenkins.plugins.publish_over.options.RetryOptions;
 import jenkins.plugins.publish_over.options.TransferOptions;
 import jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 
@@ -69,6 +70,7 @@ public final class CifsPluginDefaults extends CifsDefaults {
     }
 
     @Extension
+    @Symbol("pluginDefaults")
     @SuppressRestrictedWarnings(jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages.class)
     public static final class CifsPluginDefaultsDescriptor extends CifsDefaultsDescriptor {
 

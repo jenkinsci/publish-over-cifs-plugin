@@ -46,6 +46,7 @@ import jenkins.plugins.publish_over_cifs.Messages;
 import jenkins.plugins.publish_over_cifs.options.CifsDefaults;
 import jenkins.plugins.publish_over_cifs.options.CifsPluginDefaults;
 import net.sf.json.JSONObject;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.StaplerResponse2;
@@ -78,6 +79,11 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
         return defaults;
     }
 
+    @DataBoundSetter
+    public void setDefaults(final CifsDefaults defaults) {
+        this.defaults = defaults;
+    }
+
     @NonNull
     @Override
     public String getDisplayName() {
@@ -90,6 +96,11 @@ public class CifsPublisherPluginDescriptor extends BuildStepDescriptor<Publisher
 
     public List<CifsHostConfiguration> getHostConfigurations() {
         return hostConfigurations.getView();
+    }
+
+    @DataBoundSetter
+    public void setHostConfigurations(final List<CifsHostConfiguration> hostConfigurations) {
+        this.hostConfigurations.replaceBy(hostConfigurations);
     }
 
     public CifsHostConfiguration getConfiguration(final String name) {
