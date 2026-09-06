@@ -1,0 +1,47 @@
+unclassified:
+  cifsPublisher:
+    hostConfigurations:
+      - name: "primary"
+        hostname: "files.example.test"
+        username: "EXAMPLE\\jenkins"
+        password: "cifs-secret"
+        remoteRootDir: "artifacts/releases"
+        port: 445
+        timeout: 45000
+        bufferSize: 8192
+        smbVersion: "SMB_V3"
+    defaults:
+      overrideDefaults:
+        overrideInstanceConfig:
+          alwaysPublishFromMaster: true
+          continueOnError: true
+          failOnError: true
+          publishWhenFailed: true
+        overrideParamPublish:
+          parameterName: "CIFS_PUBLISH"
+        overridePublisher:
+          configName: "primary"
+          useWorkspaceInPromotion: true
+          usePromotionTimestamp: true
+          verbose: true
+        overridePublisherLabel:
+          label: "release"
+        overrideRetry:
+          retries: 4
+          retryDelay: 15000
+        overrideTransfer:
+          sourceFiles: "target/*.zip"
+          excludes: "target/*-sources.zip"
+          removePrefix: "target"
+          remoteDirectory: "builds"
+          flatten: true
+          remoteDirectorySDF: true
+          cleanRemote: true
+          noDefaultExcludes: true
+          makeEmptyDirs: true
+          patternSeparator: "[, ]+"
+
+jenkins:
+  globalNodeProperties:
+    - cifs:
+        winsServer: "192.0.2.10"
